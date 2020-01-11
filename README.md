@@ -6,7 +6,7 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 ## URL
 - Git: https://github.com/NJUTeamWiki/TeamWiki.git
 - GitHub: https://github.com/NJUTeamWiki/TeamWiki
-- Host: http://172.19.241.57/
+- Server Host: http://172.19.241.57/
 - Api: http://172.19.241.57:8081/
 - Swagger: http://172.19.241.57:8081/swagger-ui.html
 - Jenkins: http://172.19.241.57:8080/
@@ -50,7 +50,7 @@ docker run --name teamwiki-debug -p 8081:8088 -v {本地数据目录}:/var/data/
 ```
 
 ### Jenkins CI/CD
-Jenkins部署在[http://172.19.241.57:8080/]，以容器化方式运行。
+Jenkins部署在服务器上，以容器化方式运行。
 Jenkins设定为定时对`master`分支进行集成和部署，包括Maven构建，打包docker镜像以及部署在Jenkins服务器上。
 详细的CI/CD步骤参考`Jenkinsfile`和`Dockerfile`。
 
