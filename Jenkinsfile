@@ -8,6 +8,7 @@ pipeline {
     }
     environment {
         PROJECT_NAME = "teamwiki"
+        SERVER_IP = "172.19.241.57"
 
         // Maven
         IMAGE = readMavenPom().getArtifactId()
@@ -36,8 +37,8 @@ pipeline {
             }
         }
         stage('SonarQube') {
-            steps{
-                sh 'mvn sonar:sonar'
+            steps{  
+                sh "mvn sonar:sonar -Dsonar.host.url=http://${SERVER_IP}:9000"
             }
         }
         stage('Build Docker Image') {
