@@ -11,6 +11,7 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 - Swagger: http://172.19.241.57:8081/swagger-ui.html
 - Jenkins: http://172.19.241.57:8080/
 - Docker Hub: https://hub.docker.com/repository/docker/xuyangchen/teamwiki
+- SonarQube: http://172.19.241.57:9000/
 
 ## Workflow
 ### 拉取代码
@@ -104,6 +105,14 @@ docker commit A imageA #将容器commit提交成为一个镜像
 docker rm A #删除原镜像
 docker run -d -p 80:80 --name A imageA #启动新镜像
 ```
+
+### SonarQube相关
+SonarQube也使用Docker方式运行。
+
+安装配置References:
+- [https://hub.docker.com/_/sonarqube][sonarqube - Dokcer Hub]
+- [https://blog.csdn.net/qq_42207325/article/details/100998453][Linux下部署SonarQube+PostgreSQL+sonnar-scanner]
+- [https://tecadmin.net/install-postgresql-server-on-ubuntu/][How to Install PostgreSQL 11 on Ubuntu 18.04 & 16.04 LTS]
 
 _有想法随时交流，遇到的问题和坑的解决思路可以写在文档里(^ . ^)_
 
