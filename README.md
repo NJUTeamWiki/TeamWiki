@@ -8,7 +8,7 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 - GitHub: https://github.com/NJUTeamWiki/TeamWiki
 - Host: http://172.19.241.57/
 - Api: http://172.19.241.57:8081/
-- Swagger: 暂无
+- Swagger: http://172.19.241.57:8081/swagger-ui.html/
 - Jenkins: http://172.19.241.57:8080/
 - Docker Hub: https://hub.docker.com/repository/docker/xuyangchen/teamwiki
 
@@ -38,6 +38,16 @@ git push
 - 通过对Pull Request加上若干check，保证合入`master`的代码质量。
     - 当前已有的check：
         - `Action`: Maven build。如果build失败，无法成功merge（以此保证master分支的代码总是build成功的）
+
+### 本地调试
+需要本地安装Maven和Docker
+```shell script
+mvn clean package
+
+docker build -t teamwiki .
+
+docker run --name teamwiki-debug -p 8081:8088 -v {本地数据目录}:/var/data/teamwiki -v {本地日志目录}:/var/log/teamwiki -d teamwiki
+```
 
 ### Jenkins CI/CD
 Jenkins部署在[http://172.19.241.57:8080/]，以容器化方式运行。
