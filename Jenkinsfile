@@ -35,6 +35,11 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
+        stage('SonarQube') {
+            steps{
+                sh 'mvn sonar:sonar'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${IMAGE_NAME} ."
