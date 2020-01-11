@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <form method="POST" action="http://172.19.241.57:8081/knowledge" enctype="multipart/form-data">
+            <input type="file" name="file"/><br/>
+            <input type="submit" value="上传知识"/>
+        </form>
+
+        <form method="get" action="http://172.19.241.57:8081/knowledge">
+            <input type="submit" value="获取知识">
+        </form>
+    </body>
+</html>
