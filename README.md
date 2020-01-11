@@ -8,7 +8,7 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 - GitHub: https://github.com/NJUTeamWiki/TeamWiki
 - Host: http://172.19.241.57/
 - Api: http://172.19.241.57:8081/
-- Swagger: http://172.19.241.57:8081/swagger-ui.html/
+- Swagger: http://172.19.241.57:8081/swagger-ui.html
 - Jenkins: http://172.19.241.57:8080/
 - Docker Hub: https://hub.docker.com/repository/docker/xuyangchen/teamwiki
 
