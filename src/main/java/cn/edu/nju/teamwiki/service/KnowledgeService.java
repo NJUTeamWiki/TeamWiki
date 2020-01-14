@@ -20,6 +20,4 @@ public interface KnowledgeService {
     void updateKnowledge(String knowledgeId, MultipartFile file);
 
     void removeKnowledge(String knowledgeId);
-
-    void downloadKnowledge(HttpServletResponse response, int k_id) throws Exception;
 }

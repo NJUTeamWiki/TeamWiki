@@ -71,16 +71,5 @@ public class KnowledgeController {
         return Result.success();
     }
 
-    @PostMapping("/download")
-    @ApiOperation("下载知识")
-    @ResponseBody
-    public void downLoadKnowledge(HttpServletResponse response, @RequestParam("id") int id){
-        try {
-            knowledgeService.downloadKnowledge(response,id);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 
 }
