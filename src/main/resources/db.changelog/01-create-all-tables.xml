@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="01" author="ZhouShiqi">
+        <createTable tableName="user"
+                     remarks="A table to contain all the users">
+            <column name="user_id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="knowledge"
+                     remarks="A table to contain all knowledge">
+            <column name="k_id" type="int" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="k_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="storage_path" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploader" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="upload_time" type="timestamp">
+            </column>
+        </createTable>
+        
+        <createTable tableName="role"
+                    remarks="A table to contain all roles">
+            <column name="role_id" type="int" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="role_name" type="varchar(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user" baseColumnNames="role"
+                                 constraintName="role_fk"
+                                 referencedTableName="role" referencedColumnNames="role_id"/>
+        <addForeignKeyConstraint baseTableName="knowledge" baseColumnNames="uploader"
+                                 constraintName="user_fk"
+                                 referencedTableName="user" referencedColumnNames="user_id"/>
+    </changeSet>
+</databaseChangeLog>

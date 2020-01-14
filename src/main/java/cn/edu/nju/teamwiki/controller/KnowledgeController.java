@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -70,5 +71,16 @@ public class KnowledgeController {
         return Result.success();
     }
 
+    @PostMapping("/download")
+    @ApiOperation("下载知识")
+    @ResponseBody
+    public void downLoadKnowledge(HttpServletResponse response, @RequestParam("id") int id){
+        try {
+            knowledgeService.downloadKnowledge(response,id);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
 }
