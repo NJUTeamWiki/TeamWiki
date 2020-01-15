@@ -3,6 +3,7 @@ package cn.edu.nju.teamwiki.service;
 import cn.edu.nju.teamwiki.model.Knowledge;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -19,5 +20,4 @@ public interface KnowledgeService {
     void updateKnowledge(String knowledgeId, MultipartFile file);
 
     void removeKnowledge(String knowledgeId);
-
 }

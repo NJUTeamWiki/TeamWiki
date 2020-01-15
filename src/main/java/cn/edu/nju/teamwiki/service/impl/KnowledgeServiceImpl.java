@@ -3,12 +3,18 @@ package cn.edu.nju.teamwiki.service.impl;
 import cn.edu.nju.teamwiki.config.SystemConfig;
 import cn.edu.nju.teamwiki.model.Knowledge;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,12 +29,15 @@ import java.util.List;
 @Service
 public class KnowledgeServiceImpl implements KnowledgeService {
 
+    private final DSLContext dsl;
+
     private static final Logger LOG = LoggerFactory.getLogger(KnowledgeService.class);
 
     private final SystemConfig systemConfig;
 
-    public KnowledgeServiceImpl(SystemConfig systemConfig) {
+    public KnowledgeServiceImpl(SystemConfig systemConfig, DSLContext dsl) {
         this.systemConfig = systemConfig;
+        this.dsl = dsl;
     }
 
     @Override
@@ -66,4 +75,5 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     public void removeKnowledge(String knowledgeId) {
 
     }
+
 }
