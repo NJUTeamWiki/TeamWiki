@@ -29,15 +29,15 @@ import java.util.List;
 @Service
 public class KnowledgeServiceImpl implements KnowledgeService {
 
-    @Autowired
-    DSLContext dsl;
+    private final DSLContext dsl;
 
     private static final Logger LOG = LoggerFactory.getLogger(KnowledgeService.class);
 
     private final SystemConfig systemConfig;
 
-    public KnowledgeServiceImpl(SystemConfig systemConfig) {
+    public KnowledgeServiceImpl(SystemConfig systemConfig, DSLContext dsl) {
         this.systemConfig = systemConfig;
+        this.dsl = dsl;
     }
 
     @Override

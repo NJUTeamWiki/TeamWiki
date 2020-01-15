@@ -114,6 +114,18 @@ SonarQube也使用Docker方式运行。
 - [https://blog.csdn.net/qq_42207325/article/details/100998453][Linux下部署SonarQube+PostgreSQL+sonnar-scanner]
 - [https://tecadmin.net/install-postgresql-server-on-ubuntu/][How to Install PostgreSQL 11 on Ubuntu 18.04 & 16.04 LTS]
 
+### 数据库相关
+项目使用MySQL作为数据库，Jooq作为ORM框架。
+
+*目前mysql部署在服务器上，后期考虑放到docker里面去*
+
+**更换数据库需要修改`JooqConfig.xml`和`application.properties`中的ip地址。**
+
+生成JOOQ的代码：
+```shell script
+mvn generate-sources
+```
+
 _有想法随时交流，遇到的问题和坑的解决思路可以写在文档里(^ . ^)_
 
 

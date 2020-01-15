@@ -2,7 +2,7 @@
 <configuration>
     <jdbc>
         <driver>com.mysql.cj.jdbc.Driver</driver>
-        <url>jdbc:mysql://localhost:3306/team_wiki?serverTimezone=UTC</url>
+        <url>jdbc:mysql://172.19.241.57:3306/team_wiki?serverTimezone=UTC</url>
         <user>root</user>
         <password>root</password>
     </jdbc>
@@ -40,7 +40,7 @@
 
         <target>
             <!--生成代码文件的包名及放置目录-->
-            <packageName>cn.edu.nju.teamwiki.generator</packageName>
+            <packageName>cn.edu.nju.teamwiki.jooq</packageName>
             <directory>src/main/java</directory>
         </target>
     </generator>
