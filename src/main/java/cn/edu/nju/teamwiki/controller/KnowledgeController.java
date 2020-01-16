@@ -1,15 +1,15 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
-import cn.edu.nju.teamwiki.api.ResultCode;
-import cn.edu.nju.teamwiki.model.Knowledge;
+import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
+import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
+import cn.edu.nju.teamwiki.service.ServiceException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -21,54 +21,56 @@ import java.util.List;
 @Api(value = "知识相关接口", tags = "KnowledgeController")
 public class KnowledgeController {
 
-    private final KnowledgeService knowledgeService;
+    @Autowired
+    private KnowledgeService knowledgeService;
 
-    public KnowledgeController(KnowledgeService knowledgeService) {
-        this.knowledgeService = knowledgeService;
-    }
+    @Autowired
+    private DocumentService documentService;
 
     @GetMapping
     @ApiOperation("获取所有知识")
-    public Result getKnowledge() {
-        List<Knowledge> result = null;
-        try {
-            result = knowledgeService.getAllKnowledge();
-            return Result.success(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
-        }
+    public Result getAllKnowledge() {
+        List<KnowledgeVO> result = knowledgeService.getAllKnowledge();
+        return Result.success(result);
     }
 
 
     @PostMapping
-    @ApiOperation("上传知识")
-    public Result uploadKnowledge(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return Result.failure(ResultCode.PARAM_UPLOAD_FILE_EMPTY);
-        }
+    @ApiOperation("创建自定义知识")
+    public Result createKnowledge(@RequestParam("cid") String categoryId,
+                                  @RequestParam("kname") String knowledgeName,
+                                  @RequestParam("uid") String userId) {
         try {
-            knowledgeService.uploadKnowledge(file);
+            knowledgeService.createKnowledge(categoryId, knowledgeName, userId);
             return Result.success();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(ResultCode.SYSTEM_INNER_ERROR);
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
         }
     }
 
     @PutMapping
-    @ApiOperation("更新知识")
-    public Result updateKnowledge(@RequestParam("id") String knowledgeId,
-                                  @RequestParam("file") MultipartFile file) {
-        knowledgeService.updateKnowledge(knowledgeId, file);
-        return Result.success();
+    @ApiOperation(value = "重命名知识", notes = "仅限自定义知识")
+    public Result renameKnowledge(@RequestParam("kid") String knowledgeId,
+                                  @RequestParam("kname") String newName,
+                                  @RequestParam("uid") String userId) {
+        try {
+            knowledgeService.renameKnowledge(knowledgeId, newName, userId);
+            return Result.success();
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
     }
 
     @DeleteMapping
-    @ApiOperation("删除知识")
-    public Result removeKnowledge(@RequestParam("id") String knowledgeId) {
-        knowledgeService.removeKnowledge(knowledgeId);
-        return Result.success();
+    @ApiOperation(value = "删除知识", notes = "仅限自定义知识")
+    public Result removeKnowledge(@RequestParam("kid") String knowledgeId,
+                                  @RequestParam("uid") String userId) {
+        try {
+            knowledgeService.removeKnowledge(knowledgeId, userId);
+            return Result.success();
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
     }
 
 

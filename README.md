@@ -12,6 +12,8 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 - Jenkins: http://172.19.241.57:8080/
 - Docker Hub: https://hub.docker.com/repository/docker/xuyangchen/teamwiki
 - SonarQube: http://172.19.241.57:9000/
+- MySQL: jdbc:mysql:172.19.241.57:3306/team_wiki
+- Redis: 172.19.241.57:6379
 
 ## Workflow
 ### 拉取代码
@@ -22,6 +24,33 @@ cd TeamWiki
 
 git checkout -b dev-sample
 ```
+
+### 本地开发测试
+本项目通过使用Maven Profile和SpringBoot Profile共同实现本地开发（`dev`）和远程部署（`prod`）的不同配置（`properties`）。
+
+#### TDD 测试驱动开发
+在本地测试时，涉及到文件存储的类，需要在测试执行前将`SystemConfig`中的存储路径改为本地的临时目录，测试结束后删除临时目录。
+- 可参考`BaseServiceTest`(目前实现方式不够优雅，有待改进。。。)
+
+#### JOOQ数据类生成
+**注意`jooq_config.xml`中指定的数据库地址，以防错误覆盖了原来的代码。**
+
+```shell script
+mvn jooq-codegen:generate
+```
+
+#### 本地构建
+```shell script
+mvn -Pdev clean package
+```
+
+#### 本地Docker调试
+```shell script
+docker build -t teamwiki .
+
+docker run --rm --name teamwiki-test -p 8081:8081 -v {本地数据目录}:/var/data/teamwiki -v {本地日志目录}:/var/log/teamwiki teamwiki
+```
+
 ### 上传代码
 ```shell script
 git add .
@@ -39,16 +68,6 @@ git push
 - 通过对Pull Request加上若干check，保证合入`master`的代码质量。
     - 当前已有的check：
         - `Action`: Maven build。如果build失败，无法成功merge（以此保证master分支的代码总是build成功的）
-
-### 本地调试
-需要本地安装Maven和Docker
-```shell script
-mvn clean package
-
-docker build -t teamwiki .
-
-docker run --name teamwiki-debug -p 8081:8088 -v {本地数据目录}:/var/data/teamwiki -v {本地日志目录}:/var/log/teamwiki -d teamwiki
-```
 
 ### Jenkins CI/CD
 Jenkins部署在服务器上，以容器化方式运行。
@@ -117,14 +136,9 @@ SonarQube也使用Docker方式运行。
 ### 数据库相关
 项目使用MySQL作为数据库，Jooq作为ORM框架。
 
-*目前mysql部署在服务器上，后期考虑放到docker里面去*
+**更换数据库需要修改`JooqConfig.xml`和`application.properties`中的MySQL地址。**
 
-**更换数据库需要修改`JooqConfig.xml`和`application.properties`中的ip地址。**
 
-生成JOOQ的代码：
-```shell script
-mvn generate-sources
-```
 
 _有想法随时交流，遇到的问题和坑的解决思路可以写在文档里(^ . ^)_
 

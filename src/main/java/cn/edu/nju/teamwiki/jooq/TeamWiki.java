@@ -4,8 +4,13 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
+import cn.edu.nju.teamwiki.jooq.tables.Category;
+import cn.edu.nju.teamwiki.jooq.tables.Document;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
+import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
+import cn.edu.nju.teamwiki.jooq.tables.Share;
+import cn.edu.nju.teamwiki.jooq.tables.Source;
 import cn.edu.nju.teamwiki.jooq.tables.User;
 
 import java.util.ArrayList;
@@ -32,7 +37,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TeamWiki extends SchemaImpl {
 
-    private static final long serialVersionUID = -1664886172;
+    private static final long serialVersionUID = -282899497;
 
     /**
      * The reference instance of <code>team_wiki</code>
@@ -40,14 +45,39 @@ public class TeamWiki extends SchemaImpl {
     public static final TeamWiki TEAM_WIKI = new TeamWiki();
 
     /**
+     * The table <code>team_wiki.category</code>.
+     */
+    public final Category CATEGORY = cn.edu.nju.teamwiki.jooq.tables.Category.CATEGORY;
+
+    /**
+     * The table <code>team_wiki.document</code>.
+     */
+    public final Document DOCUMENT = cn.edu.nju.teamwiki.jooq.tables.Document.DOCUMENT;
+
+    /**
      * A table to contain all knowledge
      */
     public final Knowledge KNOWLEDGE = cn.edu.nju.teamwiki.jooq.tables.Knowledge.KNOWLEDGE;
 
     /**
+     * The table <code>team_wiki.portal</code>.
+     */
+    public final Portal PORTAL = cn.edu.nju.teamwiki.jooq.tables.Portal.PORTAL;
+
+    /**
      * A table to contain all roles
      */
     public final Role ROLE = cn.edu.nju.teamwiki.jooq.tables.Role.ROLE;
+
+    /**
+     * The table <code>team_wiki.share</code>.
+     */
+    public final Share SHARE = cn.edu.nju.teamwiki.jooq.tables.Share.SHARE;
+
+    /**
+     * The table <code>team_wiki.source</code>.
+     */
+    public final Source SOURCE = cn.edu.nju.teamwiki.jooq.tables.Source.SOURCE;
 
     /**
      * A table to contain all the users
@@ -76,8 +106,13 @@ public class TeamWiki extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Category.CATEGORY,
+            Document.DOCUMENT,
             Knowledge.KNOWLEDGE,
+            Portal.PORTAL,
             Role.ROLE,
+            Share.SHARE,
+            Source.SOURCE,
             User.USER);
     }
 }

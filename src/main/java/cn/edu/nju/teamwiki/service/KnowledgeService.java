@@ -1,23 +1,23 @@
 package cn.edu.nju.teamwiki.service;
 
-import cn.edu.nju.teamwiki.model.Knowledge;
-import org.springframework.web.multipart.MultipartFile;
+import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
  * @author: xuyangchen
- * @date: 2020/1/7
+ * @date: 2020/1/16
  */
-
 public interface KnowledgeService {
 
-    List<Knowledge> getAllKnowledge() throws Exception;
+    KnowledgeVO getKnowledge(String knowledgeId);
 
-    void uploadKnowledge(MultipartFile file) throws Exception;
+    List<KnowledgeVO> getAllKnowledge();
 
-    void updateKnowledge(String knowledgeId, MultipartFile file);
+    KnowledgeVO createKnowledge(String categoryId, String knowledgeName, String userId) throws ServiceException;
 
-    void removeKnowledge(String knowledgeId);
+    KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId) throws ServiceException;
+
+    KnowledgeVO removeKnowledge(String knowledgeId, String userId) throws ServiceException;
+
 }
