@@ -43,24 +43,15 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh "docker rmi ${IMAGE_NAME}"
-            }
-            post {
-                always{
-                    sh "docker build -t ${IMAGE_NAME} ."
-                }
+                sh "docker rmi -f ${IMAGE_NAME} || true"
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
         stage('Deploy to Docker') {
             steps {
-                sh "docker stop ${PROJECT_NAME}"
-                sh "docker rm ${PROJECT_NAME}"
-            }
-            post {
-                always {
-                    // 部署到docker
-                    sh "docker run --name ${PROJECT_NAME} -p ${EXPOSE_PORT}:${EXPOSE_PORT} -v ${DATA_VOLUME}:${DATA_VOLUME} -v ${LOG_VOLUME}:${LOG_VOLUME} -d ${IMAGE_NAME}"
-                }
+                sh "docker rm -f ${PROJECT_NAME} || true"
+                // 部署到docker
+                sh "docker run --name ${PROJECT_NAME} -p ${EXPOSE_PORT}:${EXPOSE_PORT} -v ${DATA_VOLUME}:${DATA_VOLUME} -v ${LOG_VOLUME}:${LOG_VOLUME} -d ${IMAGE_NAME}"
             }
         }
         stage('Push to Docker Hub') {
