@@ -43,6 +43,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
+                sh "docker rmi ${IMAGE_NAME}"
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
