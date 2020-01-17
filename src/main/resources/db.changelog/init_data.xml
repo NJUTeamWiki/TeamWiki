@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="ZhouShiqi">
+        <comment>Inserting Roles</comment>
+        <insert tableName="role">
+            <column name="role_id"/>
+            <column name="role_name" value="leader"/>
+        </insert>
+        <insert tableName="role">
+            <column name="role_id"/>
+            <column name="role_name" value="guru"/>
+        </insert>
+        <insert tableName="role">
+            <column name="role_id"/>
+            <column name="role_name" value="newcomer"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="02" author="XuYangchen">
+        <comment>Inserting Admin User</comment>
+        <insert tableName="user">
+            <column name="user_id"/>
+            <column name="username" value="admin"/>
+            <column name="password" value="admin"/>
+            <column name="email" value="admin"/>
+            <column name="role" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="03" author="XuYangchen">
+        <comment>Inserting predefined knowledge</comment>
+        <sqlFile path="init_knowledge.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="04" author="Xuyangchen">
+        <comment>Inserting Sources</comment>
+        <insert tableName="source">
+            <column name="source_name" value="knowledge"/>
+        </insert>
+        <insert tableName="source">
+            <column name="source_name" value="share"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

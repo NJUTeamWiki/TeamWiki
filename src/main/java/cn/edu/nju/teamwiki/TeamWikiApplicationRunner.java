@@ -26,13 +26,11 @@ public class TeamWikiApplicationRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        File storageDir = new File(systemConfig.storagePath);
-        if (storageDir.exists()) {
-            if (!storageDir.isDirectory()) {
-                throw new NotDirectoryException(systemConfig.storagePath);
-            }
-        } else {
-            storageDir.mkdirs();
-        }
+//        File storageDir = new File(systemConfig.storagePath);
+//        storageDir.mkdirs();
+//        File knowledgeStorageDir = new File(systemConfig.knowledgeStoragePath);
+//        knowledgeStorageDir.mkdir();
+//        File shareStorageDir = new File(systemConfig.shareStoragePath);
+//        shareStorageDir.mkdir();
     }
 }

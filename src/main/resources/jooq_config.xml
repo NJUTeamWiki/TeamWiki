@@ -2,7 +2,8 @@
 <configuration>
     <jdbc>
         <driver>com.mysql.cj.jdbc.Driver</driver>
-        <url>jdbc:mysql://172.19.241.57:3306/team_wiki?serverTimezone=UTC</url>
+<!--        <url>jdbc:mysql://172.19.241.57:3306/team_wiki?serverTimezone=UTC</url>-->
+        <url>jdbc:mysql://localhost:3306/team_wiki?serverTimezone=UTC</url>
         <user>root</user>
         <password>root</password>
     </jdbc>
@@ -35,7 +36,7 @@
             <javaTimeTypes>true</javaTimeTypes>
             <!--<interfaces>true</interfaces>-->
             <!--不在生成的代码中添加spring注释，比如@Repository-->
-            <springAnnotations>false</springAnnotations>
+            <springAnnotations>true</springAnnotations>
         </generate>
 
         <target>

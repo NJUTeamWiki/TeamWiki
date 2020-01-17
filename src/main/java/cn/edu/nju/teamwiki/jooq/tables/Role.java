@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Role extends TableImpl<RoleRecord> {
 
-    private static final long serialVersionUID = -382830271;
+    private static final long serialVersionUID = 151140614;
 
     /**
      * The reference instance of <code>team_wiki.role</code>
@@ -65,7 +65,7 @@ public class Role extends TableImpl<RoleRecord> {
     /**
      * The column <code>team_wiki.role.role_name</code>.
      */
-    public final TableField<RoleRecord, String> ROLE_NAME = createField(DSL.name("role_name"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<RoleRecord, String> ROLE_NAME = createField(DSL.name("role_name"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * Create a <code>team_wiki.role</code> table reference
@@ -107,7 +107,7 @@ public class Role extends TableImpl<RoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.ROLE_PRIMARY, Indexes.ROLE_ROLE_ID);
+        return Arrays.<Index>asList(Indexes.ROLE_PRIMARY, Indexes.ROLE_ROLE_ID, Indexes.ROLE_ROLE_NAME);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class Role extends TableImpl<RoleRecord> {
 
     @Override
     public List<UniqueKey<RoleRecord>> getKeys() {
-        return Arrays.<UniqueKey<RoleRecord>>asList(Keys.KEY_ROLE_PRIMARY, Keys.KEY_ROLE_ROLE_ID);
+        return Arrays.<UniqueKey<RoleRecord>>asList(Keys.KEY_ROLE_PRIMARY, Keys.KEY_ROLE_ROLE_ID, Keys.KEY_ROLE_ROLE_NAME);
     }
 
     @Override

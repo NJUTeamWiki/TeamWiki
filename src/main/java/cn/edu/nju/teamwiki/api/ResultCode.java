@@ -15,7 +15,8 @@ public enum ResultCode {
     PARAM_IS_BLANK(10002, "参数为空"),
     PARAM_TYPE_BIND_ERROR(10003, "参数类型错误"),
     PARAM_NOT_COMPLETE(10004, "参数缺失"),
-    PARAM_UPLOAD_FILE_EMPTY(10005, "上传文件为空"),
+    PARAM_INVALID_UPLOAD_FILE(10005, "上传文件无效"),
+    PARAM_INVALID_DOCUMENT_SOURCE(10006, "无效的文档源"),
 
     /* 用户错误：20001-29999*/
     USER_NOT_LOGGED_IN(20001, "用户未登录"),
@@ -26,9 +27,11 @@ public enum ResultCode {
 
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),
+    SPECIFIED_KNOWLEDGE_EXISTS(30002, "同名知识已存在"),
 
     /* 系统错误：40001-49999 */
     SYSTEM_INNER_ERROR(40001, "系统繁忙，请稍后重试"),
+    SYSTEM_FILE_ERROR(40002, "文件读写时发生异常"),
 
     /* 数据错误：50001-599999 */
     RESULT_DATA_NONE(50001, "数据未找到"),
@@ -44,7 +47,8 @@ public enum ResultCode {
     INTERFACE_EXCEED_LOAD(60006, "接口负载过高"),
 
     /* 权限错误：70001-79999 */
-    PERMISSION_NO_ACCESS(70001, "无访问权限");
+    PERMISSION_NO_ACCESS(70001, "无访问权限"),
+    PERMISSION_NO_MODIFY(70002, "无修改权限");
 
     private Integer code;
 
