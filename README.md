@@ -41,7 +41,7 @@ mvn jooq-codegen:generate
 
 #### 本地构建
 ```shell script
-mvn -Pdev clean package
+mvn -Pdev -DskipTests clean package
 ```
 
 #### 本地Docker调试

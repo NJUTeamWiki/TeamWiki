@@ -15,15 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * @date: 2020/1/17
  */
 @SpringBootTest
-public class KnowledgeServiceTest extends BaseServiceTest {
+public class KnowledgeServiceTest {
 
     @Autowired
     private KnowledgeService knowledgeService;
 
     @Test
     void test() throws Exception {
-        super.before();
-
         List<KnowledgeVO> res;
 
         // 验证默认知识
@@ -57,8 +55,6 @@ public class KnowledgeServiceTest extends BaseServiceTest {
         // 删除预定义知识
         assertThrows(ServiceException.class,
                 () -> knowledgeService.removeKnowledge("1", "1"));
-
-        super.after();
     }
 
 }
