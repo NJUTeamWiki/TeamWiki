@@ -14,7 +14,7 @@ services:
     container_name: teamwiki-redis
 
   teamwiki:
-    image: xuyangchen/teamwiki
+    build: .
     container_name: teamwiki
     ports:
       - 8081:8081
