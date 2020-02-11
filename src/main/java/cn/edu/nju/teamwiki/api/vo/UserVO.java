@@ -10,6 +10,8 @@ public class UserVO extends User {
 
     public UserVO(User user) {
         super(user);
+        // 去除敏感信息
+        this.setPassword(null);
     }
 
 }

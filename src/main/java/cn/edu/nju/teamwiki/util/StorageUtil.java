@@ -9,15 +9,23 @@ import java.nio.file.Paths;
  */
 public class StorageUtil {
 
+    public static final String KNOWLEDGE_PATH = "/knowledge/";
+
+    public static final String SHARE_PATH = "/share/";
+
+    public static final String IMAGE_PATH = "/image/";
+
+    public static final String AVATAR_PATH = IMAGE_PATH + "avatar/";
+
     public static Path getKnowledgeStoragePath(String storagePath,
                                                String categoryId,
                                                String knowledgeId) {
-        return Paths.get(storagePath, categoryId, knowledgeId);
+        return Paths.get(storagePath, KNOWLEDGE_PATH, categoryId, knowledgeId);
     }
 
     public static Path getShareStoragePath(String storagePath,
                                            String shareId) {
-        return Paths.get(storagePath, shareId);
+        return Paths.get(storagePath, SHARE_PATH, shareId);
     }
 
     public static Path getKnowledgeDocumentStoragePath(String storagePath,

@@ -15,8 +15,4 @@ public class SystemConfig {
     @Value("${teamwiki.storage.path}")
     public String storagePath;
 
-    public String knowledgeStoragePath = storagePath + "/knowledge";
-
-    public String shareStoragePath = storagePath + "/share";
-
 }

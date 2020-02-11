@@ -2,9 +2,13 @@ package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
+import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
+import cn.edu.nju.teamwiki.api.param.UploadDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -56,15 +60,15 @@ public class DocumentController {
 
     @PostMapping
     @ApiOperation("上传文档至当前源")
-    public Result uploadDocument(@RequestParam("sid") String sourceId,
-                                 @RequestParam("stype") Integer sourceType,
+    public Result uploadDocument(@RequestBody UploadDocumentParams params,
                                  @RequestParam("file") MultipartFile file,
-                                 @RequestParam("uid") String userId) {
+                                 HttpServletRequest request) {
         if (file.isEmpty()) {
             return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.uploadDocument(sourceId, sourceType, file, userId);
+            documentService.uploadDocument(params.sourceId, params.sourceType, file, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -73,12 +77,11 @@ public class DocumentController {
 
     @PutMapping
     @ApiOperation("重命名当前源中的文档")
-    public Result renameDocument(@RequestParam("did") String documentId,
-                                 @RequestParam("stype") Integer sourceType,
-                                 @RequestParam("dname") String newName,
-                                 @RequestParam("uid") String userId) {
+    public Result renameDocument(@RequestBody RenameDocumentParams params,
+                                 HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.renameDocument(documentId, sourceType, newName, userId);
+            documentService.renameDocument(params.documentId, params.sourceType, params.newName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -88,11 +91,11 @@ public class DocumentController {
 
     @DeleteMapping
     @ApiOperation("删除当前源中的文档")
-    public Result deleteDocument(@RequestParam("did") String documentId,
-                                 @RequestParam("stype") Integer sourceType,
-                                 @RequestParam("uid") String userId) {
+    public Result deleteDocument(@RequestBody DeleteDocumentParams params,
+                                 HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.deleteDocument(documentId, sourceType, userId);
+            documentService.deleteDocument(params.documentId, params.sourceType, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -102,7 +105,8 @@ public class DocumentController {
 
     @GetMapping("/download/{id}")
     @ApiOperation("下载文档")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId,
+                                                 HttpServletRequest request) {
         Path documentPath = null;
         try {
             documentPath = documentService.getDocumentDownloadPath(documentId);
