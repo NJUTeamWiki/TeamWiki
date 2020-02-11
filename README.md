@@ -15,14 +15,6 @@ SpringBoot项目，打包成Docker Image上传到Docker Hub，以实现Run Every
 - MySQL: jdbc:mysql:172.19.241.57:3306/team_wiki
 - Redis: 172.19.241.57:6379
 
-## QuickStart
-```shell script
-# 启动
-docker-compose up
-# 结束
-docker-compose down
-```
-
 ## Workflow
 ### 拉取代码
 ```shell script
