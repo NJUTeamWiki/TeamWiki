@@ -19,7 +19,7 @@ services:
     ports:
       - 8081:8081
     volumes:
-      - /var/data/teamwiki/data:/var/data/teamwiki
+      - /var/data/teamwiki:/var/data/teamwiki
       - /var/log/teamwiki:/var/log/teamwiki
     environment:
       - DB_SERVER=teamwiki-mysql
