@@ -95,12 +95,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId) throws ServiceException {
         Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
-        if (knowledge.getCreator() == null || !userId.equals(knowledge.getCreator().toString())) {
-            throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
-        }
-        if (knowledge.getPredefined()) {
-            throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
-        }
+
+        checkUser(knowledge, userId);
+
         knowledge.setKName(newName);
         knowledgeDao.update(knowledge);
 
@@ -111,9 +108,8 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     @Override
     public KnowledgeVO removeKnowledge(String knowledgeId, String userId) throws ServiceException {
         Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
-        if (knowledge.getCreator() == null || !userId.equals(knowledge.getCreator().toString())) {
-            throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
-        }
+
+        checkUser(knowledge, userId);
 
         // 删除文件
         Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
@@ -137,6 +133,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         return new KnowledgeVO(knowledge);
     }
 
+    private void checkUser(Knowledge knowledge, String userId) throws ServiceException {
+        if (knowledge.getPredefined()) {
+            throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
+        }
+        if (knowledge.getCreator() != null && !userId.equals(knowledge.getCreator().toString())) {
+            throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
+        }
+    }
 
     private List<Document> getKnowledgeDocuments(Knowledge knowledge) {
         return dslContext.selectFrom(Tables.DOCUMENT)
