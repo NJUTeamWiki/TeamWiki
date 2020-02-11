@@ -59,7 +59,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO signIn(String email, String password) throws ServiceException {
-        User user = userDao.fetchByEmail(email).get(0);
+        User user = userDao.fetchOneByEmail(email);
+        if (user == null) {
+            throw new ServiceException(ResultCode.USER_NOT_EXIST);
+        }
         try {
             String provide = EncryptUtil.encryptSHA(password);
             String store = user.getPassword();
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO signUp(String email, String password, String username) throws ServiceException {
-        if (userDao.fetchByEmail(email).isEmpty()) {
+        if (userDao.fetchOneByEmail(email) == null) {
             User user = new User();
             try {
                 user.setPassword(EncryptUtil.encryptSHA(password));
