@@ -82,7 +82,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         // 插入后的Knowledge才有id
         Knowledge latest = getKnowledge(knowledgeName, categoryId);
 
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.knowledgeStoragePath,
+        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
                 categoryId, latest.getKId().toString());
         if (knowledgePath.toFile().mkdirs()) {
             return new KnowledgeVO(latest);
@@ -116,7 +116,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         }
 
         // 删除文件
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.knowledgeStoragePath,
+        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
                 knowledge.getCategory().toString(), knowledge.getKId().toString());
         File knowledgeDir = knowledgePath.toFile();
         if (knowledgeDir.exists()) {

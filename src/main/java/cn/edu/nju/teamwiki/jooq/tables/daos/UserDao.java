@@ -148,4 +148,32 @@ public class UserDao extends DAOImpl<UserRecord, cn.edu.nju.teamwiki.jooq.tables
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByAvatar(String... values) {
         return fetch(User.USER.AVATAR, values);
     }
+
+    /**
+     * Fetch records that have <code>phone BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfPhone(String lowerInclusive, String upperInclusive) {
+        return fetchRange(User.USER.PHONE, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>phone IN (values)</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByPhone(String... values) {
+        return fetch(User.USER.PHONE, values);
+    }
+
+    /**
+     * Fetch records that have <code>introduction BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfIntroduction(String lowerInclusive, String upperInclusive) {
+        return fetchRange(User.USER.INTRODUCTION, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>introduction IN (values)</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByIntroduction(String... values) {
+        return fetch(User.USER.INTRODUCTION, values);
+    }
 }

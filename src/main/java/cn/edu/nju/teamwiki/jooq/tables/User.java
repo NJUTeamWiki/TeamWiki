@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -1765965451;
+    private static final long serialVersionUID = -1959836839;
 
     /**
      * The reference instance of <code>team_wiki.user</code>
@@ -86,6 +86,16 @@ public class User extends TableImpl<UserRecord> {
      * The column <code>team_wiki.user.avatar</code>.
      */
     public final TableField<UserRecord, String> AVATAR = createField(DSL.name("avatar"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>team_wiki.user.phone</code>.
+     */
+    public final TableField<UserRecord, String> PHONE = createField(DSL.name("phone"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>team_wiki.user.introduction</code>.
+     */
+    public final TableField<UserRecord, String> INTRODUCTION = createField(DSL.name("introduction"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
      * Create a <code>team_wiki.user</code> table reference
@@ -181,11 +191,11 @@ public class User extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, Integer, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, String, String, String, Integer, String, String, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

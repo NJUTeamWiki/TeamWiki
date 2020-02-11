@@ -159,4 +159,15 @@
                                  constraintName="document_source_fk"
                                  referencedTableName="source" referencedColumnNames="source_type"/>
     </changeSet>
+
+    <changeSet id="04" author="XuYangchen">
+        <addColumn tableName="user">
+            <column name="phone" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="introduction" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

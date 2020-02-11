@@ -56,13 +56,13 @@ public class DocumentServiceImpl implements DocumentService {
             case Constants.SOURCE_KNOWLEDGE:
                 Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
                 Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-                return StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.knowledgeStoragePath,
+                return StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
                         category.getCategoryName(),
                         knowledge.getKName(),
                         document.getDName());
             case Constants.SOURCE_SHARE:
                 Share share = shareDao.fetchOneByShareId(document.getSourceId());
-                return StorageUtil.getShareDocumentStoragePath(systemConfig.shareStoragePath,
+                return StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
                         String.valueOf(share.getShareId()),
                         document.getDName());
             default:
@@ -96,13 +96,13 @@ public class DocumentServiceImpl implements DocumentService {
         if (sourceType == Constants.SOURCE_KNOWLEDGE) {
             Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(sourceId));
             Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.knowledgeStoragePath,
+            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
                     String.valueOf(category.getCategoryId()),
                     String.valueOf(knowledge.getKId()));
 
         } else if (sourceType == Constants.SOURCE_SHARE) {
             Share share = shareDao.fetchOneByShareId(Integer.valueOf(sourceId));
-            sourcePath = StorageUtil.getShareStoragePath(systemConfig.shareStoragePath,
+            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
                     String.valueOf(share.getShareId()));
         } else {
             throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
@@ -145,12 +145,12 @@ public class DocumentServiceImpl implements DocumentService {
         if (sourceType == Constants.SOURCE_KNOWLEDGE) {
             Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
             Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.knowledgeStoragePath,
+            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
                     String.valueOf(category.getCategoryId()),
                     String.valueOf(knowledge.getKId()));
         } else if (sourceType == Constants.SOURCE_SHARE) {
             Share share = shareDao.fetchOneByShareId(document.getSourceId());
-            sourcePath = StorageUtil.getShareStoragePath(systemConfig.shareStoragePath,
+            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
                     String.valueOf(share.getShareId()));
         } else {
             throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
@@ -179,13 +179,13 @@ public class DocumentServiceImpl implements DocumentService {
         if (sourceType == Constants.SOURCE_KNOWLEDGE) {
             Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
             Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            documentPath = StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.knowledgeStoragePath,
+            documentPath = StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
                     String.valueOf(category.getCategoryId()),
                     String.valueOf(knowledge.getKId()),
                     document.getDName());
         } else if (sourceType == Constants.SOURCE_SHARE) {
             Share share = shareDao.fetchOneByShareId(document.getSourceId());
-            documentPath = StorageUtil.getShareDocumentStoragePath(systemConfig.shareStoragePath,
+            documentPath = StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
                     String.valueOf(share.getShareId()),
                     document.getDName());
         } else {

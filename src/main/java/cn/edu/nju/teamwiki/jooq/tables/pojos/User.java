@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User implements Serializable {
 
-    private static final long serialVersionUID = -1281272045;
+    private static final long serialVersionUID = -1204278399;
 
     private Integer userId;
     private String  email;
@@ -30,6 +30,8 @@ public class User implements Serializable {
     private String  password;
     private Integer role;
     private String  avatar;
+    private String  phone;
+    private String  introduction;
 
     public User() {}
 
@@ -40,6 +42,8 @@ public class User implements Serializable {
         this.password = value.password;
         this.role = value.role;
         this.avatar = value.avatar;
+        this.phone = value.phone;
+        this.introduction = value.introduction;
     }
 
     public User(
@@ -48,7 +52,9 @@ public class User implements Serializable {
         String  username,
         String  password,
         Integer role,
-        String  avatar
+        String  avatar,
+        String  phone,
+        String  introduction
     ) {
         this.userId = userId;
         this.email = email;
@@ -56,6 +62,8 @@ public class User implements Serializable {
         this.password = password;
         this.role = role;
         this.avatar = avatar;
+        this.phone = phone;
+        this.introduction = introduction;
     }
 
     public Integer getUserId() {
@@ -106,6 +114,22 @@ public class User implements Serializable {
         this.avatar = avatar;
     }
 
+    public String getPhone() {
+        return this.phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getIntroduction() {
+        return this.introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("User (");
@@ -116,6 +140,8 @@ public class User implements Serializable {
         sb.append(", ").append(password);
         sb.append(", ").append(role);
         sb.append(", ").append(avatar);
+        sb.append(", ").append(phone);
+        sb.append(", ").append(introduction);
 
         sb.append(")");
         return sb.toString();
