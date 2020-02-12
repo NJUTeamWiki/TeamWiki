@@ -1,10 +1,8 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
-import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
 import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
-import cn.edu.nju.teamwiki.api.param.UploadDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
@@ -21,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -47,8 +44,8 @@ public class DocumentController {
     @GetMapping
     @ApiOperation("获取当前源的所有文档")
     @ApiParam
-    public Result getDocuments(@RequestParam("sid") String sourceId,
-                               @RequestParam("stype") Integer sourceType) {
+    public Result getDocuments(@RequestParam("sourceId") String sourceId,
+                               @RequestParam("sourceType") Integer sourceType) {
         try {
             List<DocumentVO> result = documentService.getDocuments(sourceId, sourceType);
             return Result.success(result);
@@ -56,23 +53,6 @@ public class DocumentController {
             return Result.failure(e.getResultCode());
         }
 
-    }
-
-    @PostMapping
-    @ApiOperation("上传文档至当前源")
-    public Result uploadDocument(@RequestBody UploadDocumentParams params,
-                                 @RequestParam("file") MultipartFile file,
-                                 HttpServletRequest request) {
-        if (file.isEmpty()) {
-            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-        }
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
-        try {
-            documentService.uploadDocument(params.sourceId, params.sourceType, file, userId);
-            return Result.success();
-        } catch (ServiceException e) {
-            return Result.failure(e.getResultCode());
-        }
     }
 
     @PutMapping
