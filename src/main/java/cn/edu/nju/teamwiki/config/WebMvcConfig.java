@@ -4,9 +4,7 @@ import cn.edu.nju.teamwiki.interceptor.SignInInterceptor;
 import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  * @author: xuyangchen
@@ -42,5 +40,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/share/**",
                         "/image/**",
                         "/doc/**");
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .maxAge(3600);
     }
 }
