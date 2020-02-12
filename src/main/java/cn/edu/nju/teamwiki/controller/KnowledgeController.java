@@ -1,6 +1,7 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
+import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.param.CreateKnowledgeParams;
 import cn.edu.nju.teamwiki.api.param.RenameKnowledgeParams;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
@@ -12,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -63,11 +65,28 @@ public class KnowledgeController {
 
     @DeleteMapping
     @ApiOperation(value = "删除知识", notes = "仅限自定义知识")
-    public Result removeKnowledge(@RequestParam("kid") String knowledgeId,
+    public Result removeKnowledge(@RequestParam("knowledgeId") String knowledgeId,
                                   HttpServletRequest request) {
         String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
             knowledgeService.removeKnowledge(knowledgeId, userId);
+            return Result.success();
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @PostMapping("/upload")
+    @ApiOperation("上传文档至知识")
+    public Result uploadDocumentToKnowledge(@RequestParam("file") MultipartFile file,
+                                            @RequestParam("knowledgeId") String knowledgeId,
+                                            HttpServletRequest request) {
+        if (file.isEmpty()) {
+            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
+        }
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        try {
+            knowledgeService.uploadDocumentToKnowledge(knowledgeId, file, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());

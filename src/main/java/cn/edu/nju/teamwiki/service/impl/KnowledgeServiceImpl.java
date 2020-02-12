@@ -4,9 +4,11 @@ import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.config.SystemConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
+import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.Category;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
@@ -18,11 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +44,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Autowired
     private DocumentDao documentDao;
+
+    @Autowired
+    private CategoryDao categoryDao;
 
     @Autowired
     private DSLContext dslContext;
@@ -131,6 +139,40 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         documentDao.delete(documents);
 
         return new KnowledgeVO(knowledge);
+    }
+
+    @Override
+    public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) throws ServiceException {
+        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
+        Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
+        Path sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+                String.valueOf(category.getCategoryId()),
+                String.valueOf(knowledge.getKId()));
+
+        File documentFile = sourcePath.resolve(file.getOriginalFilename()).toFile();
+        if (!documentFile.getParentFile().exists()) {
+            documentFile.getParentFile().mkdirs();
+        }
+
+        LOG.info("Document will be stored as [" + documentFile.getPath() + "]");
+
+        // 将文件写入到目标路径中
+        try {
+            file.transferTo(documentFile);
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+        }
+
+        Document document = new Document();
+        document.setDId(UUID.randomUUID().toString());
+        document.setDName(file.getOriginalFilename());
+        document.setUploader(Integer.valueOf(userId));
+        document.setSourceId(Integer.valueOf(knowledgeId));
+        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
+        document.setUploadedTime(LocalDateTime.now());
+        document.setModifiedTime(LocalDateTime.now());
+        documentDao.insert(document);
     }
 
     private void checkUser(Knowledge knowledge, String userId) throws ServiceException {
