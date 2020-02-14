@@ -9,6 +9,7 @@ import cn.edu.nju.teamwiki.jooq.Keys;
 import cn.edu.nju.teamwiki.jooq.TeamWiki;
 import cn.edu.nju.teamwiki.jooq.tables.records.KnowledgeRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Knowledge extends TableImpl<KnowledgeRecord> {
 
-    private static final long serialVersionUID = 1967748509;
+    private static final long serialVersionUID = 314783012;
 
     /**
      * The reference instance of <code>team_wiki.knowledge</code>
@@ -68,19 +69,19 @@ public class Knowledge extends TableImpl<KnowledgeRecord> {
     public final TableField<KnowledgeRecord, String> K_NAME = createField(DSL.name("k_name"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>team_wiki.knowledge.predefined</code>.
+     * The column <code>team_wiki.knowledge.storage_path</code>.
      */
-    public final TableField<KnowledgeRecord, Boolean> PREDEFINED = createField(DSL.name("predefined"), org.jooq.impl.SQLDataType.BIT.nullable(false), this, "");
+    public final TableField<KnowledgeRecord, String> STORAGE_PATH = createField(DSL.name("storage_path"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>team_wiki.knowledge.category</code>.
+     * The column <code>team_wiki.knowledge.uploader</code>.
      */
-    public final TableField<KnowledgeRecord, Integer> CATEGORY = createField(DSL.name("category"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<KnowledgeRecord, Integer> UPLOADER = createField(DSL.name("uploader"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>team_wiki.knowledge.creator</code>.
+     * The column <code>team_wiki.knowledge.upload_time</code>.
      */
-    public final TableField<KnowledgeRecord, Integer> CREATOR = createField(DSL.name("creator"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<KnowledgeRecord, LocalDateTime> UPLOAD_TIME = createField(DSL.name("upload_time"), org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
 
     /**
      * Create a <code>team_wiki.knowledge</code> table reference
@@ -122,7 +123,7 @@ public class Knowledge extends TableImpl<KnowledgeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.KNOWLEDGE_K_ID, Indexes.KNOWLEDGE_KNOWLEDGE_CATEGORY_FK, Indexes.KNOWLEDGE_KNOWLEDGE_CREATOR_FK, Indexes.KNOWLEDGE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.KNOWLEDGE_K_ID, Indexes.KNOWLEDGE_PRIMARY, Indexes.KNOWLEDGE_USER_FK);
     }
 
     @Override
@@ -138,19 +139,6 @@ public class Knowledge extends TableImpl<KnowledgeRecord> {
     @Override
     public List<UniqueKey<KnowledgeRecord>> getKeys() {
         return Arrays.<UniqueKey<KnowledgeRecord>>asList(Keys.KEY_KNOWLEDGE_PRIMARY, Keys.KEY_KNOWLEDGE_K_ID);
-    }
-
-    @Override
-    public List<ForeignKey<KnowledgeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<KnowledgeRecord, ?>>asList(Keys.KNOWLEDGE_CATEGORY_FK, Keys.KNOWLEDGE_CREATOR_FK);
-    }
-
-    public Category category() {
-        return new Category(this, Keys.KNOWLEDGE_CATEGORY_FK);
-    }
-
-    public User user() {
-        return new User(this, Keys.KNOWLEDGE_CREATOR_FK);
     }
 
     @Override
@@ -184,7 +172,7 @@ public class Knowledge extends TableImpl<KnowledgeRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, Boolean, Integer, Integer> fieldsRow() {
+    public Row5<Integer, String, String, Integer, LocalDateTime> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }

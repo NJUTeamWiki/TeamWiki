@@ -7,6 +7,7 @@ package cn.edu.nju.teamwiki.jooq.tables.daos;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
 import cn.edu.nju.teamwiki.jooq.tables.records.KnowledgeRecord;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.annotation.Generated;
@@ -87,44 +88,44 @@ public class KnowledgeDao extends DAOImpl<KnowledgeRecord, cn.edu.nju.teamwiki.j
     }
 
     /**
-     * Fetch records that have <code>predefined BETWEEN lowerInclusive AND upperInclusive</code>
+     * Fetch records that have <code>storage_path BETWEEN lowerInclusive AND upperInclusive</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfPredefined(Boolean lowerInclusive, Boolean upperInclusive) {
-        return fetchRange(Knowledge.KNOWLEDGE.PREDEFINED, lowerInclusive, upperInclusive);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfStoragePath(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Knowledge.KNOWLEDGE.STORAGE_PATH, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>predefined IN (values)</code>
+     * Fetch records that have <code>storage_path IN (values)</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByPredefined(Boolean... values) {
-        return fetch(Knowledge.KNOWLEDGE.PREDEFINED, values);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByStoragePath(String... values) {
+        return fetch(Knowledge.KNOWLEDGE.STORAGE_PATH, values);
     }
 
     /**
-     * Fetch records that have <code>category BETWEEN lowerInclusive AND upperInclusive</code>
+     * Fetch records that have <code>uploader BETWEEN lowerInclusive AND upperInclusive</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfCategory(Integer lowerInclusive, Integer upperInclusive) {
-        return fetchRange(Knowledge.KNOWLEDGE.CATEGORY, lowerInclusive, upperInclusive);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfUploader(Integer lowerInclusive, Integer upperInclusive) {
+        return fetchRange(Knowledge.KNOWLEDGE.UPLOADER, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>category IN (values)</code>
+     * Fetch records that have <code>uploader IN (values)</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByCategory(Integer... values) {
-        return fetch(Knowledge.KNOWLEDGE.CATEGORY, values);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByUploader(Integer... values) {
+        return fetch(Knowledge.KNOWLEDGE.UPLOADER, values);
     }
 
     /**
-     * Fetch records that have <code>creator BETWEEN lowerInclusive AND upperInclusive</code>
+     * Fetch records that have <code>upload_time BETWEEN lowerInclusive AND upperInclusive</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfCreator(Integer lowerInclusive, Integer upperInclusive) {
-        return fetchRange(Knowledge.KNOWLEDGE.CREATOR, lowerInclusive, upperInclusive);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchRangeOfUploadTime(LocalDateTime lowerInclusive, LocalDateTime upperInclusive) {
+        return fetchRange(Knowledge.KNOWLEDGE.UPLOAD_TIME, lowerInclusive, upperInclusive);
     }
 
     /**
-     * Fetch records that have <code>creator IN (values)</code>
+     * Fetch records that have <code>upload_time IN (values)</code>
      */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByCreator(Integer... values) {
-        return fetch(Knowledge.KNOWLEDGE.CREATOR, values);
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge> fetchByUploadTime(LocalDateTime... values) {
+        return fetch(Knowledge.KNOWLEDGE.UPLOAD_TIME, values);
     }
 }

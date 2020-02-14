@@ -11,4 +11,5 @@
 <!--    <include file="03-insert-admin-user.xml" relativeToChangelogFile="true"/>-->
     <include file="init_table.xml" relativeToChangelogFile="true"/>
     <include file="init_data.xml" relativeToChangelogFile="true"/>
+    <include file="04-my-test-data.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

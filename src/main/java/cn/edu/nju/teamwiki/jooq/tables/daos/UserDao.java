@@ -73,27 +73,6 @@ public class UserDao extends DAOImpl<UserRecord, cn.edu.nju.teamwiki.jooq.tables
     }
 
     /**
-     * Fetch records that have <code>email BETWEEN lowerInclusive AND upperInclusive</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfEmail(String lowerInclusive, String upperInclusive) {
-        return fetchRange(User.USER.EMAIL, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>email IN (values)</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByEmail(String... values) {
-        return fetch(User.USER.EMAIL, values);
-    }
-
-    /**
-     * Fetch a unique record that has <code>email = value</code>
-     */
-    public cn.edu.nju.teamwiki.jooq.tables.pojos.User fetchOneByEmail(String value) {
-        return fetchOne(User.USER.EMAIL, value);
-    }
-
-    /**
      * Fetch records that have <code>username BETWEEN lowerInclusive AND upperInclusive</code>
      */
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfUsername(String lowerInclusive, String upperInclusive) {
@@ -122,6 +101,20 @@ public class UserDao extends DAOImpl<UserRecord, cn.edu.nju.teamwiki.jooq.tables
     }
 
     /**
+     * Fetch records that have <code>email BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfEmail(String lowerInclusive, String upperInclusive) {
+        return fetchRange(User.USER.EMAIL, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>email IN (values)</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByEmail(String... values) {
+        return fetch(User.USER.EMAIL, values);
+    }
+
+    /**
      * Fetch records that have <code>role BETWEEN lowerInclusive AND upperInclusive</code>
      */
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfRole(Integer lowerInclusive, Integer upperInclusive) {
@@ -133,19 +126,5 @@ public class UserDao extends DAOImpl<UserRecord, cn.edu.nju.teamwiki.jooq.tables
      */
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByRole(Integer... values) {
         return fetch(User.USER.ROLE, values);
-    }
-
-    /**
-     * Fetch records that have <code>avatar BETWEEN lowerInclusive AND upperInclusive</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchRangeOfAvatar(String lowerInclusive, String upperInclusive) {
-        return fetchRange(User.USER.AVATAR, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>avatar IN (values)</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.User> fetchByAvatar(String... values) {
-        return fetch(User.USER.AVATAR, values);
     }
 }

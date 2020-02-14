@@ -85,11 +85,4 @@ public class RoleDao extends DAOImpl<RoleRecord, cn.edu.nju.teamwiki.jooq.tables
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Role> fetchByRoleName(String... values) {
         return fetch(Role.ROLE.ROLE_NAME, values);
     }
-
-    /**
-     * Fetch a unique record that has <code>role_name = value</code>
-     */
-    public cn.edu.nju.teamwiki.jooq.tables.pojos.Role fetchOneByRoleName(String value) {
-        return fetchOne(Role.ROLE.ROLE_NAME, value);
-    }
 }

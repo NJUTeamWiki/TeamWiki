@@ -1,8 +1,17 @@
 package cn.edu.nju.teamwiki.controller;
 
+import cn.edu.nju.teamwiki.api.Result;
+import cn.edu.nju.teamwiki.api.vo.ShareVO;
+import cn.edu.nju.teamwiki.service.ShareService;
+import cn.edu.nju.teamwiki.service.ServiceException;
 import io.swagger.annotations.Api;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author: xuyangchen
@@ -12,4 +21,78 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/share")
 @Api(value = "分享相关接口", tags = "ShareController")
 public class ShareController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ShareController.class);
+
+    @Autowired
+    private ShareService shareService;
+
+    @GetMapping
+    @ApiOperation("获取当前所有分享")
+    public Result getAllShares(){
+        try{
+            List<ShareVO> result = shareService.getAllShares();
+            return Result.success(result);
+        }catch (ServiceException e){
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @GetMapping("/someone")
+    @ApiOperation("获取用户的所有分享")
+    public Result getSomeoneShares(@RequestParam("uid") String userId){
+        try{
+            List<ShareVO> result = shareService.getSharesByUserId(userId);
+            return Result.success(result);
+        }catch (ServiceException e){
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @GetMapping("/title")
+    @ApiOperation("根据title获取分享")
+    public Result getSharesByTitle(@RequestParam("stitle") String shareTitle){
+        try {
+            List<ShareVO> result = shareService.getSharesByTitle(shareTitle);
+            return Result.success(result);
+        }catch (ServiceException e){
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @PostMapping
+    @ApiOperation("创建一个分享")
+    public void createShare(@RequestParam("title") String shareTitle,
+                            @RequestParam("content") String shareContent,
+                            @RequestParam("uid") String userId){
+        try{
+            shareService.createShare(shareTitle, shareContent, userId);
+        }catch (ServiceException e){
+            LOG.error(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    @ApiOperation("更新一个分享")
+    public void updateShare(@RequestParam("sid") String shareId,
+                            @RequestParam("title") String shareTitle,
+                            @RequestParam("content") String shareContent,
+                            @RequestParam("uid") String userId){
+        try {
+            shareService.updateShare(shareId, shareTitle, shareContent, userId);
+        }catch (ServiceException e){
+            LOG.error(e.getMessage());
+        }
+    }
+
+    @DeleteMapping
+    @ApiOperation("删除一个分享")
+    public void deleteShare(@RequestParam("sid") String shareId){
+        try {
+            shareService.deleteShare(shareId);
+        }catch (ServiceException e){
+            LOG.error(e.getMessage());
+        }
+    }
+
 }

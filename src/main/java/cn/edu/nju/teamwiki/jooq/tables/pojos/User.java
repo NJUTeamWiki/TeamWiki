@@ -22,40 +22,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class User implements Serializable {
 
-    private static final long serialVersionUID = -1281272045;
+    private static final long serialVersionUID = 1141792596;
 
     private Integer userId;
-    private String  email;
     private String  username;
     private String  password;
+    private String  email;
     private Integer role;
-    private String  avatar;
 
     public User() {}
 
     public User(User value) {
         this.userId = value.userId;
-        this.email = value.email;
         this.username = value.username;
         this.password = value.password;
+        this.email = value.email;
         this.role = value.role;
-        this.avatar = value.avatar;
     }
 
     public User(
         Integer userId,
-        String  email,
         String  username,
         String  password,
-        Integer role,
-        String  avatar
+        String  email,
+        Integer role
     ) {
         this.userId = userId;
-        this.email = email;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.role = role;
-        this.avatar = avatar;
     }
 
     public Integer getUserId() {
@@ -64,14 +60,6 @@ public class User implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {
@@ -90,6 +78,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Integer getRole() {
         return this.role;
     }
@@ -98,24 +94,15 @@ public class User implements Serializable {
         this.role = role;
     }
 
-    public String getAvatar() {
-        return this.avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("User (");
 
         sb.append(userId);
-        sb.append(", ").append(email);
         sb.append(", ").append(username);
         sb.append(", ").append(password);
+        sb.append(", ").append(email);
         sb.append(", ").append(role);
-        sb.append(", ").append(avatar);
 
         sb.append(")");
         return sb.toString();

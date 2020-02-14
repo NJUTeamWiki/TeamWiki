@@ -5,6 +5,7 @@ package cn.edu.nju.teamwiki.jooq.tables.pojos;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.annotation.Generated;
 
@@ -22,36 +23,36 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Knowledge implements Serializable {
 
-    private static final long serialVersionUID = -1998133862;
+    private static final long serialVersionUID = -2109330991;
 
-    private Integer kId;
-    private String  kName;
-    private Boolean predefined;
-    private Integer category;
-    private Integer creator;
+    private Integer       kId;
+    private String        kName;
+    private String        storagePath;
+    private Integer       uploader;
+    private LocalDateTime uploadTime;
 
     public Knowledge() {}
 
     public Knowledge(Knowledge value) {
         this.kId = value.kId;
         this.kName = value.kName;
-        this.predefined = value.predefined;
-        this.category = value.category;
-        this.creator = value.creator;
+        this.storagePath = value.storagePath;
+        this.uploader = value.uploader;
+        this.uploadTime = value.uploadTime;
     }
 
     public Knowledge(
-        Integer kId,
-        String  kName,
-        Boolean predefined,
-        Integer category,
-        Integer creator
+        Integer       kId,
+        String        kName,
+        String        storagePath,
+        Integer       uploader,
+        LocalDateTime uploadTime
     ) {
         this.kId = kId;
         this.kName = kName;
-        this.predefined = predefined;
-        this.category = category;
-        this.creator = creator;
+        this.storagePath = storagePath;
+        this.uploader = uploader;
+        this.uploadTime = uploadTime;
     }
 
     public Integer getKId() {
@@ -70,28 +71,28 @@ public class Knowledge implements Serializable {
         this.kName = kName;
     }
 
-    public Boolean getPredefined() {
-        return this.predefined;
+    public String getStoragePath() {
+        return this.storagePath;
     }
 
-    public void setPredefined(Boolean predefined) {
-        this.predefined = predefined;
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
     }
 
-    public Integer getCategory() {
-        return this.category;
+    public Integer getUploader() {
+        return this.uploader;
     }
 
-    public void setCategory(Integer category) {
-        this.category = category;
+    public void setUploader(Integer uploader) {
+        this.uploader = uploader;
     }
 
-    public Integer getCreator() {
-        return this.creator;
+    public LocalDateTime getUploadTime() {
+        return this.uploadTime;
     }
 
-    public void setCreator(Integer creator) {
-        this.creator = creator;
+    public void setUploadTime(LocalDateTime uploadTime) {
+        this.uploadTime = uploadTime;
     }
 
     @Override
@@ -100,9 +101,9 @@ public class Knowledge implements Serializable {
 
         sb.append(kId);
         sb.append(", ").append(kName);
-        sb.append(", ").append(predefined);
-        sb.append(", ").append(category);
-        sb.append(", ").append(creator);
+        sb.append(", ").append(storagePath);
+        sb.append(", ").append(uploader);
+        sb.append(", ").append(uploadTime);
 
         sb.append(")");
         return sb.toString();

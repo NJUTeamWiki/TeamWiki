@@ -4,13 +4,8 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
-import cn.edu.nju.teamwiki.jooq.tables.Category;
-import cn.edu.nju.teamwiki.jooq.tables.Document;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
-import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
-import cn.edu.nju.teamwiki.jooq.tables.Share;
-import cn.edu.nju.teamwiki.jooq.tables.Source;
 import cn.edu.nju.teamwiki.jooq.tables.User;
 
 import javax.annotation.Generated;
@@ -30,39 +25,14 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>team_wiki.category</code>.
-     */
-    public static final Category CATEGORY = Category.CATEGORY;
-
-    /**
-     * The table <code>team_wiki.document</code>.
-     */
-    public static final Document DOCUMENT = Document.DOCUMENT;
-
-    /**
      * A table to contain all knowledge
      */
     public static final Knowledge KNOWLEDGE = Knowledge.KNOWLEDGE;
 
     /**
-     * The table <code>team_wiki.portal</code>.
-     */
-    public static final Portal PORTAL = Portal.PORTAL;
-
-    /**
      * A table to contain all roles
      */
     public static final Role ROLE = Role.ROLE;
-
-    /**
-     * The table <code>team_wiki.share</code>.
-     */
-    public static final Share SHARE = Share.SHARE;
-
-    /**
-     * The table <code>team_wiki.source</code>.
-     */
-    public static final Source SOURCE = Source.SOURCE;
 
     /**
      * A table to contain all the users
