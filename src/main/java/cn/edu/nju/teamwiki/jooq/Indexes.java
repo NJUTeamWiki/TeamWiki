@@ -39,12 +39,12 @@ public class Indexes {
 
     public static final Index CATEGORY_CATEGORY_ID = Indexes0.CATEGORY_CATEGORY_ID;
     public static final Index CATEGORY_PRIMARY = Indexes0.CATEGORY_PRIMARY;
-    public static final Index DOCUMENT_D_ID = Indexes0.DOCUMENT_D_ID;
     public static final Index DOCUMENT_DOCUMENT_SOURCE_FK = Indexes0.DOCUMENT_DOCUMENT_SOURCE_FK;
+    public static final Index DOCUMENT_D_ID = Indexes0.DOCUMENT_D_ID;
     public static final Index DOCUMENT_PRIMARY = Indexes0.DOCUMENT_PRIMARY;
-    public static final Index KNOWLEDGE_K_ID = Indexes0.KNOWLEDGE_K_ID;
     public static final Index KNOWLEDGE_KNOWLEDGE_CATEGORY_FK = Indexes0.KNOWLEDGE_KNOWLEDGE_CATEGORY_FK;
     public static final Index KNOWLEDGE_KNOWLEDGE_CREATOR_FK = Indexes0.KNOWLEDGE_KNOWLEDGE_CREATOR_FK;
+    public static final Index KNOWLEDGE_K_ID = Indexes0.KNOWLEDGE_K_ID;
     public static final Index KNOWLEDGE_PRIMARY = Indexes0.KNOWLEDGE_PRIMARY;
     public static final Index PORTAL_PORTAL_ID = Indexes0.PORTAL_PORTAL_ID;
     public static final Index PORTAL_PRIMARY = Indexes0.PORTAL_PRIMARY;
@@ -68,12 +68,12 @@ public class Indexes {
     private static class Indexes0 {
         public static Index CATEGORY_CATEGORY_ID = Internal.createIndex("category_id", Category.CATEGORY, new OrderField[] { Category.CATEGORY.CATEGORY_ID }, true);
         public static Index CATEGORY_PRIMARY = Internal.createIndex("PRIMARY", Category.CATEGORY, new OrderField[] { Category.CATEGORY.CATEGORY_ID }, true);
-        public static Index DOCUMENT_D_ID = Internal.createIndex("d_id", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.D_ID }, true);
         public static Index DOCUMENT_DOCUMENT_SOURCE_FK = Internal.createIndex("document_source_fk", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.SOURCE_TYPE }, false);
+        public static Index DOCUMENT_D_ID = Internal.createIndex("d_id", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.D_ID }, true);
         public static Index DOCUMENT_PRIMARY = Internal.createIndex("PRIMARY", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.D_ID }, true);
-        public static Index KNOWLEDGE_K_ID = Internal.createIndex("k_id", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.K_ID }, true);
         public static Index KNOWLEDGE_KNOWLEDGE_CATEGORY_FK = Internal.createIndex("knowledge_category_fk", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.CATEGORY }, false);
         public static Index KNOWLEDGE_KNOWLEDGE_CREATOR_FK = Internal.createIndex("knowledge_creator_fk", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.CREATOR }, false);
+        public static Index KNOWLEDGE_K_ID = Internal.createIndex("k_id", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.K_ID }, true);
         public static Index KNOWLEDGE_PRIMARY = Internal.createIndex("PRIMARY", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.K_ID }, true);
         public static Index PORTAL_PORTAL_ID = Internal.createIndex("portal_id", Portal.PORTAL, new OrderField[] { Portal.PORTAL.PORTAL_ID }, true);
         public static Index PORTAL_PRIMARY = Internal.createIndex("PRIMARY", Portal.PORTAL, new OrderField[] { Portal.PORTAL.PORTAL_ID }, true);

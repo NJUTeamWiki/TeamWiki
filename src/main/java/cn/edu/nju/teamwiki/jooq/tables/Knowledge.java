@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Knowledge extends TableImpl<KnowledgeRecord> {
 
-    private static final long serialVersionUID = 1967748509;
+    private static final long serialVersionUID = 236807041;
 
     /**
      * The reference instance of <code>team_wiki.knowledge</code>
@@ -122,7 +122,7 @@ public class Knowledge extends TableImpl<KnowledgeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.KNOWLEDGE_K_ID, Indexes.KNOWLEDGE_KNOWLEDGE_CATEGORY_FK, Indexes.KNOWLEDGE_KNOWLEDGE_CREATOR_FK, Indexes.KNOWLEDGE_PRIMARY);
+        return Arrays.<Index>asList(Indexes.KNOWLEDGE_KNOWLEDGE_CATEGORY_FK, Indexes.KNOWLEDGE_KNOWLEDGE_CREATOR_FK, Indexes.KNOWLEDGE_K_ID, Indexes.KNOWLEDGE_PRIMARY);
     }
 
     @Override

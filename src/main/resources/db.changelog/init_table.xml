@@ -135,7 +135,8 @@
             <column name="uploaded_time" type="timestamp" defaultValue="now()">
                 <constraints nullable="false"/>
             </column>
-            <column name="modified_time" type="timestamp" defaultValue="now()">
+            <!--defaultValue="now()"-->
+            <column name="modified_time" type="timestamp">
                 <constraints nullable="false"/>
             </column>
             <column name="source_type" type="int">
