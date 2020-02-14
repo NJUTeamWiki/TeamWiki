@@ -178,4 +178,5 @@
             </column>
         </addColumn>
     </changeSet>
+
 </databaseChangeLog>
