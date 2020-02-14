@@ -1,7 +1,10 @@
 package cn.edu.nju.teamwiki.service;
 
+import cn.edu.nju.teamwiki.api.param.UpdateUserProfileParams;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * @author: xuyangchen
@@ -9,10 +12,16 @@ import org.springframework.stereotype.Service;
  */
 public interface UserService {
 
-    Integer signIn(String email, String password) throws ServiceException;
+    List<UserVO> getAllUsers() throws ServiceException;
 
-    void signUp(String email, String password, String username) throws ServiceException;
+    UserVO getUserProfile(String userId) throws ServiceException;
 
-    UserVO getUserProfile();
+    UserVO signIn(String email, String password) throws ServiceException;
+
+    UserVO signUp(String email, String password, String username) throws ServiceException;
+
+    void updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException;
+
+    void updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException;
 
 }

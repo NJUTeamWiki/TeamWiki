@@ -24,6 +24,7 @@
 		<druid.version>1.1.20</druid.version>
 		<swagger2.version>2.9.2</swagger2.version>
 		<sonar.version>3.7.0.1746</sonar.version>
+		<fastjson.version>1.2.62</fastjson.version>
 
 <!--		<skipDbGen>false</skipDbGen>-->
 	</properties>
@@ -132,6 +133,14 @@
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>${fastjson.version}</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<profiles>
@@ -143,6 +152,12 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<activatedProperties>test</activatedProperties>
+			</properties>
 		</profile>
 		<profile>
 			<id>prod</id>

@@ -39,18 +39,15 @@ git checkout -b dev-sample
 mvn jooq-codegen:generate
 ```
 
-#### 本地构建
+#### 本地构建运行
+注意：非Linux环境需要在`docker-compose.yml`中修改对应的挂载路径。
 ```shell script
-mvn -Pdev -DskipTests clean package
+mvn -DskipTests clean package
+
+docker-compose down --rmi local
+
+docker-compose up --force-recreate
 ```
-
-#### 本地Docker调试
-```shell script
-docker build -t teamwiki .
-
-docker run --rm --name teamwiki-test -p 8081:8081 -v {本地数据目录}:/var/data/teamwiki -v {本地日志目录}:/var/log/teamwiki teamwiki
-```
-
 ### 上传代码
 ```shell script
 git add .

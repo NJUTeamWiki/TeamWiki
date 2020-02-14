@@ -1,0 +1,32 @@
+version: '3'
+services:
+  teamwiki-mysql:
+    image: mysql
+    container_name: teamwiki-mysql
+    volumes:
+      - /var/lib/teamwiki:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=team_wiki
+
+  teamwiki-redis:
+    image: redis
+    container_name: teamwiki-redis
+
+  teamwiki:
+    build: .
+    container_name: teamwiki
+    ports:
+      - 8081:8081
+    volumes:
+      - /var/data/teamwiki:/var/data/teamwiki
+      - /var/log/teamwiki:/var/log/teamwiki
+    environment:
+      - DB_SERVER=teamwiki-mysql
+      - REDIS_SERVER=teamwiki-redis
+    links:
+      - teamwiki-mysql
+      - teamwiki-redis
+    depends_on:
+      - teamwiki-mysql
+      - teamwiki-redis

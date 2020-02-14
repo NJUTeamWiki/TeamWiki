@@ -1,10 +1,12 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
-import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
+import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -17,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -43,8 +44,8 @@ public class DocumentController {
     @GetMapping
     @ApiOperation("获取当前源的所有文档")
     @ApiParam
-    public Result getDocuments(@RequestParam("sid") String sourceId,
-                               @RequestParam("stype") Integer sourceType) {
+    public Result getDocuments(@RequestParam("sourceId") String sourceId,
+                               @RequestParam("sourceType") Integer sourceType) {
         try {
             List<DocumentVO> result = documentService.getDocuments(sourceId, sourceType);
             return Result.success(result);
@@ -54,31 +55,13 @@ public class DocumentController {
 
     }
 
-    @PostMapping
-    @ApiOperation("上传文档至当前源")
-    public Result uploadDocument(@RequestParam("sid") String sourceId,
-                                 @RequestParam("stype") Integer sourceType,
-                                 @RequestParam("file") MultipartFile file,
-                                 @RequestParam("uid") String userId) {
-        if (file.isEmpty()) {
-            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-        }
-        try {
-            documentService.uploadDocument(sourceId, sourceType, file, userId);
-            return Result.success();
-        } catch (ServiceException e) {
-            return Result.failure(e.getResultCode());
-        }
-    }
-
     @PutMapping
     @ApiOperation("重命名当前源中的文档")
-    public Result renameDocument(@RequestParam("did") String documentId,
-                                 @RequestParam("stype") Integer sourceType,
-                                 @RequestParam("dname") String newName,
-                                 @RequestParam("uid") String userId) {
+    public Result renameDocument(@RequestBody RenameDocumentParams params,
+                                 HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.renameDocument(documentId, sourceType, newName, userId);
+            documentService.renameDocument(params.documentId, params.sourceType, params.newName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -88,11 +71,11 @@ public class DocumentController {
 
     @DeleteMapping
     @ApiOperation("删除当前源中的文档")
-    public Result deleteDocument(@RequestParam("did") String documentId,
-                                 @RequestParam("stype") Integer sourceType,
-                                 @RequestParam("uid") String userId) {
+    public Result deleteDocument(@RequestBody DeleteDocumentParams params,
+                                 HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.deleteDocument(documentId, sourceType, userId);
+            documentService.deleteDocument(params.documentId, params.sourceType, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -102,7 +85,8 @@ public class DocumentController {
 
     @GetMapping("/download/{id}")
     @ApiOperation("下载文档")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId,
+                                                 HttpServletRequest request) {
         Path documentPath = null;
         try {
             documentPath = documentService.getDocumentDownloadPath(documentId);

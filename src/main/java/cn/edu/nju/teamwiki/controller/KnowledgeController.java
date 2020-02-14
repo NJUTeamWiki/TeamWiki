@@ -1,15 +1,21 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
+import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.param.CreateKnowledgeParams;
+import cn.edu.nju.teamwiki.api.param.RenameKnowledgeParams;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,9 +30,6 @@ public class KnowledgeController {
     @Autowired
     private KnowledgeService knowledgeService;
 
-    @Autowired
-    private DocumentService documentService;
-
     @GetMapping
     @ApiOperation("获取所有知识")
     public Result getAllKnowledge() {
@@ -34,14 +37,13 @@ public class KnowledgeController {
         return Result.success(result);
     }
 
-
     @PostMapping
     @ApiOperation("创建自定义知识")
-    public Result createKnowledge(@RequestParam("cid") String categoryId,
-                                  @RequestParam("kname") String knowledgeName,
-                                  @RequestParam("uid") String userId) {
+    public Result createKnowledge(@RequestBody CreateKnowledgeParams params,
+                                  HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            knowledgeService.createKnowledge(categoryId, knowledgeName, userId);
+            knowledgeService.createKnowledge(params.categoryId, params.knowledgeName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -50,11 +52,11 @@ public class KnowledgeController {
 
     @PutMapping
     @ApiOperation(value = "重命名知识", notes = "仅限自定义知识")
-    public Result renameKnowledge(@RequestParam("kid") String knowledgeId,
-                                  @RequestParam("kname") String newName,
-                                  @RequestParam("uid") String userId) {
+    public Result renameKnowledge(@RequestBody RenameKnowledgeParams params,
+                                  HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            knowledgeService.renameKnowledge(knowledgeId, newName, userId);
+            knowledgeService.renameKnowledge(params.knowledgeId, params.newName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -63,10 +65,28 @@ public class KnowledgeController {
 
     @DeleteMapping
     @ApiOperation(value = "删除知识", notes = "仅限自定义知识")
-    public Result removeKnowledge(@RequestParam("kid") String knowledgeId,
-                                  @RequestParam("uid") String userId) {
+    public Result removeKnowledge(@RequestParam("knowledgeId") String knowledgeId,
+                                  HttpServletRequest request) {
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
             knowledgeService.removeKnowledge(knowledgeId, userId);
+            return Result.success();
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @PostMapping("/upload")
+    @ApiOperation("上传文档至知识")
+    public Result uploadDocumentToKnowledge(@RequestParam("file") MultipartFile file,
+                                            @RequestParam("knowledgeId") String knowledgeId,
+                                            HttpServletRequest request) {
+        if (file.isEmpty()) {
+            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
+        }
+        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        try {
+            knowledgeService.uploadDocumentToKnowledge(knowledgeId, file, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
