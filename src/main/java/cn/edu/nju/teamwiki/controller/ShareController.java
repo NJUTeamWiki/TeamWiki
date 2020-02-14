@@ -4,6 +4,7 @@ import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.vo.ShareVO;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -64,8 +66,9 @@ public class ShareController {
     @ApiOperation("创建一个分享")
     public void createShare(@RequestParam("title") String shareTitle,
                             @RequestParam("content") String shareContent,
-                            @RequestParam("uid") String userId){
+                            HttpServletRequest request){
         try{
+            String userId = (String)request.getSession().getAttribute(Constants.SESSION_UID);
             shareService.createShare(shareTitle, shareContent, userId);
         }catch (ServiceException e){
             LOG.error(e.getMessage());
@@ -77,8 +80,9 @@ public class ShareController {
     public void updateShare(@RequestParam("sid") String shareId,
                             @RequestParam("title") String shareTitle,
                             @RequestParam("content") String shareContent,
-                            @RequestParam("uid") String userId){
+                            HttpServletRequest request){
         try {
+            String userId = (String)request.getSession().getAttribute(Constants.SESSION_UID);
             shareService.updateShare(shareId, shareTitle, shareContent, userId);
         }catch (ServiceException e){
             LOG.error(e.getMessage());

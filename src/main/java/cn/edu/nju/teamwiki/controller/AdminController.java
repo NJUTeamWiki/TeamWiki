@@ -26,7 +26,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PutMapping
+    @PutMapping("/userRole")
     @ApiOperation("修改用户角色")
     public void changeUserRole(@RequestParam("uid") String userId,
                                @RequestParam("role") String role){

@@ -17,6 +17,8 @@ public class StorageUtil {
 
     public static final String AVATAR_PATH = IMAGE_PATH + "avatar/";
 
+    public static final String ICON_PATH = IMAGE_PATH + "icon/";
+
     public static Path getKnowledgeStoragePath(String storagePath,
                                                String categoryId,
                                                String knowledgeId) {

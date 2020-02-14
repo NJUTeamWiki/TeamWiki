@@ -3,6 +3,7 @@ package cn.edu.nju.teamwiki.service.impl;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
 import cn.edu.nju.teamwiki.jooq.tables.daos.RoleDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.AdminService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public void changeUserRole(String userId, String role) throws ServiceException {
-        UserVO user = new UserVO(userDao.fetchOneByUserId(Integer.valueOf(userId)));
+        User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
         user.setRole(Integer.valueOf(role));
         userDao.update(user);
     }

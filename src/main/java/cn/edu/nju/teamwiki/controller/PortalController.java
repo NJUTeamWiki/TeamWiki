@@ -10,7 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
@@ -53,10 +55,9 @@ public class PortalController {
     @PostMapping
     @ApiOperation("添加portal")
     public void createPortal(@RequestParam("name") String portalName,
-                             @RequestParam("link") String portalLink,
-                             @RequestParam("icon") String portalIcon){
+                             @RequestParam("link") String portalLink){
         try {
-            portalService.createPortal(portalName, portalLink, portalIcon);
+            portalService.createPortal(portalName, portalLink);
         }catch (ServiceException e){
             LOG.error(e.getMessage());
         }
@@ -66,13 +67,24 @@ public class PortalController {
     @ApiOperation("更新portal")
     public void updatePortal(@RequestParam("pid") String portalId,
                              @RequestParam("name") String portalName,
-                             @RequestParam("link") String portalLink,
-                             @RequestParam("icon") String portalIcon){
+                             @RequestParam("link") String portalLink){
         try {
-            portalService.updatePortal(portalId, portalName, portalLink, portalIcon);
+            portalService.updatePortal(portalId, portalName, portalLink);
         }catch (ServiceException e){
             LOG.error(e.getMessage());
         }
+    }
+
+    @PutMapping("/icon")
+    @ApiOperation("更新图标")
+    public Result updateIcon(@RequestParam("pid")String portalId,
+            @RequestParam("file")MultipartFile iconFile){
+        try{
+            portalService.updateIcon(portalId, iconFile);
+        }catch (ServiceException e){
+            return Result.failure(e.getResultCode());
+        }
+        return Result.success();
     }
 
     @DeleteMapping
