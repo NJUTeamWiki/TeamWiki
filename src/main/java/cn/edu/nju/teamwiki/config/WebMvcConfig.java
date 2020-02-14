@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
-    public SystemConfig systemConfig;
+    public TeamWikiConfig twConfig;
 
     @Autowired
     public SignInInterceptor signInInterceptor;
@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/storage/**")
-                .addResourceLocations("file:" + systemConfig.storagePath + "/");
+                .addResourceLocations("file:" + twConfig.storagePath + "/");
     }
 
     @Override

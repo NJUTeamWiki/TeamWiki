@@ -2,28 +2,21 @@ package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.tables.daos.*;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.*;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -48,12 +41,12 @@ public class DocumentServiceImpl implements DocumentService {
     private ShareDao shareDao;
 
     @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public Path getDocumentDownloadPath(String documentId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
-        return Paths.get(systemConfig.storagePath, document.getUrl());
+        return Paths.get(twConfig.storagePath, document.getUrl());
 //        switch (document.getSourceType()) {
 //            case Constants.SOURCE_KNOWLEDGE:
 //                Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
@@ -152,7 +145,7 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path documentPath = Paths.get(systemConfig.storagePath, document.getUrl());;
+        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());;
 //        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
 //            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
 //            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
@@ -187,7 +180,7 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path documentPath = Paths.get(systemConfig.storagePath, document.getUrl());
+        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());
 
 //        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
 //            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());

@@ -86,11 +86,11 @@ public class UserController {
         }
         String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            userService.updateUserAvatar(userId, avatarFile);
+            UserVO userVO = userService.updateUserAvatar(userId, avatarFile);
+            return Result.success(userVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
-        return Result.success();
     }
 
     @GetMapping("/profile")
@@ -113,11 +113,11 @@ public class UserController {
         }
         String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            userService.updateUserProfile(userId, params);
+            UserVO userVO = userService.updateUserProfile(userId, params);
+            return Result.success(userVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
-        return Result.success();
     }
 
 }

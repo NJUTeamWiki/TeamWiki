@@ -2,7 +2,7 @@ package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.PortalVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.tables.daos.PortalDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Portal;
 import cn.edu.nju.teamwiki.service.PortalService;
@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public class PortalServiceImpl implements PortalService{
     private PortalDao portalDao;
 
     @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public void createPortal(String portalName, String portalLink) throws ServiceException {
@@ -78,7 +77,7 @@ public class PortalServiceImpl implements PortalService{
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         String newFileName = portalId + UUID.randomUUID().toString().substring(0, 4) + suffixName;
 
-        File file = Paths.get(systemConfig.storagePath, StorageUtil.ICON_PATH, newFileName).toFile();
+        File file = Paths.get(twConfig.storagePath, StorageUtil.ICON_PATH, newFileName).toFile();
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }

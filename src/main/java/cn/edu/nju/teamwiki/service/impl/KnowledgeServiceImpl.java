@@ -2,7 +2,7 @@ package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
 import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
@@ -52,7 +52,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private DSLContext dslContext;
 
     @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public KnowledgeVO getKnowledge(String knowledgeId) {
@@ -120,7 +120,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         checkUser(knowledge, userId);
 
         // 删除文件
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(twConfig.storagePath,
                 knowledge.getCategory().toString(), knowledge.getKId().toString());
         File knowledgeDir = knowledgePath.toFile();
         if (knowledgeDir.exists()) {
@@ -158,19 +158,13 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 uuid,
                 uploadFileName);
 
-        Path storagePath = Paths.get(systemConfig.storagePath,
-                urlPath.toString());
+        Path storagePath = Paths.get(twConfig.storagePath).resolve(urlPath);
 
-        File storageFile = storagePath.toFile();
-        if (!storageFile.getParentFile().exists()) {
-            storageFile.getParentFile().mkdirs();
-        }
-
-        LOG.info("Document will be stored as [" + storageFile.getPath() + "]");
+        LOG.info("Knowledge [" + knowledgeId + "]'s file will be stored as [" + storagePath + "]");
 
         // 将文件写入到目标路径中
         try {
-            file.transferTo(storageFile);
+            StorageUtil.storeFile(storagePath, file);
         } catch (IOException e) {
             LOG.error(e.getMessage());
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
@@ -184,7 +178,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         document.setSourceId(Integer.valueOf(knowledgeId));
         document.setSourceType(Constants.SOURCE_KNOWLEDGE);
         document.setUploadedTime(LocalDateTime.now());
-        document.setModifiedTime(LocalDateTime.now());
+        document.setModifiedTime(document.getUploadedTime());
         documentDao.insert(document);
     }
 
@@ -192,7 +186,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         if (knowledge.getPredefined()) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
-        if (knowledge.getCreator() != null && !userId.equals(knowledge.getCreator().toString())) {
+        if (knowledge.getCreator() != null && !userId.equals(String.valueOf(knowledge.getCreator()))) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
     }

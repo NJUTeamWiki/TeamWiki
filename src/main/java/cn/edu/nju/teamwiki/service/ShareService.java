@@ -1,6 +1,7 @@
 package cn.edu.nju.teamwiki.service;
 
 import cn.edu.nju.teamwiki.api.vo.ShareVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,12 +16,12 @@ public interface ShareService {
 
     List<ShareVO> getSharesByTitle(String shareTitle) throws ServiceException;
 
-    void createShare(String shareTitle, String shareContent,
-                     String userId) throws ServiceException;
+    ShareVO createShare(String shareTitle, String shareContent,
+                     String userId, MultipartFile file) throws ServiceException;
 
-    void updateShare(String shareId, String shareTitle,
+    ShareVO updateShare(String shareId, String shareTitle,
                      String shareContent, String userId) throws ServiceException;
 
-    void deleteShare(String shareId) throws ServiceException;
+    ShareVO deleteShare(String shareId, String userId) throws ServiceException;
 
 }
