@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="04" author="ZhouShiqi">
+        <comment>Some test data</comment>
+        <insert tableName="portal">
+            <column name="portal_id"/>
+            <column name="portal_name" value="test1"/>
+            <column name="portal_link" value="www.mytest.com1"/>
+            <column name="portal_icon" value="known1"/>
+        </insert>
+        <insert tableName="portal">
+            <column name="portal_id"/>
+            <column name="portal_name" value="test2"/>
+            <column name="portal_link" value="www.mytest.com2"/>
+            <column name="portal_icon" value="known2"/>
+        </insert>
+        <insert tableName="portal">
+            <column name="portal_id"/>
+            <column name="portal_name" value="test3"/>
+            <column name="portal_link" value="www.mytest.com3"/>
+            <column name="portal_icon" value="known3"/>
+        </insert>
+        <insert tableName="share">
+            <column name="share_id"/>
+            <column name="share_title" value="test_title1"/>
+            <column name="share_content" value="pilipala1"/>
+            <column name="share_user" value="1"/>
+            <column name="share_time"/>
+        </insert>
+        <insert tableName="share">
+            <column name="share_id"/>
+            <column name="share_title" value="test_title2"/>
+            <column name="share_content" value="pilipala2"/>
+            <column name="share_user" value="1"/>
+            <column name="share_time"/>
+        </insert>
+        <insert tableName="share">
+            <column name="share_id"/>
+            <column name="share_title" value="test_title3"/>
+            <column name="share_content" value="pilipala3"/>
+            <column name="share_user" value="1"/>
+            <column name="share_time"/>
+        </insert>
+
+
+    </changeSet>
+</databaseChangeLog>
