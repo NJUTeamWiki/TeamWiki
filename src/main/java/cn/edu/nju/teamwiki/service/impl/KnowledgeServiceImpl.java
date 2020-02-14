@@ -7,7 +7,6 @@ import cn.edu.nju.teamwiki.jooq.Tables;
 import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Category;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
@@ -25,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -90,14 +90,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         // 插入后的Knowledge才有id
         Knowledge latest = getKnowledge(knowledgeName, categoryId);
 
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                categoryId, latest.getKId().toString());
-        if (knowledgePath.toFile().mkdirs()) {
-            return new KnowledgeVO(latest);
-        } else {
-            knowledgeDao.delete(latest);
-            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-        }
+//        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+//                categoryId, latest.getKId().toString());
+//        if (knowledgePath.toFile().mkdirs()) {
+        return new KnowledgeVO(latest);
+//        } else {
+//            knowledgeDao.delete(latest);
+//            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+//        }
     }
 
     @Override
@@ -143,30 +143,43 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Override
     public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) throws ServiceException {
-        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
-        Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-        Path sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                String.valueOf(category.getCategoryId()),
-                String.valueOf(knowledge.getKId()));
-
-        File documentFile = sourcePath.resolve(file.getOriginalFilename()).toFile();
-        if (!documentFile.getParentFile().exists()) {
-            documentFile.getParentFile().mkdirs();
+        String uploadFileName = file.getOriginalFilename();
+        if (uploadFileName == null || uploadFileName.isEmpty()) {
+            throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
 
-        LOG.info("Document will be stored as [" + documentFile.getPath() + "]");
+        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
+
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+
+        Path urlPath = Paths.get(StorageUtil.KNOWLEDGE_PATH,
+                knowledge.getCategory().toString(),
+                knowledgeId,
+                uuid,
+                uploadFileName);
+
+        Path storagePath = Paths.get(systemConfig.storagePath,
+                urlPath.toString());
+
+        File storageFile = storagePath.toFile();
+        if (!storageFile.getParentFile().exists()) {
+            storageFile.getParentFile().mkdirs();
+        }
+
+        LOG.info("Document will be stored as [" + storageFile.getPath() + "]");
 
         // 将文件写入到目标路径中
         try {
-            file.transferTo(documentFile);
+            file.transferTo(storageFile);
         } catch (IOException e) {
             LOG.error(e.getMessage());
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
         Document document = new Document();
-        document.setDId(UUID.randomUUID().toString());
+        document.setDId(uuid);
         document.setDName(file.getOriginalFilename());
+        document.setUrl(urlPath.toString());
         document.setUploader(Integer.valueOf(userId));
         document.setSourceId(Integer.valueOf(knowledgeId));
         document.setSourceType(Constants.SOURCE_KNOWLEDGE);

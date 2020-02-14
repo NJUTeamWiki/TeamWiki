@@ -117,8 +117,9 @@ public class UserServiceImpl implements UserService {
             file.getParentFile().mkdirs();
         }
 
+        LOG.info("Avatar will be stored as [" + file.getPath() + "].");
+
         try {
-            LOG.info("Avatar will be stored as [" + file.getPath() + "].");
             avatarFile.transferTo(file);
         } catch (IOException e) {
             LOG.error(e.getMessage());

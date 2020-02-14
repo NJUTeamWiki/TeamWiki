@@ -8,25 +8,14 @@ import cn.edu.nju.teamwiki.jooq.Indexes;
 import cn.edu.nju.teamwiki.jooq.Keys;
 import cn.edu.nju.teamwiki.jooq.TeamWiki;
 import cn.edu.nju.teamwiki.jooq.tables.records.DocumentRecord;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Index;
-import org.jooq.Name;
-import org.jooq.Record;
-import org.jooq.Row7;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -91,6 +80,11 @@ public class Document extends TableImpl<DocumentRecord> {
      * The column <code>team_wiki.document.source_id</code>.
      */
     public final TableField<DocumentRecord, Integer> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>team_wiki.document.url</code>.
+     */
+    public final TableField<DocumentRecord, String> URL = createField(DSL.name("url"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * Create a <code>team_wiki.document</code> table reference
@@ -181,11 +175,11 @@ public class Document extends TableImpl<DocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, Integer, LocalDateTime, LocalDateTime, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<String, String, Integer, LocalDateTime, LocalDateTime, Integer, Integer, String> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

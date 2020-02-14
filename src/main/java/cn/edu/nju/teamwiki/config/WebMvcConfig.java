@@ -1,10 +1,11 @@
 package cn.edu.nju.teamwiki.config;
 
 import cn.edu.nju.teamwiki.interceptor.SignInInterceptor;
-import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author: xuyangchen
@@ -21,11 +22,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**")
-                .addResourceLocations("file:" + systemConfig.storagePath + StorageUtil.IMAGE_PATH);
-        registry.addResourceHandler("/doc/**")
-                .addResourceLocations("file:" + systemConfig.storagePath + StorageUtil.SHARE_PATH,
-                        "file:" + systemConfig.storagePath + StorageUtil.KNOWLEDGE_PATH);
+        registry.addResourceHandler("/storage/**")
+                .addResourceLocations("file:" + systemConfig.storagePath + "/");
     }
 
     @Override
@@ -42,12 +40,4 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/doc/**");
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowCredentials(true)
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .maxAge(3600);
-    }
 }

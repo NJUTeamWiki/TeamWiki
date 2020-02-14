@@ -14,10 +14,12 @@ public interface DocumentService {
 
     Path getDocumentDownloadPath(String documentId) throws ServiceException;
 
-    List<DocumentVO> getDocuments(String sourceId, Integer sourceType) throws ServiceException;
+    String getDocumentName(String documentId) throws ServiceException;
 
-    void uploadDocument(String sourceId, Integer sourceType,
-                        MultipartFile file, String userId) throws ServiceException;
+    List<DocumentVO> getDocuments(String sourceId, Integer sourceType) throws ServiceException;
+    
+//    void uploadDocument(String sourceId, Integer sourceType,
+//                        MultipartFile file, String userId) throws ServiceException;
 
     void renameDocument(String documentId, Integer sourceType,
                         String newName, String userId) throws ServiceException;

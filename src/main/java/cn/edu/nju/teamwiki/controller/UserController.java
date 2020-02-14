@@ -77,7 +77,7 @@ public class UserController {
         return Result.success();
     }
 
-    @PutMapping("/avatar")
+    @PostMapping("/avatar")
     @ApiOperation("更新用户头像")
     public Result updateUserAvatar(@RequestParam("file") MultipartFile avatarFile,
                                    HttpServletRequest request) {

@@ -170,4 +170,12 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="05" author="XuYangchen">
+        <addColumn tableName="document">
+            <column name="url" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

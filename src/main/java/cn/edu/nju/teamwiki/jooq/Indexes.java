@@ -4,20 +4,12 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
-import cn.edu.nju.teamwiki.jooq.tables.Category;
-import cn.edu.nju.teamwiki.jooq.tables.Document;
-import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
-import cn.edu.nju.teamwiki.jooq.tables.Portal;
-import cn.edu.nju.teamwiki.jooq.tables.Role;
-import cn.edu.nju.teamwiki.jooq.tables.Share;
-import cn.edu.nju.teamwiki.jooq.tables.Source;
-import cn.edu.nju.teamwiki.jooq.tables.User;
-
-import javax.annotation.Generated;
-
+import cn.edu.nju.teamwiki.jooq.tables.*;
 import org.jooq.Index;
 import org.jooq.OrderField;
 import org.jooq.impl.Internal;
+
+import javax.annotation.Generated;
 
 
 /**
