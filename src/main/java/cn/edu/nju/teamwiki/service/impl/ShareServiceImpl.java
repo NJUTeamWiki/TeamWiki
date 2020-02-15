@@ -1,6 +1,7 @@
 package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.api.vo.ShareVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
@@ -8,6 +9,7 @@ import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.ShareDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Share;
+import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.util.Constants;
@@ -28,6 +30,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +44,12 @@ public class ShareServiceImpl implements ShareService {
 
     @Autowired
     private ShareDao shareDao;
+
+    @Autowired
+    private DocumentDao documentDao;
+
+    @Autowired
+    private DocumentService documentService;
 
     @Autowired
     private TeamWikiConfig twConfig;
@@ -86,13 +95,13 @@ public class ShareServiceImpl implements ShareService {
         share.setShareTime(LocalDateTime.now());
         shareDao.insert(share);
 
-        share = getShare(userId, share.getShareTime());
+        share = getLastShare(userId);
 
         Path urlPath = Paths.get(StorageUtil.SHARE_PATH,
                 share.getShareId().toString(),
                 shareFileName);
 
-        Path storagePath = Paths.get(twConfig.storagePath).resolve(urlPath);
+        Path storagePath = Paths.get(twConfig.storagePath, urlPath.toString());
 
         LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
 
@@ -103,14 +112,19 @@ public class ShareServiceImpl implements ShareService {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        Document document = new Document();
-        document.setSourceId(share.getShareId());
-        document.setSourceType(Constants.SOURCE_SHARE);
-        document.setUrl(urlPath.toString());
-        document.setUploadedTime(LocalDateTime.now());
-        document.setModifiedTime(document.getUploadedTime());
-        document.setDName(shareFileName);
-        document.setUploader(Integer.valueOf(userId));
+        DocumentVO document = documentService.createDocument(shareFileName,
+                userId, String.valueOf(share.getShareId()), Constants.SOURCE_SHARE, urlPath.toString());
+
+//        Document document = new Document();
+//        document.setDId(UUID.randomUUID().toString().replace("-", ""));
+//        document.setSourceId(share.getShareId());
+//        document.setSourceType(Constants.SOURCE_SHARE);
+//        document.setUrl(urlPath.toString());
+//        document.setUploadedTime(LocalDateTime.now());
+//        document.setModifiedTime(document.getUploadedTime());
+//        document.setDName(shareFileName);
+//        document.setUploader(Integer.valueOf(userId));
+//        documentDao.insert(document);
 
         List<Document> documents = new LinkedList<>();
         documents.add(document);
@@ -121,6 +135,9 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public ShareVO updateShare(String shareId, String shareTitle, String shareContent, String userId) throws ServiceException {
         Share share = shareDao.fetchOneByShareId(Integer.valueOf(shareId));
+        if (share == null) {
+            throw new ServiceException(ResultCode.DATA_NOT_EXIST);
+        }
         if (!userId.equals(String.valueOf(share.getShareUser()))) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
@@ -144,29 +161,28 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public ShareVO deleteShare(String shareId, String userId) throws ServiceException {
         Share share = shareDao.fetchOneByShareId(Integer.valueOf(shareId));
+        if (share == null) {
+            throw new ServiceException(ResultCode.DATA_NOT_EXIST);
+        }
         if (!userId.equals(String.valueOf(share.getShareUser()))) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        shareDao.deleteById(Integer.valueOf(shareId));
-
         List<Document> documents = getShareDocuments(shareId);
         for (Document document : documents) {
-            String url = document.getUrl();
-            try {
-                Files.delete(Paths.get(twConfig.storagePath).resolve(url));
-            } catch (IOException e) {
-                LOG.error(e.getMessage());
-                throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-            }
+            documentService.deleteDocument(document.getDId(), userId);
         }
+
+        shareDao.deleteById(Integer.valueOf(shareId));
+
         return new ShareVO(share);
     }
 
-    private Share getShare(String userId, LocalDateTime time) {
+    private Share getLastShare(String userId) {
         return dslContext.selectFrom(Tables.SHARE)
                 .where(Tables.SHARE.SHARE_USER.eq(Integer.valueOf(userId)))
-                .and(Tables.SHARE.SHARE_TIME.eq(time))
+                .orderBy(Tables.SHARE.SHARE_TIME.desc())
+                .limit(1)
                 .fetchOneInto(Share.class);
     }
 

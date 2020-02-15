@@ -90,7 +90,7 @@ public class PortalServiceImpl implements PortalService{
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        portal.setPortalIcon(StorageUtil.ICON_PATH + newFileName);
+//        portal.setPortalIcon(StorageUtil.ICON_PATH + newFileName);
         portalDao.update(portal);
     }
 }

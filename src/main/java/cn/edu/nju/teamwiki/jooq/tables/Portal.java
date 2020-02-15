@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Portal extends TableImpl<PortalRecord> {
 
-    private static final long serialVersionUID = -460210244;
+    private static final long serialVersionUID = -292039900;
 
     /**
      * The reference instance of <code>team_wiki.portal</code>
@@ -71,11 +71,6 @@ public class Portal extends TableImpl<PortalRecord> {
      * The column <code>team_wiki.portal.portal_link</code>.
      */
     public final TableField<PortalRecord, String> PORTAL_LINK = createField(DSL.name("portal_link"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
-     * The column <code>team_wiki.portal.portal_icon</code>.
-     */
-    public final TableField<PortalRecord, String> PORTAL_ICON = createField(DSL.name("portal_icon"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * Create a <code>team_wiki.portal</code> table reference
@@ -162,11 +157,11 @@ public class Portal extends TableImpl<PortalRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<Integer, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 }

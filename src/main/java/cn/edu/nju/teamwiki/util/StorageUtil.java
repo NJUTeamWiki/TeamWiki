@@ -54,7 +54,7 @@ public class StorageUtil {
         if (!storageFile.getParentFile().exists()) {
             storageFile.getParentFile().mkdirs();
         }
-        file.transferTo(storageFile);
+        file.transferTo(storageFile.getAbsoluteFile());
     }
 
 }

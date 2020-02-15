@@ -7,7 +7,5 @@ package cn.edu.nju.teamwiki.api.param;
 public class RenameDocumentParams {
     public String documentId;
 
-    public Integer sourceType;
-
     public String newName;
 }

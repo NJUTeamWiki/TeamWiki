@@ -62,7 +62,7 @@ public class DocumentController {
                                  HttpServletRequest request) {
         String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.renameDocument(params.documentId, params.sourceType, params.newName, userId);
+            documentService.renameDocument(params.documentId, params.newName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -72,11 +72,11 @@ public class DocumentController {
 
     @DeleteMapping
     @ApiOperation("删除当前源中的文档")
-    public Result deleteDocument(@RequestBody DeleteDocumentParams params,
+    public Result deleteDocument(@RequestParam("documentId") String documentId,
                                  HttpServletRequest request) {
         String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
         try {
-            documentService.deleteDocument(params.documentId, params.sourceType, userId);
+            documentService.deleteDocument(documentId, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());

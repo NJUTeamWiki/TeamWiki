@@ -4,11 +4,10 @@ import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
-import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
-import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
+import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
@@ -25,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -43,10 +41,13 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private KnowledgeDao knowledgeDao;
 
     @Autowired
-    private DocumentDao documentDao;
+    private DocumentService documentService;
 
-    @Autowired
-    private CategoryDao categoryDao;
+//    @Autowired
+//    private DocumentDao documentDao;
+//
+//    @Autowired
+//    private CategoryDao categoryDao;
 
     @Autowired
     private DSLContext dslContext;
@@ -136,7 +137,10 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledgeDao.delete(knowledge);
 
         List<Document> documents = getKnowledgeDocuments(knowledge);
-        documentDao.delete(documents);
+        for (Document document: documents) {
+            documentService.deleteDocument(document.getDId(), userId);
+        }
+//        documentDao.delete(documents);
 
         return new KnowledgeVO(knowledge);
     }
@@ -158,7 +162,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
                 uuid,
                 uploadFileName);
 
-        Path storagePath = Paths.get(twConfig.storagePath).resolve(urlPath);
+        Path storagePath = Paths.get(twConfig.storagePath, urlPath.toString());
 
         LOG.info("Knowledge [" + knowledgeId + "]'s file will be stored as [" + storagePath + "]");
 
@@ -166,20 +170,22 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         try {
             StorageUtil.storeFile(storagePath, file);
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error("文件存储失败", e);
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        Document document = new Document();
-        document.setDId(uuid);
-        document.setDName(file.getOriginalFilename());
-        document.setUrl(urlPath.toString());
-        document.setUploader(Integer.valueOf(userId));
-        document.setSourceId(Integer.valueOf(knowledgeId));
-        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
-        document.setUploadedTime(LocalDateTime.now());
-        document.setModifiedTime(document.getUploadedTime());
-        documentDao.insert(document);
+        documentService.createDocument(uploadFileName, userId, knowledgeId, Constants.SOURCE_KNOWLEDGE, urlPath.toString());
+
+//        Document document = new Document();
+//        document.setDId(uuid);
+//        document.setDName(file.getOriginalFilename());
+//        document.setUrl(urlPath.toString());
+//        document.setUploader(Integer.valueOf(userId));
+//        document.setSourceId(Integer.valueOf(knowledgeId));
+//        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
+//        document.setUploadedTime(LocalDateTime.now());
+//        document.setModifiedTime(document.getUploadedTime());
+//        documentDao.insert(document);
     }
 
     private void checkUser(Knowledge knowledge, String userId) throws ServiceException {

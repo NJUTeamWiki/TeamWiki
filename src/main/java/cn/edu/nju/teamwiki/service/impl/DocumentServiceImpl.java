@@ -13,10 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -31,14 +34,14 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private DocumentDao documentDao;
 
-    @Autowired
-    private KnowledgeDao knowledgeDao;
-
-    @Autowired
-    private CategoryDao categoryDao;
-
-    @Autowired
-    private ShareDao shareDao;
+//    @Autowired
+//    private KnowledgeDao knowledgeDao;
+//
+//    @Autowired
+//    private CategoryDao categoryDao;
+//
+//    @Autowired
+//    private ShareDao shareDao;
 
     @Autowired
     private TeamWikiConfig twConfig;
@@ -69,7 +72,7 @@ public class DocumentServiceImpl implements DocumentService {
     public String getDocumentName(String documentId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
         if (document == null) {
-            throw new ServiceException(ResultCode.RESULT_DATA_NONE);
+            throw new ServiceException(ResultCode.DATA_NOT_EXIST);
         }
         return documentDao.fetchOneByDId(documentId).getDName();
     }
@@ -81,6 +84,22 @@ public class DocumentServiceImpl implements DocumentService {
                 .filter(document -> document.getSourceType().equals(sourceType))
                 .map(DocumentVO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url) throws ServiceException {
+        Document document = new Document();
+        document.setDId(UUID.randomUUID().toString().replace("-", ""));
+        document.setDName(documentName);
+        document.setUploader(Integer.valueOf(uploaderId));
+        document.setSourceId(Integer.valueOf(sourceId));
+        document.setSourceType(sourceType);
+        document.setUrl(url);
+        document.setUploadedTime(LocalDateTime.now());
+        document.setModifiedTime(document.getUploadedTime());
+        documentDao.insert(document);
+
+        return new DocumentVO(document);
     }
 
 //    @Override
@@ -137,15 +156,15 @@ public class DocumentServiceImpl implements DocumentService {
 //    }
 
     @Override
-    public void renameDocument(String documentId, Integer sourceType,
-                               String newName, String userId) throws ServiceException {
+    public DocumentVO renameDocument(String documentId, String newName, String userId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());;
+        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());
+        ;
 //        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
 //            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
 //            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
@@ -170,10 +189,12 @@ public class DocumentServiceImpl implements DocumentService {
         } else {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
+
+        return new DocumentVO(documentDao.fetchOneByDId(document.getDId()));
     }
 
     @Override
-    public void deleteDocument(String documentId, Integer sourceType, String userId) throws ServiceException {
+    public DocumentVO deleteDocument(String documentId, String userId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {
@@ -197,11 +218,14 @@ public class DocumentServiceImpl implements DocumentService {
 //        } else {
 //            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
 //        }
-
-        if (documentPath.toFile().delete()) {
-            documentDao.delete(document);
-        } else {
+        try {
+            Files.delete(documentPath);
+        } catch (IOException e) {
+            LOG.error("文件删除失败", e);
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
+        documentDao.delete(document);
+
+        return new DocumentVO(document);
     }
 }

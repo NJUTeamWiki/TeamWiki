@@ -8,14 +8,25 @@ import cn.edu.nju.teamwiki.jooq.Indexes;
 import cn.edu.nju.teamwiki.jooq.Keys;
 import cn.edu.nju.teamwiki.jooq.TeamWiki;
 import cn.edu.nju.teamwiki.jooq.tables.records.DocumentRecord;
-import org.jooq.*;
-import org.jooq.impl.DSL;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Index;
+import org.jooq.Name;
+import org.jooq.Record;
+import org.jooq.Row8;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.DSL;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +42,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Document extends TableImpl<DocumentRecord> {
 
-    private static final long serialVersionUID = -1486644893;
+    private static final long serialVersionUID = 468277577;
 
     /**
      * The reference instance of <code>team_wiki.document</code>
@@ -69,7 +80,7 @@ public class Document extends TableImpl<DocumentRecord> {
     /**
      * The column <code>team_wiki.document.modified_time</code>.
      */
-    public final TableField<DocumentRecord, LocalDateTime> MODIFIED_TIME = createField(DSL.name("modified_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<DocumentRecord, LocalDateTime> MODIFIED_TIME = createField(DSL.name("modified_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>team_wiki.document.source_type</code>.

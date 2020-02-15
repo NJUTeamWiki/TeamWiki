@@ -179,4 +179,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="06" author="xuyangchen">
+        <dropColumn tableName="portal" columnName="portal_icon"/>
+    </changeSet>
+
 </databaseChangeLog>

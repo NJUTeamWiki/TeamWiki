@@ -4,9 +4,10 @@
 package cn.edu.nju.teamwiki.jooq.tables.pojos;
 
 
-import javax.annotation.Generated;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -30,8 +31,8 @@ public class Document implements Serializable {
     private LocalDateTime uploadedTime;
     private LocalDateTime modifiedTime;
     private Integer       sourceType;
-    private Integer sourceId;
-    private String url;
+    private Integer       sourceId;
+    private String        url;
 
     public Document() {}
 
@@ -47,14 +48,14 @@ public class Document implements Serializable {
     }
 
     public Document(
-            String dId,
-            String dName,
-            Integer uploader,
-            LocalDateTime uploadedTime,
-            LocalDateTime modifiedTime,
-            Integer sourceType,
-            Integer sourceId,
-            String url
+        String        dId,
+        String        dName,
+        Integer       uploader,
+        LocalDateTime uploadedTime,
+        LocalDateTime modifiedTime,
+        Integer       sourceType,
+        Integer       sourceId,
+        String        url
     ) {
         this.dId = dId;
         this.dName = dName;

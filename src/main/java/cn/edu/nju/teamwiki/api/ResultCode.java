@@ -35,7 +35,7 @@ public enum ResultCode {
     SYSTEM_FILE_ERROR(40002, "文件读写时发生异常"),
 
     /* 数据错误：50001-599999 */
-    RESULT_DATA_NONE(50001, "数据未找到"),
+    DATA_NOT_EXIST(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
 
