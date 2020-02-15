@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @date: 2020/2/8
  */
 @Service
-public class PortalServiceImpl implements PortalService{
+public class PortalServiceImpl implements PortalService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
@@ -36,24 +36,31 @@ public class PortalServiceImpl implements PortalService{
     private TeamWikiConfig twConfig;
 
     @Override
-    public void createPortal(String portalName, String portalLink) throws ServiceException {
+    public PortalVO createPortal(String portalName, String portalLink) throws ServiceException {
         Portal portal = new Portal();
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
         portalDao.insert(portal);
+
+        return new PortalVO(portalDao.fetchByPortalLink(portalLink).get(0));
     }
 
     @Override
-    public void deletePortal(String portalId) throws ServiceException {
-        portalDao.deleteById(Integer.valueOf(portalId));
+    public PortalVO deletePortal(String portalId) throws ServiceException {
+        Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
+//        portalDao.deleteById(Integer.valueOf(portalId));
+        portalDao.delete(portal);
+        return new PortalVO(portal);
     }
 
     @Override
-    public void updatePortal(String portalId, String portalName, String portalLink) throws ServiceException {
+    public PortalVO updatePortal(String portalId, String portalName, String portalLink) throws ServiceException {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
         portalDao.update(portal);
+
+        return new PortalVO(portal);
     }
 
     @Override

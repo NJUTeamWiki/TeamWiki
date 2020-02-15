@@ -59,9 +59,13 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public List<ShareVO> getAllShares() throws ServiceException {
+
         return shareDao.findAll()
                 .stream()
-                .map(share -> new ShareVO(share))
+                .map(share -> {
+                    List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
+                    return new ShareVO(share, documents);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +73,10 @@ public class ShareServiceImpl implements ShareService {
     public List<ShareVO> getSharesByUserId(String userId) throws ServiceException {
         return shareDao.fetchByShareUser(Integer.valueOf(userId))
                 .stream()
-                .map(share -> new ShareVO(share))
+                .map(share -> {
+                    List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
+                    return new ShareVO(share, documents);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +84,10 @@ public class ShareServiceImpl implements ShareService {
     public List<ShareVO> getSharesByTitle(String shareTitle) throws ServiceException {
         return shareDao.fetchByShareTitle(shareTitle)
                 .stream()
-                .map(share -> new ShareVO(share))
+                .map(share -> {
+                    List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
+                    return new ShareVO(share, documents);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +122,7 @@ public class ShareServiceImpl implements ShareService {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        DocumentVO document = documentService.createDocument(shareFileName,
+        documentService.createDocument(shareFileName,
                 userId, String.valueOf(share.getShareId()), Constants.SOURCE_SHARE, urlPath.toString());
 
 //        Document document = new Document();
@@ -126,8 +136,7 @@ public class ShareServiceImpl implements ShareService {
 //        document.setUploader(Integer.valueOf(userId));
 //        documentDao.insert(document);
 
-        List<Document> documents = new LinkedList<>();
-        documents.add(document);
+        List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
 
         return new ShareVO(share, documents);
     }
