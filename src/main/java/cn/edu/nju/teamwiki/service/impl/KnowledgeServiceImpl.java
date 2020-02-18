@@ -1,10 +1,13 @@
 package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.CategoryVO;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
+import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.Category;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
 import cn.edu.nju.teamwiki.service.DocumentService;
@@ -24,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,6 +40,9 @@ import java.util.stream.Collectors;
 public class KnowledgeServiceImpl implements KnowledgeService {
 
     private static final Logger LOG = LoggerFactory.getLogger(KnowledgeServiceImpl.class);
+
+    @Autowired
+    private CategoryDao categoryDao;
 
     @Autowired
     private KnowledgeDao knowledgeDao;
@@ -62,13 +69,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public List<KnowledgeVO> getAllKnowledge() {
-        return knowledgeDao.findAll()
+    public List<CategoryVO> getAllKnowledge() {
+        return categoryDao.findAll()
                 .stream()
-                .map(knowledge -> {
-                    List<Document> documents = getKnowledgeDocuments(knowledge);
-                    return new KnowledgeVO(knowledge, documents);
-                })
+                .map(category -> new CategoryVO(category,
+                        knowledgeDao.fetchByCategory(category.getCategoryId())
+                                .stream()
+                                .map(knowledge -> new KnowledgeVO(knowledge, getKnowledgeDocuments(knowledge)))
+                                .collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 
@@ -137,7 +145,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledgeDao.delete(knowledge);
 
         List<Document> documents = getKnowledgeDocuments(knowledge);
-        for (Document document: documents) {
+        for (Document document : documents) {
             documentService.deleteDocument(document.getDId(), userId);
         }
 //        documentDao.delete(documents);

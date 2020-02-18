@@ -4,6 +4,7 @@ import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.param.CreateKnowledgeParams;
 import cn.edu.nju.teamwiki.api.param.RenameKnowledgeParams;
+import cn.edu.nju.teamwiki.api.vo.CategoryVO;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
@@ -33,7 +34,7 @@ public class KnowledgeController {
     @GetMapping
     @ApiOperation("获取所有知识")
     public Result getAllKnowledge() {
-        List<KnowledgeVO> result = knowledgeService.getAllKnowledge();
+        List<CategoryVO> result = knowledgeService.getAllKnowledge();
         return Result.success(result);
     }
 
