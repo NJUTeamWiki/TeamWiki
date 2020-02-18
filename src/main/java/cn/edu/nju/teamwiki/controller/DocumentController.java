@@ -8,6 +8,7 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -60,7 +61,7 @@ public class DocumentController {
     @ApiOperation("重命名当前源中的文档")
     public Result renameDocument(@RequestBody RenameDocumentParams params,
                                  HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             documentService.renameDocument(params.documentId, params.newName, userId);
             return Result.success();
@@ -74,7 +75,7 @@ public class DocumentController {
     @ApiOperation("删除当前源中的文档")
     public Result deleteDocument(@RequestParam("documentId") String documentId,
                                  HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             documentService.deleteDocument(documentId, userId);
             return Result.success();

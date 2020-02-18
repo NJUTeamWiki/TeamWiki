@@ -3,6 +3,7 @@ package cn.edu.nju.teamwiki.interceptor;
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,9 @@ public class SignInInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if (request.getSession().getAttribute(Constants.SESSION_UID) == null) {
-            LOG.info("Request From Not Sign In User");
-            String content = JSON.toJSONString(Result.failure(ResultCode.USER_NOT_LOGGED_IN));
+        if (!SessionUtil.hasUser(request.getSession())) {
+            LOG.warn("No User Request");
+            String content = JSON.toJSONString(Result.failure(ResultCode.USER_NOT_SIGNED_IN));
             response.setCharacterEncoding("utf-8");
             PrintWriter writer = response.getWriter();
             writer.write(content);

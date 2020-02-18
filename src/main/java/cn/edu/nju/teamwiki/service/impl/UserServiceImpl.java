@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
             String provide = EncryptUtil.encryptSHA(password);
             String store = user.getPassword();
             if (!provide.equals(store)) {
-                throw new ServiceException(ResultCode.USER_LOGIN_ERROR);
+                throw new ServiceException(ResultCode.USER_SIGN_IN_ERROR);
             }
             return new UserVO(user);
         } catch (NoSuchAlgorithmException e) {
@@ -89,10 +89,10 @@ public class UserServiceImpl implements UserService {
 
             if (userDao.count() == 0) {
                 // 设置第一个注册用户为Leader
-                user.setRole(roleDao.fetchOneByRoleName(Constants.ROLE_LEADER).getRoleId());
+                user.setRole(Constants.ROLE_LEADER);
             } else {
                 // 后面的注册用户均为Newcomer
-                user.setRole(roleDao.fetchOneByRoleName(Constants.ROLE_NEWCOMER).getRoleId());
+                user.setRole(Constants.ROLE_NEWCOMER);
             }
 
             userDao.insert(user);

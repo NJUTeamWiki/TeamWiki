@@ -6,6 +6,7 @@ import cn.edu.nju.teamwiki.api.vo.ShareVO;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -74,7 +75,7 @@ public class ShareController {
             return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
         try {
-            String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+            String userId = SessionUtil.getUser(request.getSession());
             ShareVO shareVO = shareService.createShare(shareTitle, shareContent, userId, file);
             return Result.success(shareVO);
         } catch (ServiceException e) {
@@ -90,7 +91,7 @@ public class ShareController {
                               @RequestParam("content") String shareContent,
                               HttpServletRequest request) {
         try {
-            String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+            String userId = SessionUtil.getUser(request.getSession());
             ShareVO shareVO = shareService.updateShare(shareId, shareTitle, shareContent, userId);
             return Result.success(shareVO);
         } catch (ServiceException e) {
@@ -103,7 +104,7 @@ public class ShareController {
     @ApiOperation("删除一个分享")
     public Result deleteShare(@RequestParam("sid") String shareId,
                               HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             ShareVO shareVO = shareService.deleteShare(shareId, userId);
             return Result.success(shareVO);

@@ -10,6 +10,7 @@ import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class KnowledgeController {
     @ApiOperation("创建自定义知识")
     public Result createKnowledge(@RequestBody CreateKnowledgeParams params,
                                   HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             knowledgeService.createKnowledge(params.categoryId, params.knowledgeName, userId);
             return Result.success();
@@ -55,7 +56,7 @@ public class KnowledgeController {
     @ApiOperation(value = "重命名知识", notes = "仅限自定义知识")
     public Result renameKnowledge(@RequestBody RenameKnowledgeParams params,
                                   HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             knowledgeService.renameKnowledge(params.knowledgeId, params.newName, userId);
             return Result.success();
@@ -68,7 +69,7 @@ public class KnowledgeController {
     @ApiOperation(value = "删除知识", notes = "仅限自定义知识")
     public Result removeKnowledge(@RequestParam("knowledgeId") String knowledgeId,
                                   HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             knowledgeService.removeKnowledge(knowledgeId, userId);
             return Result.success();
@@ -85,7 +86,7 @@ public class KnowledgeController {
         if (file.isEmpty()) {
             return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
             knowledgeService.uploadDocumentToKnowledge(knowledgeId, file, userId);
             return Result.success();
