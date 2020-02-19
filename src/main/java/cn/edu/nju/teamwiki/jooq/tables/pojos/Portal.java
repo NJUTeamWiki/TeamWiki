@@ -22,12 +22,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Portal implements Serializable {
 
-    private static final long serialVersionUID = 1003114783;
+    private static final long serialVersionUID = 1898150752;
 
     private Integer portalId;
     private String  portalName;
     private String  portalLink;
-    private String  portalIcon;
 
     public Portal() {}
 
@@ -35,19 +34,16 @@ public class Portal implements Serializable {
         this.portalId = value.portalId;
         this.portalName = value.portalName;
         this.portalLink = value.portalLink;
-        this.portalIcon = value.portalIcon;
     }
 
     public Portal(
         Integer portalId,
         String  portalName,
-        String  portalLink,
-        String  portalIcon
+        String  portalLink
     ) {
         this.portalId = portalId;
         this.portalName = portalName;
         this.portalLink = portalLink;
-        this.portalIcon = portalIcon;
     }
 
     public Integer getPortalId() {
@@ -74,14 +70,6 @@ public class Portal implements Serializable {
         this.portalLink = portalLink;
     }
 
-    public String getPortalIcon() {
-        return this.portalIcon;
-    }
-
-    public void setPortalIcon(String portalIcon) {
-        this.portalIcon = portalIcon;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Portal (");
@@ -89,7 +77,6 @@ public class Portal implements Serializable {
         sb.append(portalId);
         sb.append(", ").append(portalName);
         sb.append(", ").append(portalLink);
-        sb.append(", ").append(portalIcon);
 
         sb.append(")");
         return sb.toString();

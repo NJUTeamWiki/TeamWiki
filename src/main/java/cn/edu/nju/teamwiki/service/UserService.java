@@ -20,8 +20,8 @@ public interface UserService {
 
     UserVO signUp(String email, String password, String username) throws ServiceException;
 
-    void updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException;
+    UserVO updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException;
 
-    void updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException;
+    UserVO updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException;
 
 }

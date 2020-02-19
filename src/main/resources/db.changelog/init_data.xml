@@ -47,4 +47,10 @@
             <column name="source_name" value="share"/>
         </insert>
     </changeSet>
+
+    <changeSet id="05" author="xuyangchen">
+        <comment>Insert some fake data</comment>
+        <sqlFile path="init_portal.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="init_book.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>

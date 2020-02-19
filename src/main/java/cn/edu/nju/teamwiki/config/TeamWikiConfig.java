@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @PropertySource("classpath:teamwiki.properties")
-public class SystemConfig {
+public class TeamWikiConfig {
 
     @Value("${teamwiki.storage.path}")
     public String storagePath;

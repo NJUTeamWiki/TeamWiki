@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Document implements Serializable {
 
-    private static final long serialVersionUID = 1484188659;
+    private static final long serialVersionUID = 1781374130;
 
     private String        dId;
     private String        dName;
@@ -32,6 +32,7 @@ public class Document implements Serializable {
     private LocalDateTime modifiedTime;
     private Integer       sourceType;
     private Integer       sourceId;
+    private String        url;
 
     public Document() {}
 
@@ -43,6 +44,7 @@ public class Document implements Serializable {
         this.modifiedTime = value.modifiedTime;
         this.sourceType = value.sourceType;
         this.sourceId = value.sourceId;
+        this.url = value.url;
     }
 
     public Document(
@@ -52,7 +54,8 @@ public class Document implements Serializable {
         LocalDateTime uploadedTime,
         LocalDateTime modifiedTime,
         Integer       sourceType,
-        Integer       sourceId
+        Integer       sourceId,
+        String        url
     ) {
         this.dId = dId;
         this.dName = dName;
@@ -61,6 +64,7 @@ public class Document implements Serializable {
         this.modifiedTime = modifiedTime;
         this.sourceType = sourceType;
         this.sourceId = sourceId;
+        this.url = url;
     }
 
     public String getDId() {
@@ -119,6 +123,14 @@ public class Document implements Serializable {
         this.sourceId = sourceId;
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Document (");
@@ -130,6 +142,7 @@ public class Document implements Serializable {
         sb.append(", ").append(modifiedTime);
         sb.append(", ").append(sourceType);
         sb.append(", ").append(sourceId);
+        sb.append(", ").append(url);
 
         sb.append(")");
         return sb.toString();

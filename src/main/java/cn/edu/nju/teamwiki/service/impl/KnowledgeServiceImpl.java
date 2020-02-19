@@ -1,15 +1,16 @@
 package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.CategoryVO;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
 import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
-import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Category;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
+import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
@@ -25,7 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
+import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,19 +42,25 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private static final Logger LOG = LoggerFactory.getLogger(KnowledgeServiceImpl.class);
 
     @Autowired
+    private CategoryDao categoryDao;
+
+    @Autowired
     private KnowledgeDao knowledgeDao;
 
     @Autowired
-    private DocumentDao documentDao;
+    private DocumentService documentService;
 
-    @Autowired
-    private CategoryDao categoryDao;
+//    @Autowired
+//    private DocumentDao documentDao;
+//
+//    @Autowired
+//    private CategoryDao categoryDao;
 
     @Autowired
     private DSLContext dslContext;
 
     @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public KnowledgeVO getKnowledge(String knowledgeId) {
@@ -61,13 +69,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public List<KnowledgeVO> getAllKnowledge() {
-        return knowledgeDao.findAll()
+    public List<CategoryVO> getAllKnowledge() {
+        return categoryDao.findAll()
                 .stream()
-                .map(knowledge -> {
-                    List<Document> documents = getKnowledgeDocuments(knowledge);
-                    return new KnowledgeVO(knowledge, documents);
-                })
+                .map(category -> new CategoryVO(category,
+                        knowledgeDao.fetchByCategory(category.getCategoryId())
+                                .stream()
+                                .map(knowledge -> new KnowledgeVO(knowledge, getKnowledgeDocuments(knowledge)))
+                                .collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 
@@ -90,14 +99,14 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         // 插入后的Knowledge才有id
         Knowledge latest = getKnowledge(knowledgeName, categoryId);
 
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                categoryId, latest.getKId().toString());
-        if (knowledgePath.toFile().mkdirs()) {
-            return new KnowledgeVO(latest);
-        } else {
-            knowledgeDao.delete(latest);
-            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-        }
+//        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+//                categoryId, latest.getKId().toString());
+//        if (knowledgePath.toFile().mkdirs()) {
+        return new KnowledgeVO(latest);
+//        } else {
+//            knowledgeDao.delete(latest);
+//            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+//        }
     }
 
     @Override
@@ -120,7 +129,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         checkUser(knowledge, userId);
 
         // 删除文件
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(twConfig.storagePath,
                 knowledge.getCategory().toString(), knowledge.getKId().toString());
         File knowledgeDir = knowledgePath.toFile();
         if (knowledgeDir.exists()) {
@@ -136,50 +145,62 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledgeDao.delete(knowledge);
 
         List<Document> documents = getKnowledgeDocuments(knowledge);
-        documentDao.delete(documents);
+        for (Document document : documents) {
+            documentService.deleteDocument(document.getDId(), userId);
+        }
+//        documentDao.delete(documents);
 
         return new KnowledgeVO(knowledge);
     }
 
     @Override
     public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) throws ServiceException {
-        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
-        Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-        Path sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                String.valueOf(category.getCategoryId()),
-                String.valueOf(knowledge.getKId()));
-
-        File documentFile = sourcePath.resolve(file.getOriginalFilename()).toFile();
-        if (!documentFile.getParentFile().exists()) {
-            documentFile.getParentFile().mkdirs();
+        String uploadFileName = file.getOriginalFilename();
+        if (uploadFileName == null || uploadFileName.isEmpty()) {
+            throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
 
-        LOG.info("Document will be stored as [" + documentFile.getPath() + "]");
+        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
+
+        String uuid = UUID.randomUUID().toString().replace("-", "");
+
+        Path urlPath = Paths.get(StorageUtil.KNOWLEDGE_PATH,
+                knowledge.getCategory().toString(),
+                knowledgeId,
+                uuid,
+                uploadFileName);
+
+        Path storagePath = Paths.get(twConfig.storagePath, urlPath.toString());
+
+        LOG.info("Knowledge [" + knowledgeId + "]'s file will be stored as [" + storagePath + "]");
 
         // 将文件写入到目标路径中
         try {
-            file.transferTo(documentFile);
+            StorageUtil.storeFile(storagePath, file);
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error("文件存储失败", e);
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        Document document = new Document();
-        document.setDId(UUID.randomUUID().toString());
-        document.setDName(file.getOriginalFilename());
-        document.setUploader(Integer.valueOf(userId));
-        document.setSourceId(Integer.valueOf(knowledgeId));
-        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
-        document.setUploadedTime(LocalDateTime.now());
-        document.setModifiedTime(LocalDateTime.now());
-        documentDao.insert(document);
+        documentService.createDocument(uploadFileName, userId, knowledgeId, Constants.SOURCE_KNOWLEDGE, urlPath.toString());
+
+//        Document document = new Document();
+//        document.setDId(uuid);
+//        document.setDName(file.getOriginalFilename());
+//        document.setUrl(urlPath.toString());
+//        document.setUploader(Integer.valueOf(userId));
+//        document.setSourceId(Integer.valueOf(knowledgeId));
+//        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
+//        document.setUploadedTime(LocalDateTime.now());
+//        document.setModifiedTime(document.getUploadedTime());
+//        documentDao.insert(document);
     }
 
     private void checkUser(Knowledge knowledge, String userId) throws ServiceException {
         if (knowledge.getPredefined()) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
-        if (knowledge.getCreator() != null && !userId.equals(knowledge.getCreator().toString())) {
+        if (knowledge.getCreator() != null && !userId.equals(String.valueOf(knowledge.getCreator()))) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
     }

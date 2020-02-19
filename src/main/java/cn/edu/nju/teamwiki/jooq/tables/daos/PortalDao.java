@@ -99,18 +99,4 @@ public class PortalDao extends DAOImpl<PortalRecord, cn.edu.nju.teamwiki.jooq.ta
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Portal> fetchByPortalLink(String... values) {
         return fetch(Portal.PORTAL.PORTAL_LINK, values);
     }
-
-    /**
-     * Fetch records that have <code>portal_icon BETWEEN lowerInclusive AND upperInclusive</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Portal> fetchRangeOfPortalIcon(String lowerInclusive, String upperInclusive) {
-        return fetchRange(Portal.PORTAL.PORTAL_ICON, lowerInclusive, upperInclusive);
-    }
-
-    /**
-     * Fetch records that have <code>portal_icon IN (values)</code>
-     */
-    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Portal> fetchByPortalIcon(String... values) {
-        return fetch(Portal.PORTAL.PORTAL_ICON, values);
-    }
 }

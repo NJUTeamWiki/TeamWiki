@@ -19,8 +19,8 @@ public enum ResultCode {
     PARAM_INVALID_DOCUMENT_SOURCE(10006, "无效的文档源"),
 
     /* 用户错误：20001-29999*/
-    USER_NOT_LOGGED_IN(20001, "用户未登录"),
-    USER_LOGIN_ERROR(20002, "账号不存在或密码错误"),
+    USER_NOT_SIGNED_IN(20001, "用户未登录"),
+    USER_SIGN_IN_ERROR(20002, "账号不存在或密码错误"),
     USER_ACCOUNT_FORBIDDEN(20003, "账号已被禁用"),
     USER_NOT_EXIST(20004, "用户不存在"),
     USER_HAS_EXISTED(20005, "用户已存在"),
@@ -35,7 +35,7 @@ public enum ResultCode {
     SYSTEM_FILE_ERROR(40002, "文件读写时发生异常"),
 
     /* 数据错误：50001-599999 */
-    RESULT_DATA_NONE(50001, "数据未找到"),
+    DATA_NOT_EXIST(50001, "数据未找到"),
     DATA_IS_WRONG(50002, "数据有误"),
     DATA_ALREADY_EXISTED(50003, "数据已存在"),
 

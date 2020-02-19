@@ -156,4 +156,18 @@ public class DocumentDao extends DAOImpl<DocumentRecord, cn.edu.nju.teamwiki.joo
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchBySourceId(Integer... values) {
         return fetch(Document.DOCUMENT.SOURCE_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>url BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchRangeOfUrl(String lowerInclusive, String upperInclusive) {
+        return fetchRange(Document.DOCUMENT.URL, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>url IN (values)</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchByUrl(String... values) {
+        return fetch(Document.DOCUMENT.URL, values);
+    }
 }

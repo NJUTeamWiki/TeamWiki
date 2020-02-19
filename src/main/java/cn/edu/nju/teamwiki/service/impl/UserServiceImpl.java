@@ -3,7 +3,7 @@ package cn.edu.nju.teamwiki.service.impl;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.param.UpdateUserProfileParams;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.tables.daos.RoleDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     private RoleDao roleDao;
 
     @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public List<UserVO> getAllUsers() throws ServiceException {
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
             String provide = EncryptUtil.encryptSHA(password);
             String store = user.getPassword();
             if (!provide.equals(store)) {
-                throw new ServiceException(ResultCode.USER_LOGIN_ERROR);
+                throw new ServiceException(ResultCode.USER_SIGN_IN_ERROR);
             }
             return new UserVO(user);
         } catch (NoSuchAlgorithmException e) {
@@ -89,10 +89,10 @@ public class UserServiceImpl implements UserService {
 
             if (userDao.count() == 0) {
                 // 设置第一个注册用户为Leader
-                user.setRole(roleDao.fetchOneByRoleName(Constants.ROLE_LEADER).getRoleId());
+                user.setRole(Constants.ROLE_LEADER);
             } else {
                 // 后面的注册用户均为Newcomer
-                user.setRole(roleDao.fetchOneByRoleName(Constants.ROLE_NEWCOMER).getRoleId());
+                user.setRole(Constants.ROLE_NEWCOMER);
             }
 
             userDao.insert(user);
@@ -105,20 +105,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException {
+    public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         String fileName = avatarFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         String newFileName = userId + UUID.randomUUID().toString().substring(0, 4) + suffixName;
 
-        File file = Paths.get(systemConfig.storagePath, StorageUtil.AVATAR_PATH, newFileName).toFile();
+        File file = Paths.get(twConfig.storagePath, StorageUtil.AVATAR_PATH, newFileName).toFile();
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
 
+        LOG.info("Avatar will be stored as [" + file.getPath() + "].");
+
         try {
-            LOG.info("Avatar will be stored as [" + file.getPath() + "].");
             avatarFile.transferTo(file);
         } catch (IOException e) {
             LOG.error(e.getMessage());
@@ -127,10 +128,12 @@ public class UserServiceImpl implements UserService {
 
         user.setAvatar(StorageUtil.AVATAR_PATH + newFileName);
         userDao.update(user);
+
+        return new UserVO(userDao.fetchOneByUserId(user.getUserId()));
     }
 
     @Override
-    public void updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException {
+    public UserVO updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         if (params.username != null) {
@@ -144,5 +147,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userDao.update(user);
+
+        return new UserVO(userDao.fetchOneByUserId(user.getUserId()));
     }
 }

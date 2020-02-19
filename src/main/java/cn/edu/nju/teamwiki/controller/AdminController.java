@@ -1,7 +1,13 @@
 package cn.edu.nju.teamwiki.controller;
 
+import cn.edu.nju.teamwiki.api.Result;
+import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.UserVO;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.AdminService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -11,6 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author: xuyangchen
@@ -28,12 +36,19 @@ public class AdminController {
 
     @PutMapping("/userRole")
     @ApiOperation("修改用户角色")
-    public void changeUserRole(@RequestParam("uid") String userId,
-                               @RequestParam("role") String role){
+    public Result changeUserRole(@RequestParam("uid") String userId,
+                                 @RequestParam("role") Integer role,
+                                 HttpServletRequest request) {
+        String currentUser = SessionUtil.getUser(request.getSession());
+        if (!adminService.isAdmin(currentUser)) {
+            return Result.success(ResultCode.PERMISSION_NO_MODIFY);
+        }
         try {
-            adminService.changeUserRole(userId, role);
-        }catch (ServiceException e){
-            LOG.error(e.getMessage());
+            UserVO userVO = adminService.changeUserRole(userId, role);
+            return Result.success(userVO);
+        } catch (ServiceException e) {
+            LOG.error("修改用户角色失败", e);
+            return Result.failure(e.getResultCode());
         }
     }
 }

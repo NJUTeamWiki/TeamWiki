@@ -8,17 +8,8 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
  */
 public class DocumentVO extends Document {
 
-    private String url;
-
     public DocumentVO(Document document) {
         super(document);
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

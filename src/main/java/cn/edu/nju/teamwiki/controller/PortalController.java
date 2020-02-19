@@ -32,56 +32,60 @@ public class PortalController {
 
     @GetMapping
     @ApiOperation("获取所有portal信息")
-    public Result getAllPortal(){
+    public Result getAllPortal() {
         try {
             List<PortalVO> result = portalService.getAllPortal();
             return Result.success(result);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取某个portal")
-    public Result getOnePortal(@PathVariable("id") String portalId){
+    public Result getOnePortal(@PathVariable("id") String portalId) {
         try {
             PortalVO result = portalService.getPortalById(portalId);
             return Result.success(result);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
     }
 
     @PostMapping
     @ApiOperation("添加portal")
-    public void createPortal(@RequestParam("name") String portalName,
-                             @RequestParam("link") String portalLink){
+    public Result createPortal(@RequestParam("name") String portalName,
+                               @RequestParam("link") String portalLink) {
         try {
-            portalService.createPortal(portalName, portalLink);
-        }catch (ServiceException e){
+            PortalVO portalVO = portalService.createPortal(portalName, portalLink);
+            return Result.success(portalVO);
+        } catch (ServiceException e) {
             LOG.error(e.getMessage());
+            return Result.failure(e.getResultCode());
         }
     }
 
     @PutMapping
     @ApiOperation("更新portal")
-    public void updatePortal(@RequestParam("pid") String portalId,
-                             @RequestParam("name") String portalName,
-                             @RequestParam("link") String portalLink){
+    public Result updatePortal(@RequestParam("pid") String portalId,
+                               @RequestParam("name") String portalName,
+                               @RequestParam("link") String portalLink) {
         try {
-            portalService.updatePortal(portalId, portalName, portalLink);
-        }catch (ServiceException e){
+            PortalVO portalVO = portalService.updatePortal(portalId, portalName, portalLink);
+            return Result.success(portalVO);
+        } catch (ServiceException e) {
             LOG.error(e.getMessage());
+            return Result.failure(e.getResultCode());
         }
     }
 
     @PutMapping("/icon")
     @ApiOperation("更新图标")
-    public Result updateIcon(@RequestParam("pid")String portalId,
-            @RequestParam("file")MultipartFile iconFile){
-        try{
+    public Result updateIcon(@RequestParam("pid") String portalId,
+                             @RequestParam("file") MultipartFile iconFile) {
+        try {
             portalService.updateIcon(portalId, iconFile);
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
         return Result.success();
@@ -89,14 +93,15 @@ public class PortalController {
 
     @DeleteMapping
     @ApiOperation("删除portal")
-    public void deletePortal(@RequestParam("pid") String portalId){
+    public Result deletePortal(@RequestParam("pid") String portalId) {
         try {
-            portalService.deletePortal(portalId);
-        }catch (ServiceException e){
+            PortalVO portalVO = portalService.deletePortal(portalId);
+            return Result.success(portalVO);
+        } catch (ServiceException e) {
             LOG.error(e.getMessage());
+            return Result.failure(e.getResultCode());
         }
     }
-
 
 
 }

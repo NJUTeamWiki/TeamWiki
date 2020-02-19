@@ -4,9 +4,11 @@ import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
 import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
+import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -59,9 +61,9 @@ public class DocumentController {
     @ApiOperation("重命名当前源中的文档")
     public Result renameDocument(@RequestBody RenameDocumentParams params,
                                  HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
-            documentService.renameDocument(params.documentId, params.sourceType, params.newName, userId);
+            documentService.renameDocument(params.documentId, params.newName, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -71,11 +73,11 @@ public class DocumentController {
 
     @DeleteMapping
     @ApiOperation("删除当前源中的文档")
-    public Result deleteDocument(@RequestBody DeleteDocumentParams params,
+    public Result deleteDocument(@RequestParam("documentId") String documentId,
                                  HttpServletRequest request) {
-        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
+        String userId = SessionUtil.getUser(request.getSession());
         try {
-            documentService.deleteDocument(params.documentId, params.sourceType, userId);
+            documentService.deleteDocument(documentId, userId);
             return Result.success();
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -86,34 +88,18 @@ public class DocumentController {
     @GetMapping("/download/{id}")
     @ApiOperation("下载文档")
     public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId,
-                                                 HttpServletRequest request) {
-        Path documentPath = null;
-        try {
-            documentPath = documentService.getDocumentDownloadPath(documentId);
-        } catch (ServiceException e) {
-            LOG.error(e.getMessage());
-        }
-        Resource resource = null;
-        try {
-            resource = new UrlResource(documentPath.toUri());
-        } catch (MalformedURLException e) {
-            LOG.error(e.getMessage());
-        }
-        Objects.requireNonNull(resource);
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-
+                                                 HttpServletRequest request) throws Exception {
+        Path documentPath = documentService.getDocumentDownloadPath(documentId);
+        String documentName = documentService.getDocumentName(documentId);
+        Resource resource = new UrlResource(documentPath.toUri());
+        String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         if (contentType == null) {
             contentType = "application/octet-stream";
         }
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentName + "\"")
                 .body(resource);
     }
 

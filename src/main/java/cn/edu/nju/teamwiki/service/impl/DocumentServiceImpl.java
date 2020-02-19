@@ -2,24 +2,21 @@ package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
-import cn.edu.nju.teamwiki.config.SystemConfig;
+import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.tables.daos.*;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.*;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -37,37 +34,47 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private DocumentDao documentDao;
 
-    @Autowired
-    private KnowledgeDao knowledgeDao;
+//    @Autowired
+//    private KnowledgeDao knowledgeDao;
+//
+//    @Autowired
+//    private CategoryDao categoryDao;
+//
+//    @Autowired
+//    private ShareDao shareDao;
 
     @Autowired
-    private CategoryDao categoryDao;
-
-    @Autowired
-    private ShareDao shareDao;
-
-    @Autowired
-    private SystemConfig systemConfig;
+    private TeamWikiConfig twConfig;
 
     @Override
     public Path getDocumentDownloadPath(String documentId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
-        switch (document.getSourceType()) {
-            case Constants.SOURCE_KNOWLEDGE:
-                Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
-                Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-                return StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
-                        category.getCategoryName(),
-                        knowledge.getKName(),
-                        document.getDName());
-            case Constants.SOURCE_SHARE:
-                Share share = shareDao.fetchOneByShareId(document.getSourceId());
-                return StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
-                        String.valueOf(share.getShareId()),
-                        document.getDName());
-            default:
-                throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
+        return Paths.get(twConfig.storagePath, document.getUrl());
+//        switch (document.getSourceType()) {
+//            case Constants.SOURCE_KNOWLEDGE:
+//                Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
+//                Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
+//                return StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
+//                        category.getCategoryName(),
+//                        knowledge.getKName(),
+//                        document.getDName());
+//            case Constants.SOURCE_SHARE:
+//                Share share = shareDao.fetchOneByShareId(document.getSourceId());
+//                return StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
+//                        String.valueOf(share.getShareId()),
+//                        document.getDName());
+//            default:
+//                throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
+//        }
+    }
+
+    @Override
+    public String getDocumentName(String documentId) throws ServiceException {
+        Document document = documentDao.fetchOneByDId(documentId);
+        if (document == null) {
+            throw new ServiceException(ResultCode.DATA_NOT_EXIST);
         }
+        return documentDao.fetchOneByDId(documentId).getDName();
     }
 
     @Override
@@ -80,84 +87,101 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public void uploadDocument(String sourceId, Integer sourceType,
-                               MultipartFile file, String userId) throws ServiceException {
-        // 获得文件的字节流
-        byte[] bytes;
-        try {
-            bytes = file.getBytes();
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-        }
-
-
-        Path sourcePath;
-        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
-            Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(sourceId));
-            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                    String.valueOf(category.getCategoryId()),
-                    String.valueOf(knowledge.getKId()));
-
-        } else if (sourceType == Constants.SOURCE_SHARE) {
-            Share share = shareDao.fetchOneByShareId(Integer.valueOf(sourceId));
-            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
-                    String.valueOf(share.getShareId()));
-        } else {
-            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
-        }
-
-        sourcePath.toFile().mkdirs();
-
-        Path documentPath = sourcePath.resolve(file.getOriginalFilename());
-        LOG.info("Document will be stored as [" + documentPath.toString() + "]");
-
-        // 将文件写入到目标路径中
-        try {
-            Files.write(documentPath, bytes, StandardOpenOption.CREATE_NEW);
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-        }
-
+    public DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url) throws ServiceException {
         Document document = new Document();
-        document.setDId(UUID.randomUUID().toString());
-        document.setDName(file.getOriginalFilename());
-        document.setUploader(Integer.valueOf(userId));
+        document.setDId(UUID.randomUUID().toString().replace("-", ""));
+        document.setDName(documentName);
+        document.setUploader(Integer.valueOf(uploaderId));
         document.setSourceId(Integer.valueOf(sourceId));
         document.setSourceType(sourceType);
+        document.setUrl(url);
         document.setUploadedTime(LocalDateTime.now());
-        document.setModifiedTime(LocalDateTime.now());
+        document.setModifiedTime(document.getUploadedTime());
         documentDao.insert(document);
+
+        return new DocumentVO(document);
     }
 
+//    @Override
+//    public void uploadDocument(String sourceId, Integer sourceType,
+//                               MultipartFile file, String userId) throws ServiceException {
+//        // 获得文件的字节流
+//        byte[] bytes;
+//        try {
+//            bytes = file.getBytes();
+//        } catch (IOException e) {
+//            LOG.error(e.getMessage());
+//            throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
+//        }
+//
+//
+//        Path sourcePath;
+//        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
+//            Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(sourceId));
+//            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
+//            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+//                    String.valueOf(category.getCategoryId()),
+//                    String.valueOf(knowledge.getKId()));
+//
+//        } else if (sourceType == Constants.SOURCE_SHARE) {
+//            Share share = shareDao.fetchOneByShareId(Integer.valueOf(sourceId));
+//            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
+//                    String.valueOf(share.getShareId()));
+//        } else {
+//            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
+//        }
+//
+//        sourcePath.toFile().mkdirs();
+//
+//        Path documentPath = sourcePath.resolve(file.getOriginalFilename());
+//        LOG.info("Document will be stored as [" + documentPath.toString() + "]");
+//
+//        // 将文件写入到目标路径中
+//        try {
+//            Files.write(documentPath, bytes, StandardOpenOption.CREATE_NEW);
+//        } catch (IOException e) {
+//            LOG.error(e.getMessage());
+//            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+//        }
+//
+//        Document document = new Document();
+//        document.setDId(UUID.randomUUID().toString());
+//        document.setDName(file.getOriginalFilename());
+//        document.setUploader(Integer.valueOf(userId));
+//        document.setSourceId(Integer.valueOf(sourceId));
+//        document.setSourceType(sourceType);
+//        document.setUploadedTime(LocalDateTime.now());
+//        document.setModifiedTime(LocalDateTime.now());
+//        documentDao.insert(document);
+//    }
+
     @Override
-    public void renameDocument(String documentId, Integer sourceType,
-                               String newName, String userId) throws ServiceException {
+    public DocumentVO renameDocument(String documentId, String newName, String userId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path sourcePath;
-        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
-            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
-            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-                    String.valueOf(category.getCategoryId()),
-                    String.valueOf(knowledge.getKId()));
-        } else if (sourceType == Constants.SOURCE_SHARE) {
-            Share share = shareDao.fetchOneByShareId(document.getSourceId());
-            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
-                    String.valueOf(share.getShareId()));
-        } else {
-            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
-        }
+        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());
+        ;
+//        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
+//            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
+//            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
+//            sourcePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
+//                    String.valueOf(category.getCategoryId()),
+//                    String.valueOf(knowledge.getKId()),
+//                    document.getDId());
+//        } else if (sourceType == Constants.SOURCE_SHARE) {
+//            Share share = shareDao.fetchOneByShareId(document.getSourceId());
+//            sourcePath = StorageUtil.getShareStoragePath(systemConfig.storagePath,
+//                    String.valueOf(share.getShareId()));
+//        } else {
+//            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
+//        }
 
-        File oldDocument = sourcePath.resolve(document.getDName()).toFile();
-        File newDocument = sourcePath.resolve(newName).toFile();
+        File oldDocument = documentPath.toFile();
+        File newDocument = documentPath.getParent().resolve(newName).toFile();
         if (oldDocument.renameTo(newDocument)) {
             document.setDName(newName);
             document.setModifiedTime(LocalDateTime.now());
@@ -165,37 +189,43 @@ public class DocumentServiceImpl implements DocumentService {
         } else {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
+
+        return new DocumentVO(documentDao.fetchOneByDId(document.getDId()));
     }
 
     @Override
-    public void deleteDocument(String documentId, Integer sourceType, String userId) throws ServiceException {
+    public DocumentVO deleteDocument(String documentId, String userId) throws ServiceException {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path documentPath;
-        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
-            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
-            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
-            documentPath = StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
-                    String.valueOf(category.getCategoryId()),
-                    String.valueOf(knowledge.getKId()),
-                    document.getDName());
-        } else if (sourceType == Constants.SOURCE_SHARE) {
-            Share share = shareDao.fetchOneByShareId(document.getSourceId());
-            documentPath = StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
-                    String.valueOf(share.getShareId()),
-                    document.getDName());
-        } else {
-            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
-        }
+        Path documentPath = Paths.get(twConfig.storagePath, document.getUrl());
 
-        if (documentPath.toFile().delete()) {
-            documentDao.delete(document);
-        } else {
+//        if (sourceType == Constants.SOURCE_KNOWLEDGE) {
+//            Knowledge knowledge = knowledgeDao.fetchOneByKId(document.getSourceId());
+//            Category category = categoryDao.fetchOneByCategoryId(knowledge.getCategory());
+//            documentPath = StorageUtil.getKnowledgeDocumentStoragePath(systemConfig.storagePath,
+//                    String.valueOf(category.getCategoryId()),
+//                    String.valueOf(knowledge.getKId()),
+//                    document.getDName());
+//        } else if (sourceType == Constants.SOURCE_SHARE) {
+//            Share share = shareDao.fetchOneByShareId(document.getSourceId());
+//            documentPath = StorageUtil.getShareDocumentStoragePath(systemConfig.storagePath,
+//                    String.valueOf(share.getShareId()),
+//                    document.getDName());
+//        } else {
+//            throw new ServiceException(ResultCode.PARAM_INVALID_DOCUMENT_SOURCE);
+//        }
+        try {
+            Files.delete(documentPath);
+        } catch (IOException e) {
+            LOG.error("文件删除失败", e);
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
+        documentDao.delete(document);
+
+        return new DocumentVO(document);
     }
 }

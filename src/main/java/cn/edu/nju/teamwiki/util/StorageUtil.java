@@ -1,5 +1,9 @@
 package cn.edu.nju.teamwiki.util;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,6 +47,14 @@ public class StorageUtil {
                                                    String documentName) {
         return getShareStoragePath(storagePath, shareId)
                 .resolve(documentName);
+    }
+
+    public static void storeFile(Path storagePath, MultipartFile file) throws IOException {
+        File storageFile = storagePath.toFile();
+        if (!storageFile.getParentFile().exists()) {
+            storageFile.getParentFile().mkdirs();
+        }
+        file.transferTo(storageFile.getAbsoluteFile());
     }
 
 }
