@@ -1,4 +1,4 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.vo.PortalVO;
@@ -19,7 +19,7 @@ import java.util.List;
  * @date: 2020/1/16
  */
 @RestController
-@RequestMapping("/portal")
+@RequestMapping("/api/portal")
 @Api(value = "传送门相关接口", tags = "PortalController")
 public class PortalController {
 

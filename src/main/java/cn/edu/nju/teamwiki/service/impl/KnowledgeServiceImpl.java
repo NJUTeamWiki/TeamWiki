@@ -13,8 +13,8 @@ import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.StorageUtil;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import cn.edu.nju.teamwiki.util.DBUtils;
+import cn.edu.nju.teamwiki.util.StorageUtils;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -47,12 +45,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Autowired
     private DocumentService documentService;
-
-//    @Autowired
-//    private DocumentDao documentDao;
-//
-//    @Autowired
-//    private CategoryDao categoryDao;
 
     @Autowired
     private DSLContext dslContext;
@@ -97,14 +89,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         // 插入后的Knowledge才有id
         Knowledge latest = getKnowledge(knowledgeName, categoryId);
 
-//        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(systemConfig.storagePath,
-//                categoryId, latest.getKId().toString());
-//        if (knowledgePath.toFile().mkdirs()) {
         return new KnowledgeVO(latest);
-//        } else {
-//            knowledgeDao.delete(latest);
-//            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-//        }
     }
 
     @Override
@@ -127,14 +112,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         checkUser(knowledge, userId);
 
         // 删除文件
-        Path knowledgePath = StorageUtil.getKnowledgeStoragePath(twConfig.storagePath,
-                knowledge.getCategory().toString(), knowledge.getKId().toString());
+        Path knowledgePath = Paths.get(twConfig.knowledgeDir,
+                knowledge.getCategory().toString(),
+                knowledge.getKId().toString());
         File knowledgeDir = knowledgePath.toFile();
         if (knowledgeDir.exists()) {
-            try {
-                FileUtils.deleteDirectory(knowledgePath.toFile());
-            } catch (IOException e) {
-                LOG.error(e.getMessage());
+            if (!StorageUtils.deleteFile(knowledgePath)) {
                 throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
             }
         }
@@ -146,7 +129,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         for (Document document : documents) {
             documentService.deleteDocument(document.getDId(), userId);
         }
-//        documentDao.delete(documents);
 
         return new KnowledgeVO(knowledge);
     }
@@ -158,40 +140,15 @@ public class KnowledgeServiceImpl implements KnowledgeService {
             throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
 
-        Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
-
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-
-        Path urlPath = Paths.get(StorageUtil.KNOWLEDGE_PATH,
-                knowledge.getCategory().toString(),
-                knowledgeId,
-                uuid,
-                uploadFileName);
-
-        Path storagePath = Paths.get(twConfig.storagePath, urlPath.toString());
-
+        Path storagePath = Paths.get(twConfig.knowledgeDir, DBUtils.randomUUID(), uploadFileName);
+        Path urlPath = storagePath.relativize(Paths.get(twConfig.docDir));
         LOG.info("Knowledge [" + knowledgeId + "]'s file will be stored as [" + storagePath + "]");
-
         // 将文件写入到目标路径中
-        try {
-            StorageUtil.storeFile(storagePath, file);
-        } catch (IOException e) {
-            LOG.error("文件存储失败", e);
+        if (!StorageUtils.storeMultipartFile(storagePath, file)){
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
         documentService.createDocument(uploadFileName, userId, knowledgeId, Constants.SOURCE_KNOWLEDGE, urlPath.toString());
-
-//        Document document = new Document();
-//        document.setDId(uuid);
-//        document.setDName(file.getOriginalFilename());
-//        document.setUrl(urlPath.toString());
-//        document.setUploader(Integer.valueOf(userId));
-//        document.setSourceId(Integer.valueOf(knowledgeId));
-//        document.setSourceType(Constants.SOURCE_KNOWLEDGE);
-//        document.setUploadedTime(LocalDateTime.now());
-//        document.setModifiedTime(document.getUploadedTime());
-//        documentDao.insert(document);
     }
 
     private void checkUser(Knowledge knowledge, String userId) {

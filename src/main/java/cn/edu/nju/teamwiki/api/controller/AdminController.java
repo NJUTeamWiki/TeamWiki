@@ -1,11 +1,11 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
 import cn.edu.nju.teamwiki.service.AdminService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.SessionUtil;
+import cn.edu.nju.teamwiki.util.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
  * @date: 2020/1/16
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 @Api(value = "管理员相关接口", tags = "AdminController")
 public class AdminController {
 
@@ -37,7 +37,7 @@ public class AdminController {
     public Result changeUserRole(@RequestParam("uid") String userId,
                                  @RequestParam("role") Integer role,
                                  HttpServletRequest request) {
-        String currentUser = SessionUtil.getUser(request.getSession());
+        String currentUser = SessionUtils.getUser(request.getSession());
         if (!adminService.isAdmin(currentUser)) {
             return Result.success(ResultCode.PERMISSION_NO_MODIFY);
         }

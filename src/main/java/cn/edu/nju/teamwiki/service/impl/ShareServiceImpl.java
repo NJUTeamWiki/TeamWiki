@@ -12,7 +12,7 @@ import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.StorageUtil;
+import cn.edu.nju.teamwiki.util.StorageUtils;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -102,35 +101,16 @@ public class ShareServiceImpl implements ShareService {
 
         share = getLastShare(userId);
 
-        Path urlPath = Paths.get(StorageUtil.SHARE_PATH,
-                share.getShareId().toString(),
-                shareFileName);
-
-        Path storagePath = Paths.get(twConfig.storagePath, urlPath.toString());
-
+        Path storagePath = Paths.get(twConfig.shareDir, share.getShareId().toString(), shareFileName);
+        Path urlPath = storagePath.relativize(Paths.get(twConfig.docDir));
         LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
 
-        try {
-            StorageUtil.storeFile(storagePath, file);
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
+        if (!StorageUtils.storeMultipartFile(storagePath, file)) {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
         documentService.createDocument(shareFileName,
                 userId, String.valueOf(share.getShareId()), Constants.SOURCE_SHARE, urlPath.toString());
-
-//        Document document = new Document();
-//        document.setDId(UUID.randomUUID().toString().replace("-", ""));
-//        document.setSourceId(share.getShareId());
-//        document.setSourceType(Constants.SOURCE_SHARE);
-//        document.setUrl(urlPath.toString());
-//        document.setUploadedTime(LocalDateTime.now());
-//        document.setModifiedTime(document.getUploadedTime());
-//        document.setDName(shareFileName);
-//        document.setUploader(Integer.valueOf(userId));
-//        documentDao.insert(document);
-
         List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
 
         return new ShareVO(share, documents);
@@ -145,7 +125,6 @@ public class ShareServiceImpl implements ShareService {
         if (!userId.equals(String.valueOf(share.getShareUser()))) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
-//        share.setShareUser(Integer.valueOf(userId));
         if (StringUtils.isEmpty(shareTitle)) {
             share.setShareTitle(shareTitle);
         }
@@ -153,7 +132,6 @@ public class ShareServiceImpl implements ShareService {
         if (StringUtils.isEmpty(shareContent)) {
             share.setShareContent(shareContent);
         }
-
 //        share.setShareTime(LocalDateTime.now());
         shareDao.update(share);
 

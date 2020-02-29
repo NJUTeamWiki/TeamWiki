@@ -1,4 +1,4 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
@@ -8,7 +8,7 @@ import cn.edu.nju.teamwiki.api.param.UpdateUserProfileParams;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.UserService;
-import cn.edu.nju.teamwiki.util.SessionUtil;
+import cn.edu.nju.teamwiki.util.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
  * @date: 2020/1/15
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @Api(value = "用户相关接口", tags = "UserController")
 public class UserController {
 
@@ -47,13 +47,12 @@ public class UserController {
     public Result signIn(@RequestBody SignInParams params,
                          HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtil.hasUser(session)) {
+        if (SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         try {
             UserVO userVO = userService.signIn(params.email, params.password);
-//            request.getSession().setAttribute(Constants.SESSION_UID, userVO.getUserId().toString());
-            SessionUtil.setUser(session, userVO.getUserId().toString());
+            SessionUtils.setUser(session, userVO.getUserId().toString());
             return Result.success(userVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -66,8 +65,7 @@ public class UserController {
                          HttpServletRequest request) {
         try {
             UserVO userVO = userService.signUp(params.email, params.password, params.username);
-            SessionUtil.setUser(request.getSession(), userVO.getUserId().toString());
-//            request.getSession().setAttribute(Constants.SESSION_UID, userVO.getUserId().toString());
+            SessionUtils.setUser(request.getSession(), userVO.getUserId().toString());
             return Result.success(userVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -77,8 +75,7 @@ public class UserController {
     @GetMapping("/sign_out")
     @ApiOperation("用户登出")
     public Result signOut(HttpServletRequest request) {
-//        request.getSession().removeAttribute(Constants.SESSION_UID);
-        SessionUtil.removeUser(request.getSession());
+        SessionUtils.removeUser(request.getSession());
         return Result.success();
     }
 
@@ -87,11 +84,10 @@ public class UserController {
     public Result updateUserAvatar(@RequestParam("file") MultipartFile avatarFile,
                                    HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtil.hasUser(session)) {
+        if (SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
-//        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
-        String userId = SessionUtil.getUser(session);
+        String userId = SessionUtils.getUser(session);
         try {
             UserVO userVO = userService.updateUserAvatar(userId, avatarFile);
             return Result.success(userVO);
@@ -116,11 +112,10 @@ public class UserController {
     public Result updateUserProfile(@RequestBody UpdateUserProfileParams params,
                                     HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtil.hasUser(session)) {
+        if (SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
-//        String userId = (String) request.getSession().getAttribute(Constants.SESSION_UID);
-        String userId = SessionUtil.getUser(session);
+        String userId = SessionUtils.getUser(session);
         try {
             UserVO userVO = userService.updateUserProfile(userId, params);
             return Result.success(userVO);
@@ -132,7 +127,7 @@ public class UserController {
     @GetMapping("/check")
     @ApiOperation("检查用户是否已登陆")
     public Result checkSignIn(HttpServletRequest request) {
-        if (SessionUtil.hasUser(request.getSession())) {
+        if (SessionUtils.hasUser(request.getSession())) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         return Result.success();

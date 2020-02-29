@@ -7,7 +7,6 @@ import cn.edu.nju.teamwiki.jooq.tables.daos.PortalDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Portal;
 import cn.edu.nju.teamwiki.service.PortalService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +83,7 @@ public class PortalServiceImpl implements PortalService {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         String newFileName = portalId + UUID.randomUUID().toString().substring(0, 4) + suffixName;
 
-        File file = Paths.get(twConfig.storagePath, StorageUtil.ICON_PATH, newFileName).toFile();
+        File file = Paths.get(twConfig.iconDir, newFileName).toFile();
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }

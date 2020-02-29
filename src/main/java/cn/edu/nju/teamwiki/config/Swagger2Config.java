@@ -30,7 +30,7 @@ public class Swagger2Config {
                 .enable(enableSwagger)
                 .select()
                 //扫描的路径包,设置basePackage会将包下的所有被@Api标记类的所有方法作为api
-                .apis(RequestHandlerSelectors.basePackage("cn.edu.nju.teamwiki.controller"))
+                .apis(RequestHandlerSelectors.basePackage("cn.edu.nju.teamwiki.api.controller"))
                 //指定路径处理PathSelectors.any()代表所有的路径
                 .paths(PathSelectors.any())
                 .build();
