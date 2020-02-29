@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cn.edu.nju.teamwiki</groupId>
 	<artifactId>TeamWiki</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>TeamWiki</name>
 	<description>A wiki designed for developer teams, especially for new personality</description>
 

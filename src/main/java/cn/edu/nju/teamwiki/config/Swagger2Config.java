@@ -43,7 +43,7 @@ public class Swagger2Config {
                 //文档描述
                 .description("接口说明")
                 //版本号
-                .version("0.0.1")
+                .version("1.0.0")
                 .build();
     }
 
