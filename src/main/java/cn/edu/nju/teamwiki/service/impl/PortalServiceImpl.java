@@ -36,7 +36,7 @@ public class PortalServiceImpl implements PortalService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public PortalVO createPortal(String portalName, String portalLink) throws ServiceException {
+    public PortalVO createPortal(String portalName, String portalLink) {
         Portal portal = new Portal();
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
@@ -46,7 +46,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO deletePortal(String portalId) throws ServiceException {
+    public PortalVO deletePortal(String portalId) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
 //        portalDao.deleteById(Integer.valueOf(portalId));
         portalDao.delete(portal);
@@ -54,7 +54,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO updatePortal(String portalId, String portalName, String portalLink) throws ServiceException {
+    public PortalVO updatePortal(String portalId, String portalName, String portalLink) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
@@ -64,7 +64,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public List<PortalVO> getAllPortal() throws ServiceException {
+    public List<PortalVO> getAllPortal() {
         return portalDao.findAll()
                 .stream()
                 .map(portal -> new PortalVO(portal))
@@ -72,12 +72,12 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO getPortalById(String portalId) throws ServiceException {
+    public PortalVO getPortalById(String portalId) {
         return new PortalVO(portalDao.fetchOneByPortalId(Integer.valueOf(portalId)));
     }
 
     @Override
-    public void updateIcon(String portalId, MultipartFile iconFile) throws ServiceException {
+    public void updateIcon(String portalId, MultipartFile iconFile) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
 
         String fileName = iconFile.getOriginalFilename();

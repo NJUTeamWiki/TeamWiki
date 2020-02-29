@@ -1,7 +1,6 @@
 package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
-import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.api.vo.ShareVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
@@ -22,15 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +53,7 @@ public class ShareServiceImpl implements ShareService {
     private DSLContext dslContext;
 
     @Override
-    public List<ShareVO> getAllShares() throws ServiceException {
+    public List<ShareVO> getAllShares() {
 
         return shareDao.findAll()
                 .stream()
@@ -70,7 +65,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public List<ShareVO> getSharesByUserId(String userId) throws ServiceException {
+    public List<ShareVO> getSharesByUserId(String userId) {
         return shareDao.fetchByShareUser(Integer.valueOf(userId))
                 .stream()
                 .map(share -> {
@@ -81,7 +76,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public List<ShareVO> getSharesByTitle(String shareTitle) throws ServiceException {
+    public List<ShareVO> getSharesByTitle(String shareTitle) {
         return shareDao.fetchByShareTitle(shareTitle)
                 .stream()
                 .map(share -> {
@@ -92,7 +87,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public ShareVO createShare(String shareTitle, String shareContent, String userId, MultipartFile file) throws ServiceException {
+    public ShareVO createShare(String shareTitle, String shareContent, String userId, MultipartFile file) {
         String shareFileName = file.getOriginalFilename();
         if (shareFileName == null || shareFileName.isEmpty()) {
             throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
@@ -142,7 +137,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public ShareVO updateShare(String shareId, String shareTitle, String shareContent, String userId) throws ServiceException {
+    public ShareVO updateShare(String shareId, String shareTitle, String shareContent, String userId) {
         Share share = shareDao.fetchOneByShareId(Integer.valueOf(shareId));
         if (share == null) {
             throw new ServiceException(ResultCode.DATA_NOT_EXIST);
@@ -168,7 +163,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public ShareVO deleteShare(String shareId, String userId) throws ServiceException {
+    public ShareVO deleteShare(String shareId, String userId) {
         Share share = shareDao.fetchOneByShareId(Integer.valueOf(shareId));
         if (share == null) {
             throw new ServiceException(ResultCode.DATA_NOT_EXIST);

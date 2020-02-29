@@ -9,6 +9,7 @@ import cn.edu.nju.teamwiki.api.vo.UserVO;
 public interface AdminService {
 
     boolean isAdmin(String currentUser);
-    UserVO changeUserRole(String userId, int role) throws ServiceException;
+
+    UserVO changeUserRole(String userId, int role);
 
 }

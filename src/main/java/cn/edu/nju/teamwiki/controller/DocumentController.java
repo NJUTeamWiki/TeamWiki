@@ -1,13 +1,10 @@
 package cn.edu.nju.teamwiki.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
-import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
 import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.Constants;
 import cn.edu.nju.teamwiki.util.SessionUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,11 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author: xuyangchen

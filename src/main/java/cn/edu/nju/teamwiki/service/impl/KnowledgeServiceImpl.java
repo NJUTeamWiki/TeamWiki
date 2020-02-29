@@ -7,7 +7,6 @@ import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
 import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Category;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
 import cn.edu.nju.teamwiki.service.DocumentService;
@@ -27,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -81,7 +79,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public KnowledgeVO createKnowledge(String categoryId, String knowledgeName, String userId) throws ServiceException {
+    public KnowledgeVO createKnowledge(String categoryId, String knowledgeName, String userId) {
         List<Knowledge> knowledges = knowledgeDao.fetchByCategory(Integer.valueOf(categoryId));
         for (Knowledge knowledge : knowledges) {
             if (knowledgeName.equals(knowledge.getKName())) {
@@ -110,7 +108,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId) throws ServiceException {
+    public KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId) {
         Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
 
         checkUser(knowledge, userId);
@@ -123,7 +121,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public KnowledgeVO removeKnowledge(String knowledgeId, String userId) throws ServiceException {
+    public KnowledgeVO removeKnowledge(String knowledgeId, String userId) {
         Knowledge knowledge = knowledgeDao.fetchOneByKId(Integer.valueOf(knowledgeId));
 
         checkUser(knowledge, userId);
@@ -154,7 +152,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) throws ServiceException {
+    public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) {
         String uploadFileName = file.getOriginalFilename();
         if (uploadFileName == null || uploadFileName.isEmpty()) {
             throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
@@ -196,7 +194,7 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 //        documentDao.insert(document);
     }
 
-    private void checkUser(Knowledge knowledge, String userId) throws ServiceException {
+    private void checkUser(Knowledge knowledge, String userId) {
         if (knowledge.getPredefined()) {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }

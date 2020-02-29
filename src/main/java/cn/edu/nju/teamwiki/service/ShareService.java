@@ -10,18 +10,18 @@ import java.util.List;
  * @date: 2020/2/5
  */
 public interface ShareService {
-    List<ShareVO> getAllShares() throws ServiceException;
+    List<ShareVO> getAllShares();
 
-    List<ShareVO> getSharesByUserId(String userId) throws ServiceException;
+    List<ShareVO> getSharesByUserId(String userId);
 
-    List<ShareVO> getSharesByTitle(String shareTitle) throws ServiceException;
+    List<ShareVO> getSharesByTitle(String shareTitle);
 
     ShareVO createShare(String shareTitle, String shareContent,
-                     String userId, MultipartFile file) throws ServiceException;
+                        String userId, MultipartFile file);
 
     ShareVO updateShare(String shareId, String shareTitle,
-                     String shareContent, String userId) throws ServiceException;
+                        String shareContent, String userId);
 
-    ShareVO deleteShare(String shareId, String userId) throws ServiceException;
+    ShareVO deleteShare(String shareId, String userId);
 
 }

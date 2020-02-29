@@ -10,17 +10,17 @@ import java.util.List;
  * @date: 2020/2/5
  */
 public interface PortalService {
-    PortalVO createPortal(String portalName, String portalLink)throws ServiceException;
+    PortalVO createPortal(String portalName, String portalLink);
 
-    PortalVO deletePortal(String portalId) throws ServiceException;
+    PortalVO deletePortal(String portalId);
 
     PortalVO updatePortal(String portalId, String portalName,
-                      String portalLink) throws ServiceException;
+                          String portalLink);
 
-    void updateIcon(String portalId, MultipartFile iconFile) throws ServiceException;
+    void updateIcon(String portalId, MultipartFile iconFile);
 
-    List<PortalVO> getAllPortal() throws ServiceException;
+    List<PortalVO> getAllPortal();
 
-    PortalVO getPortalById(String portalId) throws ServiceException;
+    PortalVO getPortalById(String portalId);
 
 }

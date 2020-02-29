@@ -2,7 +2,6 @@ package cn.edu.nju.teamwiki.interceptor;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
-import cn.edu.nju.teamwiki.util.Constants;
 import cn.edu.nju.teamwiki.util.SessionUtil;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;

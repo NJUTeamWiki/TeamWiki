@@ -11,19 +11,19 @@ import java.util.List;
  */
 public interface DocumentService {
 
-    Path getDocumentDownloadPath(String documentId) throws ServiceException;
+    Path getDocumentDownloadPath(String documentId);
 
-    String getDocumentName(String documentId) throws ServiceException;
+    String getDocumentName(String documentId);
 
-    List<DocumentVO> getDocuments(String sourceId, Integer sourceType) throws ServiceException;
+    List<DocumentVO> getDocuments(String sourceId, Integer sourceType);
 
 //    void uploadDocument(String sourceId, Integer sourceType,
 //                        MultipartFile file, String userId) throws ServiceException;
 
-    DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url) throws ServiceException;
+    DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url);
 
-    DocumentVO renameDocument(String documentId, String newName, String userId) throws ServiceException;
+    DocumentVO renameDocument(String documentId, String newName, String userId);
 
-    DocumentVO deleteDocument(String documentId, String userId) throws ServiceException;
+    DocumentVO deleteDocument(String documentId, String userId);
 
 }

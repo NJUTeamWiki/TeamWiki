@@ -3,8 +3,8 @@ package cn.edu.nju.teamwiki.service.impl;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
-import cn.edu.nju.teamwiki.jooq.tables.daos.*;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.*;
+import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public class DocumentServiceImpl implements DocumentService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public Path getDocumentDownloadPath(String documentId) throws ServiceException {
+    public Path getDocumentDownloadPath(String documentId) {
         Document document = documentDao.fetchOneByDId(documentId);
         return Paths.get(twConfig.storagePath, document.getUrl());
 //        switch (document.getSourceType()) {
@@ -69,7 +69,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public String getDocumentName(String documentId) throws ServiceException {
+    public String getDocumentName(String documentId) {
         Document document = documentDao.fetchOneByDId(documentId);
         if (document == null) {
             throw new ServiceException(ResultCode.DATA_NOT_EXIST);
@@ -78,7 +78,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<DocumentVO> getDocuments(String sourceId, Integer sourceType) throws ServiceException {
+    public List<DocumentVO> getDocuments(String sourceId, Integer sourceType) {
         return documentDao.fetchBySourceId(Integer.valueOf(sourceId))
                 .stream()
                 .filter(document -> document.getSourceType().equals(sourceType))
@@ -87,7 +87,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url) throws ServiceException {
+    public DocumentVO createDocument(String documentName, String uploaderId, String sourceId, Integer sourceType, String url) {
         Document document = new Document();
         document.setDId(UUID.randomUUID().toString().replace("-", ""));
         document.setDName(documentName);
@@ -156,7 +156,7 @@ public class DocumentServiceImpl implements DocumentService {
 //    }
 
     @Override
-    public DocumentVO renameDocument(String documentId, String newName, String userId) throws ServiceException {
+    public DocumentVO renameDocument(String documentId, String newName, String userId) {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {
@@ -194,7 +194,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public DocumentVO deleteDocument(String documentId, String userId) throws ServiceException {
+    public DocumentVO deleteDocument(String documentId, String userId) {
         Document document = documentDao.fetchOneByDId(documentId);
 
         if (!userId.equals(document.getUploader().toString())) {

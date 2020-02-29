@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public List<UserVO> getAllUsers() throws ServiceException {
+    public List<UserVO> getAllUsers() {
         return userDao.findAll()
                 .stream()
                 .map(UserVO::new)
@@ -52,13 +52,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO getUserProfile(String userId) throws ServiceException {
+    public UserVO getUserProfile(String userId) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
         return new UserVO(user);
     }
 
     @Override
-    public UserVO signIn(String email, String password) throws ServiceException {
+    public UserVO signIn(String email, String password) {
         User user = userDao.fetchOneByEmail(email);
         if (user == null) {
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO signUp(String email, String password, String username) throws ServiceException {
+    public UserVO signUp(String email, String password, String username) {
         if (userDao.fetchOneByEmail(email) == null) {
             User user = new User();
             try {
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException {
+    public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         String fileName = avatarFile.getOriginalFilename();
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException {
+    public UserVO updateUserProfile(String userId, UpdateUserProfileParams params) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         if (params.username != null) {
