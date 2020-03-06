@@ -12,7 +12,26 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:teamwiki.properties")
 public class TeamWikiConfig {
 
-    @Value("${teamwiki.storage.path}")
-    public String storagePath;
+    @Value("${teamwiki.storage.root}")
+    public String rootDir;
+
+    @Value("${teamwiki.storage.img}")
+    public String imgDir;
+
+    @Value("${teamwiki.storage.img.avatar}")
+    public String avatarDir;
+
+    @Value("${teamwiki.storage.img.icon}")
+    public String iconDir;
+
+    @Value("${teamwiki.storage.doc}")
+    public String docDir;
+
+    @Value("${teamwiki.storage.doc.knowledge}")
+    public String knowledgeDir;
+
+    @Value("${teamwiki.storage.doc.share}")
+    public String shareDir;
+
 
 }

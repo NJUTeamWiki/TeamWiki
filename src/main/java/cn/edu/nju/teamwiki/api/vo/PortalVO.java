@@ -7,7 +7,7 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.Portal;
  * @date: 2020/2/5
  */
 public class PortalVO extends Portal {
-    public PortalVO(Portal portal){
+    public PortalVO(Portal portal) {
         super(portal);
     }
 }

@@ -12,16 +12,16 @@ import java.util.List;
  */
 public interface UserService {
 
-    List<UserVO> getAllUsers() throws ServiceException;
+    List<UserVO> getAllUsers();
 
-    UserVO getUserProfile(String userId) throws ServiceException;
+    UserVO getUserProfile(String userId);
 
-    UserVO signIn(String email, String password) throws ServiceException;
+    UserVO signIn(String email, String password);
 
-    UserVO signUp(String email, String password, String username) throws ServiceException;
+    UserVO signUp(String email, String password, String username);
 
-    UserVO updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException;
+    UserVO updateUserAvatar(String userId, MultipartFile avatarFile);
 
-    UserVO updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException;
+    UserVO updateUserProfile(String userId, UpdateUserProfileParams params);
 
 }

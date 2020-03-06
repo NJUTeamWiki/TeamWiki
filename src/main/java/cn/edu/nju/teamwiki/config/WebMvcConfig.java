@@ -22,22 +22,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/storage/**")
-                .addResourceLocations("file:" + twConfig.storagePath + "/");
+        registry.addResourceHandler("/img/**")
+                .addResourceLocations("file:" + twConfig.imgDir + "/");
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(signInInterceptor)
-                .excludePathPatterns("/user/sign_**")
-                .addPathPatterns("/user/**",
-                        "/admin/**",
-                        "/document/**",
-                        "/knowledge/**",
-                        "/portal/**",
-                        "/share/**",
-                        "/image/**",
-                        "/doc/**");
+                .excludePathPatterns("/api/user/sign_in",
+                        "/api/user/sign_up")
+                .addPathPatterns("/api/**");
     }
 
 }

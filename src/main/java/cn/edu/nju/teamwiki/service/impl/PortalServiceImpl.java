@@ -7,7 +7,6 @@ import cn.edu.nju.teamwiki.jooq.tables.daos.PortalDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Portal;
 import cn.edu.nju.teamwiki.service.PortalService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.StorageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class PortalServiceImpl implements PortalService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public PortalVO createPortal(String portalName, String portalLink) throws ServiceException {
+    public PortalVO createPortal(String portalName, String portalLink) {
         Portal portal = new Portal();
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
@@ -46,7 +45,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO deletePortal(String portalId) throws ServiceException {
+    public PortalVO deletePortal(String portalId) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
 //        portalDao.deleteById(Integer.valueOf(portalId));
         portalDao.delete(portal);
@@ -54,7 +53,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO updatePortal(String portalId, String portalName, String portalLink) throws ServiceException {
+    public PortalVO updatePortal(String portalId, String portalName, String portalLink) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
         portal.setPortalName(portalName);
         portal.setPortalLink(portalLink);
@@ -64,7 +63,7 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public List<PortalVO> getAllPortal() throws ServiceException {
+    public List<PortalVO> getAllPortal() {
         return portalDao.findAll()
                 .stream()
                 .map(portal -> new PortalVO(portal))
@@ -72,19 +71,19 @@ public class PortalServiceImpl implements PortalService {
     }
 
     @Override
-    public PortalVO getPortalById(String portalId) throws ServiceException {
+    public PortalVO getPortalById(String portalId) {
         return new PortalVO(portalDao.fetchOneByPortalId(Integer.valueOf(portalId)));
     }
 
     @Override
-    public void updateIcon(String portalId, MultipartFile iconFile) throws ServiceException {
+    public void updateIcon(String portalId, MultipartFile iconFile) {
         Portal portal = portalDao.fetchOneByPortalId(Integer.valueOf(portalId));
 
         String fileName = iconFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         String newFileName = portalId + UUID.randomUUID().toString().substring(0, 4) + suffixName;
 
-        File file = Paths.get(twConfig.storagePath, StorageUtil.ICON_PATH, newFileName).toFile();
+        File file = Paths.get(twConfig.iconDir, newFileName).toFile();
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }

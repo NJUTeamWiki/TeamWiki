@@ -1,12 +1,11 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.ShareVO;
-import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.SessionUtil;
+import cn.edu.nju.teamwiki.service.ShareService;
+import cn.edu.nju.teamwiki.util.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -23,7 +22,7 @@ import java.util.List;
  * @date: 2020/1/16
  */
 @RestController
-@RequestMapping("/share")
+@RequestMapping("/api/share")
 @Api(value = "分享相关接口", tags = "ShareController")
 public class ShareController {
 
@@ -75,7 +74,7 @@ public class ShareController {
             return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
         try {
-            String userId = SessionUtil.getUser(request.getSession());
+            String userId = SessionUtils.getUser(request.getSession());
             ShareVO shareVO = shareService.createShare(shareTitle, shareContent, userId, file);
             return Result.success(shareVO);
         } catch (ServiceException e) {
@@ -91,7 +90,7 @@ public class ShareController {
                               @RequestParam("content") String shareContent,
                               HttpServletRequest request) {
         try {
-            String userId = SessionUtil.getUser(request.getSession());
+            String userId = SessionUtils.getUser(request.getSession());
             ShareVO shareVO = shareService.updateShare(shareId, shareTitle, shareContent, userId);
             return Result.success(shareVO);
         } catch (ServiceException e) {
@@ -104,7 +103,7 @@ public class ShareController {
     @ApiOperation("删除一个分享")
     public Result deleteShare(@RequestParam("sid") String shareId,
                               HttpServletRequest request) {
-        String userId = SessionUtil.getUser(request.getSession());
+        String userId = SessionUtils.getUser(request.getSession());
         try {
             ShareVO shareVO = shareService.deleteShare(shareId, userId);
             return Result.success(shareVO);

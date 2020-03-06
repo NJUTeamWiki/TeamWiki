@@ -1,4 +1,4 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.vo.PortalVO;
@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
 /**
@@ -21,7 +19,7 @@ import java.util.List;
  * @date: 2020/1/16
  */
 @RestController
-@RequestMapping("/portal")
+@RequestMapping("/api/portal")
 @Api(value = "传送门相关接口", tags = "PortalController")
 public class PortalController {
 

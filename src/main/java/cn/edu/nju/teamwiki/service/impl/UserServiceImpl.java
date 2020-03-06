@@ -10,20 +10,19 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.UserService;
 import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.EncryptUtil;
-import cn.edu.nju.teamwiki.util.StorageUtil;
+import cn.edu.nju.teamwiki.util.DBUtils;
+import cn.edu.nju.teamwiki.util.EncryptUtils;
+import cn.edu.nju.teamwiki.util.StorageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public List<UserVO> getAllUsers() throws ServiceException {
+    public List<UserVO> getAllUsers() {
         return userDao.findAll()
                 .stream()
                 .map(UserVO::new)
@@ -52,19 +51,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO getUserProfile(String userId) throws ServiceException {
+    public UserVO getUserProfile(String userId) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
         return new UserVO(user);
     }
 
     @Override
-    public UserVO signIn(String email, String password) throws ServiceException {
+    public UserVO signIn(String email, String password) {
         User user = userDao.fetchOneByEmail(email);
         if (user == null) {
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
         }
         try {
-            String provide = EncryptUtil.encryptSHA(password);
+            String provide = EncryptUtils.encryptSHA(password);
             String store = user.getPassword();
             if (!provide.equals(store)) {
                 throw new ServiceException(ResultCode.USER_SIGN_IN_ERROR);
@@ -76,11 +75,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO signUp(String email, String password, String username) throws ServiceException {
+    public UserVO signUp(String email, String password, String username) {
         if (userDao.fetchOneByEmail(email) == null) {
             User user = new User();
             try {
-                user.setPassword(EncryptUtil.encryptSHA(password));
+                user.setPassword(EncryptUtils.encryptSHA(password));
             } catch (NoSuchAlgorithmException e) {
                 throw new ServiceException(ResultCode.SYSTEM_INNER_ERROR);
             }
@@ -105,35 +104,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) throws ServiceException {
+    public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         String fileName = avatarFile.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        String newFileName = userId + UUID.randomUUID().toString().substring(0, 4) + suffixName;
+        String newFileName = DBUtils.randomShortUUID() + suffixName;
 
-        File file = Paths.get(twConfig.storagePath, StorageUtil.AVATAR_PATH, newFileName).toFile();
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-
-        LOG.info("Avatar will be stored as [" + file.getPath() + "].");
-
-        try {
-            avatarFile.transferTo(file);
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
+        Path path = Paths.get(twConfig.avatarDir, newFileName);
+        LOG.info("Avatar will be stored as [" + path + "].");
+        if (!StorageUtils.storeMultipartFile(path, avatarFile)) {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        user.setAvatar(StorageUtil.AVATAR_PATH + newFileName);
+        user.setAvatar("/avatar" + newFileName);
         userDao.update(user);
 
         return new UserVO(userDao.fetchOneByUserId(user.getUserId()));
     }
 
     @Override
-    public UserVO updateUserProfile(String userId, UpdateUserProfileParams params) throws ServiceException {
+    public UserVO updateUserProfile(String userId, UpdateUserProfileParams params) {
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         if (params.username != null) {

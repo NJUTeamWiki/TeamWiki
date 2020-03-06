@@ -1,14 +1,11 @@
-package cn.edu.nju.teamwiki.controller;
+package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
-import cn.edu.nju.teamwiki.api.param.DeleteDocumentParams;
 import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
-import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.SessionUtil;
+import cn.edu.nju.teamwiki.util.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -23,18 +20,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author: xuyangchen
  * @date: 2020/1/16
  */
 @RestController
-@RequestMapping("/document")
+@RequestMapping("/api/document")
 @Api(value = "文档相关接口", tags = "DocumentController")
 public class DocumentController {
 
@@ -61,7 +55,7 @@ public class DocumentController {
     @ApiOperation("重命名当前源中的文档")
     public Result renameDocument(@RequestBody RenameDocumentParams params,
                                  HttpServletRequest request) {
-        String userId = SessionUtil.getUser(request.getSession());
+        String userId = SessionUtils.getUser(request.getSession());
         try {
             documentService.renameDocument(params.documentId, params.newName, userId);
             return Result.success();
@@ -75,7 +69,7 @@ public class DocumentController {
     @ApiOperation("删除当前源中的文档")
     public Result deleteDocument(@RequestParam("documentId") String documentId,
                                  HttpServletRequest request) {
-        String userId = SessionUtil.getUser(request.getSession());
+        String userId = SessionUtils.getUser(request.getSession());
         try {
             documentService.deleteDocument(documentId, userId);
             return Result.success();

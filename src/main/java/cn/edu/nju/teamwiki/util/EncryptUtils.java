@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
  * @author: xuyangchen
  * @date: 2020/1/16
  */
-public class EncryptUtil {
+public class EncryptUtils {
 
     public static String encryptSHA(String s) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA");

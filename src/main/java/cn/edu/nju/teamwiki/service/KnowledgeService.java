@@ -16,12 +16,12 @@ public interface KnowledgeService {
 
     List<CategoryVO> getAllKnowledge();
 
-    KnowledgeVO createKnowledge(String categoryId, String knowledgeName, String userId) throws ServiceException;
+    KnowledgeVO createKnowledge(String categoryId, String knowledgeName, String userId);
 
-    KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId) throws ServiceException;
+    KnowledgeVO renameKnowledge(String knowledgeId, String newName, String userId);
 
-    KnowledgeVO removeKnowledge(String knowledgeId, String userId) throws ServiceException;
+    KnowledgeVO removeKnowledge(String knowledgeId, String userId);
 
-    void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) throws ServiceException;
+    void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId);
 
 }

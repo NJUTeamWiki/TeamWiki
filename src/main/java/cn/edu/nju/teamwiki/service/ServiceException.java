@@ -6,7 +6,7 @@ import cn.edu.nju.teamwiki.api.ResultCode;
  * @author: xuyangchen
  * @date: 2020/1/15
  */
-public class ServiceException extends Exception {
+public class ServiceException extends RuntimeException {
 
     private ResultCode resultCode;
 

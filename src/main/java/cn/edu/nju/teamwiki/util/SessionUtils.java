@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
  * @author: xuyangchen
  * @date: 2020/2/18
  */
-public class SessionUtil {
+public class SessionUtils {
 
     private static final String SESSION_UID = "uid";
 
