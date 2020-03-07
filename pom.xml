@@ -148,13 +148,6 @@
 			<version>${jodconvertor.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
-		<dependency>
-			<groupId>org.jodconverter</groupId>
-			<artifactId>jodconverter-spring-boot-starter</artifactId>
-			<version>${jodconvertor.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>org.jodconverter</groupId>
 			<artifactId>jodconverter-local</artifactId>
