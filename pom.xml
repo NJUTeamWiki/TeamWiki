@@ -25,6 +25,7 @@
 		<swagger2.version>2.9.2</swagger2.version>
 		<sonar.version>3.7.0.1746</sonar.version>
 		<fastjson.version>1.2.62</fastjson.version>
+		<jodconvertor.version>4.2.4</jodconvertor.version>
 
 <!--		<skipDbGen>false</skipDbGen>-->
 	</properties>
@@ -140,6 +141,25 @@
 			<version>${fastjson.version}</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-core -->
+		<dependency>
+			<groupId>org.jodconverter</groupId>
+			<artifactId>jodconverter-core</artifactId>
+			<version>${jodconvertor.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
+		<dependency>
+			<groupId>org.jodconverter</groupId>
+			<artifactId>jodconverter-spring-boot-starter</artifactId>
+			<version>${jodconvertor.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jodconverter</groupId>
+			<artifactId>jodconverter-local</artifactId>
+			<version>${jodconvertor.version}</version>
+		</dependency>
 
 	</dependencies>
 

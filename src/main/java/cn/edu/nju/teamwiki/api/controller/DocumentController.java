@@ -9,6 +9,7 @@ import cn.edu.nju.teamwiki.util.SessionUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.jodconverter.DocumentConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -37,8 +40,12 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
 
+    @Autowired
+    private DocumentConverter documentConverter;
+
+
     @GetMapping
-    @ApiOperation("获取当前源的所有文档")
+    @ApiOperation("获取指定源的所有文档")
     @ApiParam
     public Result getDocuments(@RequestParam("sourceId") String sourceId,
                                @RequestParam("sourceType") Integer sourceType) {
@@ -52,7 +59,7 @@ public class DocumentController {
     }
 
     @PutMapping
-    @ApiOperation("重命名当前源中的文档")
+    @ApiOperation("重命名文档")
     public Result renameDocument(@RequestBody RenameDocumentParams params,
                                  HttpServletRequest request) {
         String userId = SessionUtils.getUser(request.getSession());
@@ -66,7 +73,7 @@ public class DocumentController {
     }
 
     @DeleteMapping
-    @ApiOperation("删除当前源中的文档")
+    @ApiOperation("删除文档")
     public Result deleteDocument(@RequestParam("documentId") String documentId,
                                  HttpServletRequest request) {
         String userId = SessionUtils.getUser(request.getSession());
@@ -83,7 +90,7 @@ public class DocumentController {
     @ApiOperation("下载文档")
     public ResponseEntity<Resource> downloadFile(@PathVariable("id") String documentId,
                                                  HttpServletRequest request) throws Exception {
-        Path documentPath = documentService.getDocumentDownloadPath(documentId);
+        Path documentPath = documentService.getDocumentAbsolutePath(documentId);
         String documentName = documentService.getDocumentName(documentId);
         Resource resource = new UrlResource(documentPath.toUri());
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -93,9 +100,21 @@ public class DocumentController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + documentName + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(documentName, "UTF-8") + "\"")
                 .body(resource);
     }
 
-
+    @GetMapping("/preview/{id}")
+    @ApiOperation("文档预览")
+    public ResponseEntity<Resource> preview(@PathVariable("id") String documentId) throws Exception {
+        File documentFile = documentService.getDocumentAbsolutePath(documentId).toFile();
+        File previewFile = File.createTempFile(documentId, ".pdf");
+        documentConverter.convert(documentFile).to(previewFile).execute();
+        previewFile.deleteOnExit();
+        Resource resource = new UrlResource(previewFile.toURI());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + previewFile.getName())
+                .body(resource);
+    }
 }

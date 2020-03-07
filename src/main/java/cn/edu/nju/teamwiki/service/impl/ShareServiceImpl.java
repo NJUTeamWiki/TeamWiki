@@ -102,7 +102,7 @@ public class ShareServiceImpl implements ShareService {
         share = getLastShare(userId);
 
         Path storagePath = Paths.get(twConfig.shareDir, share.getShareId().toString(), shareFileName);
-        Path urlPath = storagePath.relativize(Paths.get(twConfig.docDir));
+        Path urlPath = Paths.get(twConfig.docDir).relativize(storagePath);
         LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
 
         if (!StorageUtils.storeMultipartFile(storagePath, file)) {
