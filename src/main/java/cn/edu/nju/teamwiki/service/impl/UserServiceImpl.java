@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
-        user.setAvatar("/avatar" + newFileName);
+        user.setAvatar("/avatar/" + newFileName);
         userDao.update(user);
 
         return new UserVO(userDao.fetchOneByUserId(user.getUserId()));
