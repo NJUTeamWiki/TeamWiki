@@ -105,7 +105,7 @@ public class DocumentController {
     }
 
     @GetMapping("/preview/{id}")
-    @ApiOperation("文档预览")
+    @ApiOperation("以pdf形式预览文档")
     public ResponseEntity<Resource> preview(@PathVariable("id") String documentId) throws Exception {
         File documentFile = documentService.getDocumentAbsolutePath(documentId).toFile();
         File previewFile = File.createTempFile(documentId, ".pdf");
