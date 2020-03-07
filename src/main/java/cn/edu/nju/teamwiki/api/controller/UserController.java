@@ -47,8 +47,8 @@ public class UserController {
     public Result signIn(@RequestBody SignInParams params,
                          HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!SessionUtils.hasUser(session)) {
-            return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
+        if (SessionUtils.hasUser(session)) {
+            return Result.failure(ResultCode.USER_ALREADY_SIGNED_IN);
         }
         try {
             UserVO userVO = userService.signIn(params.email, params.password);
@@ -63,9 +63,13 @@ public class UserController {
     @ApiOperation("用户注册")
     public Result signUp(@RequestBody SignUpParams params,
                          HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if (SessionUtils.hasUser(session)) {
+            return Result.failure(ResultCode.USER_ALREADY_SIGNED_IN);
+        }
         try {
             UserVO userVO = userService.signUp(params.email, params.password, params.username);
-            SessionUtils.setUser(request.getSession(), userVO.getUserId().toString());
+            SessionUtils.setUser(session, userVO.getUserId().toString());
             return Result.success(userVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
@@ -84,9 +88,6 @@ public class UserController {
     public Result updateUserAvatar(@RequestParam("file") MultipartFile avatarFile,
                                    HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!SessionUtils.hasUser(session)) {
-            return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
-        }
         String userId = SessionUtils.getUser(session);
         try {
             UserVO userVO = userService.updateUserAvatar(userId, avatarFile);
@@ -112,9 +113,6 @@ public class UserController {
     public Result updateUserProfile(@RequestBody UpdateUserProfileParams params,
                                     HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (!SessionUtils.hasUser(session)) {
-            return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
-        }
         String userId = SessionUtils.getUser(session);
         try {
             UserVO userVO = userService.updateUserProfile(userId, params);
