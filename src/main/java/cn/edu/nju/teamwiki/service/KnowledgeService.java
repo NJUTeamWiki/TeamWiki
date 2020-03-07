@@ -22,6 +22,6 @@ public interface KnowledgeService {
 
     KnowledgeVO removeKnowledge(String knowledgeId, String userId);
 
-    void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId);
+    KnowledgeVO uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId);
 
 }

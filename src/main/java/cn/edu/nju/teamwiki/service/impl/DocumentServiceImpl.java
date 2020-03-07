@@ -37,7 +37,7 @@ public class DocumentServiceImpl implements DocumentService {
     private TeamWikiConfig twConfig;
 
     @Override
-    public Path getDocumentDownloadPath(String documentId) {
+    public Path getDocumentAbsolutePath(String documentId) {
         Document document = documentDao.fetchOneByDId(documentId);
         return Paths.get(twConfig.docDir, document.getUrl());
     }

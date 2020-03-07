@@ -2,6 +2,7 @@ package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.CategoryVO;
+import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
@@ -134,21 +135,22 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     }
 
     @Override
-    public void uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) {
+    public KnowledgeVO uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId) {
         String uploadFileName = file.getOriginalFilename();
         if (uploadFileName == null || uploadFileName.isEmpty()) {
             throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
         }
 
         Path storagePath = Paths.get(twConfig.knowledgeDir, DBUtils.randomUUID(), uploadFileName);
-        Path urlPath = storagePath.relativize(Paths.get(twConfig.docDir));
+        Path urlPath = Paths.get(twConfig.docDir).relativize(storagePath);
         LOG.info("Knowledge [" + knowledgeId + "]'s file will be stored as [" + storagePath + "]");
         // 将文件写入到目标路径中
-        if (!StorageUtils.storeMultipartFile(storagePath, file)){
+        if (!StorageUtils.storeMultipartFile(storagePath, file)) {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
         documentService.createDocument(uploadFileName, userId, knowledgeId, Constants.SOURCE_KNOWLEDGE, urlPath.toString());
+        return getKnowledge(knowledgeId);
     }
 
     private void checkUser(Knowledge knowledge, String userId) {

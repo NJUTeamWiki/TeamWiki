@@ -41,4 +41,18 @@ public class StorageUtils {
         return true;
     }
 
+    public static String getFileSuffixName(File file) {
+        String name = file.getName();
+        return name.substring(name.lastIndexOf(".") + 1);
+    }
+
+    public static boolean isOfficeFile(File file) {
+        String suffix = getFileSuffixName(file);
+        return suffix.equals("doc")
+                || suffix.equals("docx")
+                || suffix.equals("ppt")
+                || suffix.equals("pptx")
+                || suffix.equals("xls");
+    }
+
 }

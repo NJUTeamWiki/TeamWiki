@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface DocumentService {
 
-    Path getDocumentDownloadPath(String documentId);
+    Path getDocumentAbsolutePath(String documentId);
 
     String getDocumentName(String documentId);
 
