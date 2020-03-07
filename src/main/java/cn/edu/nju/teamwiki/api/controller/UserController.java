@@ -47,7 +47,7 @@ public class UserController {
     public Result signIn(@RequestBody SignInParams params,
                          HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtils.hasUser(session)) {
+        if (!SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         try {
@@ -84,7 +84,7 @@ public class UserController {
     public Result updateUserAvatar(@RequestParam("file") MultipartFile avatarFile,
                                    HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtils.hasUser(session)) {
+        if (!SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         String userId = SessionUtils.getUser(session);
@@ -112,7 +112,7 @@ public class UserController {
     public Result updateUserProfile(@RequestBody UpdateUserProfileParams params,
                                     HttpServletRequest request) {
         HttpSession session = request.getSession();
-        if (SessionUtils.hasUser(session)) {
+        if (!SessionUtils.hasUser(session)) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         String userId = SessionUtils.getUser(session);
@@ -127,7 +127,7 @@ public class UserController {
     @GetMapping("/check")
     @ApiOperation("检查用户是否已登陆")
     public Result checkSignIn(HttpServletRequest request) {
-        if (SessionUtils.hasUser(request.getSession())) {
+        if (!SessionUtils.hasUser(request.getSession())) {
             return Result.failure(ResultCode.USER_NOT_SIGNED_IN);
         }
         return Result.success();
