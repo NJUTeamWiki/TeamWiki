@@ -5,6 +5,7 @@ import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.param.CreateKnowledgeParams;
 import cn.edu.nju.teamwiki.api.param.RenameKnowledgeParams;
 import cn.edu.nju.teamwiki.api.vo.CategoryVO;
+import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.SessionUtils;
@@ -85,8 +86,8 @@ public class KnowledgeController {
         }
         String userId = SessionUtils.getUser(request.getSession());
         try {
-            knowledgeService.uploadDocumentToKnowledge(knowledgeId, file, userId);
-            return Result.success();
+            KnowledgeVO knowledgeVO = knowledgeService.uploadDocumentToKnowledge(knowledgeId, file, userId);
+            return Result.success(knowledgeVO);
         } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
