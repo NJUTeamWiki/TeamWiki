@@ -15,8 +15,8 @@ pipeline {
         VERSION = readMavenPom().getVersion()
 
         // Docker
-        IMAGE_NAME = "${PROJECT_NAME}"
-        IMAGE_REPO = "xuyangchen/${IMAGE_NAME}"
+        IMAGE_NAME = "xuyangchen/${PROJECT_NAME}"
+        IMAGE = "${IMAGE_NAME}:${VERSION}"
         DATA_VOLUME = "/var/data/${PROJECT_NAME}"
         LOG_VOLUME = "/var/log/${PROJECT_NAME}"
         EXPOSE_PORT = 8081
@@ -43,25 +43,23 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh "docker rmi -f ${IMAGE_NAME} || true"
-                sh "docker build -t ${IMAGE_NAME} ."
+                sh "docker rmi -f ${PROJECT_NAME} || true"
+                sh "docker build -t ${PROJECT_NAME} ."
             }
         }
         stage('Deploy') {
             steps {
                 sh "docker rm -f ${PROJECT_NAME} || true"
-                sh "docker run --name ${PROJECT_NAME} -p ${EXPOSE_PORT}:${EXPOSE_PORT} -v ${DATA_VOLUME}:${DATA_VOLUME} -v ${LOG_VOLUME}:${LOG_VOLUME} -d ${IMAGE_NAME}"
+                sh "docker run --name ${PROJECT_NAME} -p ${EXPOSE_PORT}:${EXPOSE_PORT} -v ${DATA_VOLUME}:${DATA_VOLUME} -v ${LOG_VOLUME}:${LOG_VOLUME} -d ${PROJECT_NAME}"
             }
         }
         stage('Push to Docker Hub') {
             steps {
                 sh 'mvn -Pprod -DskipTests clean package'
-                sh "docker build -t ${IMAGE_NAME}-prod ."
-                sh "docker tag ${IMAGE_NAME}-prod ${IMAGE_REPO}:${VERSION}"
-                sh "docker push ${IMAGE_REPO}:${VERSION}"
-                sh "docker rmi ${IMAGE_NAME}-prod"
+                sh "docker build -t ${IMAGE} ."
+                sh "docker push ${IMAGE}"
+                sh "docker rmi ${IMAGE}"
             }
         }
-
     }
 }
