@@ -1,0 +1,40 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent {
+        docker {
+            image 'maven3-alpine'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    options {
+        skipStagesAfterUnstable()
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn -Ptest -DskipTests clean package'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'mvn -Ptest test'
+            }
+        }
+        stage('SonarQube') {
+            steps {
+                sh 'mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh './scripts/deploy.sh'
+            }
+        }
+        stage('Deliver') {
+            steps {
+                sh './scripts/deliver.sh'
+            }
+        }
+    }
+}
