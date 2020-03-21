@@ -1,15 +1,15 @@
 #!/usr/bin/env groovy
 
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.6.3-jdk-8'
-            args '-v /root/.m2:/root/.m2 --network jenkins'
-        }
+    agent any
+    tools {
+        maven 'maven3'
+        jdk 'jdk8'
+        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker'
     }
-    options {
-        skipStagesAfterUnstable()
-    }
+//    options {
+//        skipStagesAfterUnstable()
+//    }
     stages {
         stage('Build') {
             steps {
@@ -28,12 +28,14 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh './scripts/deploy.sh'
+                sh 'chmod 777 ./jenkins/scripts/deploy.sh'
+                sh './jenkins/scripts/deploy.sh'
             }
         }
         stage('Deliver') {
             steps {
-                sh './scripts/deliver.sh'
+                sh 'chmod 777 ./jenkins/scripts/deliver.sh'
+                sh './jenkins/scripts/deliver.sh'
             }
         }
     }

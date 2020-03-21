@@ -112,7 +112,7 @@ public class DocumentController {
     public ResponseEntity<Resource> preview(@PathVariable("id") String documentId) throws Exception {
         File documentFile = documentService.getDocumentAbsolutePath(documentId).toFile();
         File previewFile;
-        if (!StorageUtils.getFileSuffixName(documentFile).equals("pdf")) {
+        if (StorageUtils.getFileSuffixName(documentFile).equals("pdf")) {
             previewFile = documentFile;
         } else {
             previewFile = File.createTempFile(StorageUtils.getFilePrefixName(documentFile), ".pdf");
