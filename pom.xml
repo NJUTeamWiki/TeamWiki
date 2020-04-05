@@ -58,12 +58,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
@@ -153,6 +147,11 @@
 			<artifactId>jodconverter-local</artifactId>
 			<version>${jodconvertor.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -193,6 +192,28 @@
 				<configuration>
 					<configurationFile>src/main/resources/jooq_config.xml</configurationFile>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<version>${liquibase.version}</version>
+				<configuration>
+					<changeLogFile>src/main/resources/db.changelog/db.changelog-master.xml</changeLogFile>
+					<driver>com.mysql.jdbc.Driver</driver>
+					<url>jdbc:mysql://172.19.241.57:3306/team_wiki</url>
+					<username>root</username>
+					<password>root</password>
+					<!--配置参数禁用弹出的对话框确认迁移在非本地数据库-->
+					<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+				</configuration>
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>process-resources</phase>-->
+<!--						<goals>-->
+<!--							<goal>update</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
 			</plugin>
 		</plugins>
 		<pluginManagement>

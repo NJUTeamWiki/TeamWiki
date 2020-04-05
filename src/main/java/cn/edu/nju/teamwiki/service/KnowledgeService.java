@@ -24,4 +24,6 @@ public interface KnowledgeService {
 
     KnowledgeVO uploadDocumentToKnowledge(String knowledgeId, MultipartFile file, String userId);
 
+    List<KnowledgeVO> recommendKnowledge(String userId);
+
 }
