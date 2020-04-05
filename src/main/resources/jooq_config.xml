@@ -2,8 +2,8 @@
 <configuration>
     <jdbc>
         <driver>com.mysql.cj.jdbc.Driver</driver>
-<!--        <url>jdbc:mysql://172.19.241.57:3306/team_wiki?serverTimezone=UTC</url>-->
-        <url>jdbc:mysql://localhost:3306/team_wiki?serverTimezone=UTC</url>
+        <url>jdbc:mysql://172.19.241.57:3306/team_wiki?serverTimezone=UTC</url>
+<!--        <url>jdbc:mysql://localhost:3306/team_wiki?serverTimezone=UTC</url>-->
         <user>root</user>
         <password>root</password>
     </jdbc>

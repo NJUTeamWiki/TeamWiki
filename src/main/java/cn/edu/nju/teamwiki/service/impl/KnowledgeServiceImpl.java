@@ -8,8 +8,10 @@ import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.Tables;
 import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.KnowledgeDao;
+import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.KnowledgeService;
 import cn.edu.nju.teamwiki.service.ServiceException;
@@ -26,7 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +48,9 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
     @Autowired
     private KnowledgeDao knowledgeDao;
+
+    @Autowired
+    private UserDao userDao;
 
     @Autowired
     private DocumentService documentService;
@@ -151,6 +159,28 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         documentService.createDocument(uploadFileName, userId, knowledgeId, Constants.SOURCE_KNOWLEDGE, urlPath.toString());
         return getKnowledge(knowledgeId);
+    }
+
+    @Override
+    public List<KnowledgeVO> recommendKnowledge(String userId) {
+        List<CategoryVO> categories = getAllKnowledge();
+        User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
+        LocalDateTime createTime = user.getCreateTime();
+        LocalDateTime now = LocalDateTime.now();
+        List<KnowledgeVO> recommendList = new LinkedList<>();
+        if (createTime.plusDays(1).isAfter(now)) {
+            // 第一天推荐First Day
+            recommendList.addAll(categories.get(0).getKnowledges());
+        } else if (createTime.plusDays(7).isAfter(now)) {
+            // 一周内推荐Workflow和First Day
+            recommendList.addAll(categories.get(1).getKnowledges());
+            recommendList.addAll(categories.get(0).getKnowledges());
+        } else {
+            // 之后推荐网站和书籍
+            recommendList.addAll(categories.get(2).getKnowledges());
+            recommendList.addAll(categories.get(3).getKnowledges());
+        }
+        return recommendList;
     }
 
     private void checkUser(Knowledge knowledge, String userId) {

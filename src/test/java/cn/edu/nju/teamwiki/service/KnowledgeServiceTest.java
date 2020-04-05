@@ -1,14 +1,19 @@
 package cn.edu.nju.teamwiki.service;
 
-import cn.edu.nju.teamwiki.api.vo.KnowledgeVO;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
+import cn.edu.nju.teamwiki.jooq.tables.daos.CategoryDao;
+import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
 
 /**
  * @author: xuyangchen
@@ -17,8 +22,39 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class KnowledgeServiceTest {
 
+    @MockBean
+    private UserDao userDao;
+
     @Autowired
     private KnowledgeService knowledgeService;
+
+    @Test
+    void testRecommend() {
+        User testUser1 = new User();
+        testUser1.setUserId(1);
+        testUser1.setCreateTime(LocalDateTime.now());
+        User testUser2 = new User();
+        testUser2.setUserId(2);
+        testUser2.setCreateTime(LocalDateTime.now().minusDays(5));
+        User testUser3 = new User();
+        testUser3.setUserId(3);
+        testUser3.setCreateTime(LocalDateTime.now().minusDays(15));
+        Mockito.when(userDao.fetchOneByUserId(testUser1.getUserId())).thenReturn(testUser1);
+        Mockito.when(userDao.fetchOneByUserId(testUser2.getUserId())).thenReturn(testUser2);
+        Mockito.when(userDao.fetchOneByUserId(testUser3.getUserId())).thenReturn(testUser3);
+
+        Assertions.assertTrue(knowledgeService.recommendKnowledge(String.valueOf(testUser1.getUserId()))
+                .stream()
+                .anyMatch(knowledgeVO -> knowledgeVO.getCategory() == 1));
+
+        Assertions.assertTrue(knowledgeService.recommendKnowledge(String.valueOf(testUser2.getUserId()))
+                .stream()
+                .anyMatch(knowledgeVO -> knowledgeVO.getCategory() == 2));
+
+        Assertions.assertTrue(knowledgeService.recommendKnowledge(String.valueOf(testUser3.getUserId()))
+                .stream()
+                .anyMatch(knowledgeVO -> knowledgeVO.getCategory() == 3 || knowledgeVO.getCategory() == 4));
+    }
 
     @Test
     void test() throws Exception {
@@ -56,5 +92,6 @@ public class KnowledgeServiceTest {
 //        assertThrows(ServiceException.class,
 //                () -> knowledgeService.removeKnowledge("1", "1"));
     }
+
 
 }

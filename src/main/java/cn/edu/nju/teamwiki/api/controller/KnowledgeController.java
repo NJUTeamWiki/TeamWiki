@@ -93,5 +93,12 @@ public class KnowledgeController {
         }
     }
 
+    @GetMapping("/recommend")
+    @ApiOperation("推荐阅读的知识")
+    public Result recommendKnowledge(HttpServletRequest request) {
+        String userId = SessionUtils.getUser(request.getSession());
+        List<KnowledgeVO> res = knowledgeService.recommendKnowledge(userId);
+        return Result.success(res);
+    }
 
 }

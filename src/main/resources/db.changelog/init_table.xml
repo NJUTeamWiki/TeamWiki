@@ -183,4 +183,12 @@
         <dropColumn tableName="portal" columnName="portal_icon"/>
     </changeSet>
 
+    <changeSet id="07" author="xuyangchen">
+        <addColumn tableName="user">
+            <column name="create_time" type="timestamp" defaultValue="now()">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
