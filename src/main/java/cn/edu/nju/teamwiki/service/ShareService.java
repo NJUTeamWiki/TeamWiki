@@ -17,7 +17,7 @@ public interface ShareService {
     List<ShareVO> getSharesByTitle(String shareTitle);
 
     ShareVO createShare(String shareTitle, String shareContent,
-                        String userId, MultipartFile file);
+                        String userId, MultipartFile[] files);
 
     ShareVO updateShare(String shareId, String shareTitle,
                         String shareContent, String userId);
