@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,12 +87,7 @@ public class ShareServiceImpl implements ShareService {
     }
 
     @Override
-    public ShareVO createShare(String shareTitle, String shareContent, String userId, MultipartFile file) {
-        String shareFileName = file.getOriginalFilename();
-        if (shareFileName == null || shareFileName.isEmpty()) {
-            throw new ServiceException(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-        }
-
+    public ShareVO createShare(String shareTitle, String shareContent, String userId, MultipartFile[] files) {
         Share share = new Share();
         share.setShareTitle(shareTitle);
         share.setShareContent(shareContent);
@@ -101,16 +97,20 @@ public class ShareServiceImpl implements ShareService {
 
         share = getLastShare(userId);
 
-        Path storagePath = Paths.get(twConfig.shareDir, share.getShareId().toString(), shareFileName);
-        Path urlPath = Paths.get(twConfig.docDir).relativize(storagePath);
-        LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
+        for (MultipartFile file : files) {
+            String shareFileName = file.getOriginalFilename();
+            Path storagePath = Paths.get(twConfig.shareDir, share.getShareId().toString(), shareFileName);
+            Path urlPath = Paths.get(twConfig.docDir).relativize(storagePath);
+            LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
 
-        if (!StorageUtils.storeMultipartFile(storagePath, file)) {
-            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+            if (!StorageUtils.storeMultipartFile(storagePath, file)) {
+                throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+            }
+
+            documentService.createDocument(shareFileName,
+                    userId, String.valueOf(share.getShareId()), Constants.SOURCE_SHARE, urlPath.toString());
         }
 
-        documentService.createDocument(shareFileName,
-                userId, String.valueOf(share.getShareId()), Constants.SOURCE_SHARE, urlPath.toString());
         List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
 
         return new ShareVO(share, documents);

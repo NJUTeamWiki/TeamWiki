@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -68,14 +69,17 @@ public class ShareController {
     @ApiOperation("创建一个分享")
     public Result createShare(@RequestParam("title") String shareTitle,
                               @RequestParam("content") String shareContent,
-                              @RequestParam("file") MultipartFile file,
+                              @RequestParam("files") MultipartFile[] files,
                               HttpServletRequest request) {
-        if (file.isEmpty()) {
-            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-        }
+        LOG.info("[CreateShare] received upload files: [{}]",
+                Arrays.stream(files).map(MultipartFile::getOriginalFilename).toArray());
+
+//        if (file.isEmpty()) {
+//            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
+//        }
         try {
             String userId = SessionUtils.getUser(request.getSession());
-            ShareVO shareVO = shareService.createShare(shareTitle, shareContent, userId, file);
+            ShareVO shareVO = shareService.createShare(shareTitle, shareContent, userId, files);
             return Result.success(shareVO);
         } catch (ServiceException e) {
             LOG.error(e.getMessage());
