@@ -15,8 +15,9 @@ public enum ResultCode {
     PARAM_IS_BLANK(10002, "参数为空"),
     PARAM_TYPE_BIND_ERROR(10003, "参数类型错误"),
     PARAM_NOT_COMPLETE(10004, "参数缺失"),
-    PARAM_INVALID_UPLOAD_FILE(10005, "上传文件无效"),
+    PARAM_INVALID_UPLOAD_FILE(10005, "上传的文件无效"),
     PARAM_INVALID_DOCUMENT_SOURCE(10006, "无效的文档源"),
+    PARAM_NOT_IMAGE(10007, "上传的文件不是图片"),
 
     /* 用户错误：20001-29999*/
     USER_NOT_SIGNED_IN(20001, "用户未登录"),
@@ -31,7 +32,7 @@ public enum ResultCode {
     SPECIFIED_KNOWLEDGE_EXISTS(30002, "同名知识已存在"),
 
     /* 系统错误：40001-49999 */
-    SYSTEM_INNER_ERROR(40001, "系统繁忙，请稍后重试"),
+    SYSTEM_INTERNAL_ERROR(40001, "系统繁忙，请稍后重试"),
     SYSTEM_FILE_ERROR(40002, "文件读写时发生异常"),
 
     /* 数据错误：50001-599999 */
