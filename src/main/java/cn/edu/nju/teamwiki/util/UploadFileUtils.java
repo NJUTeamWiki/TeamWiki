@@ -18,7 +18,7 @@ public class UploadFileUtils {
 
     public static boolean isImage(MultipartFile file) throws IOException {
         BufferedImage bi = ImageIO.read(file.getInputStream());
-        return bi != null && bi.getWidth() <= 0 && bi.getHeight() <= 0;
+        return bi != null && bi.getWidth() > 0 && bi.getHeight() > 0;
     }
 
     public static void transfer(MultipartFile file, Path storagePath) throws IOException {
