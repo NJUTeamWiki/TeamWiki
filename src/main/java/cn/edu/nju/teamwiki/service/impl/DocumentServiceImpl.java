@@ -4,7 +4,9 @@ import cn.edu.nju.teamwiki.api.ResultCode;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
 import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
+import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.StorageUtils;
@@ -34,6 +36,9 @@ public class DocumentServiceImpl implements DocumentService {
     private DocumentDao documentDao;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private TeamWikiConfig twConfig;
 
     @Override
@@ -56,7 +61,12 @@ public class DocumentServiceImpl implements DocumentService {
         return documentDao.fetchBySourceId(Integer.valueOf(sourceId))
                 .stream()
                 .filter(document -> document.getSourceType().equals(sourceType))
-                .map(DocumentVO::new)
+                .map(document -> {
+                    User uploader = userDao.fetchOneByUserId(document.getUploader());
+                    DocumentVO documentVO = new DocumentVO(document);
+                    documentVO.setUploaderName(uploader.getUsername());
+                    return documentVO;
+                })
                 .collect(Collectors.toList());
     }
 
