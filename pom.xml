@@ -201,6 +201,7 @@
 					<changeLogFile>src/main/resources/db.changelog/db.changelog-master.xml</changeLogFile>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<url>jdbc:mysql://172.19.241.57:3306/team_wiki</url>
+<!--					<url>jdbc:mysql://localhost:3306/team_wiki</url>-->
 					<username>root</username>
 					<password>root</password>
 					<!--配置参数禁用弹出的对话框确认迁移在非本地数据库-->

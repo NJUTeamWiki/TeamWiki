@@ -6,6 +6,7 @@ package cn.edu.nju.teamwiki.jooq;
 
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
+import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
 import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
@@ -37,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TeamWiki extends SchemaImpl {
 
-    private static final long serialVersionUID = -282899497;
+    private static final long serialVersionUID = -1044772846;
 
     /**
      * The reference instance of <code>team_wiki</code>
@@ -53,6 +54,11 @@ public class TeamWiki extends SchemaImpl {
      * The table <code>team_wiki.document</code>.
      */
     public final Document DOCUMENT = cn.edu.nju.teamwiki.jooq.tables.Document.DOCUMENT;
+
+    /**
+     * The table <code>team_wiki.document_activities</code>.
+     */
+    public final DocumentActivities DOCUMENT_ACTIVITIES = cn.edu.nju.teamwiki.jooq.tables.DocumentActivities.DOCUMENT_ACTIVITIES;
 
     /**
      * A table to contain all knowledge
@@ -108,6 +114,7 @@ public class TeamWiki extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Category.CATEGORY,
             Document.DOCUMENT,
+            DocumentActivities.DOCUMENT_ACTIVITIES,
             Knowledge.KNOWLEDGE,
             Portal.PORTAL,
             Role.ROLE,

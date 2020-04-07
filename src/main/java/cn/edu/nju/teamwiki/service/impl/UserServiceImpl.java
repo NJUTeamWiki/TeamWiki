@@ -9,16 +9,14 @@ import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.UserService;
-import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.DBUtils;
-import cn.edu.nju.teamwiki.util.EncryptUtils;
-import cn.edu.nju.teamwiki.util.StorageUtils;
+import cn.edu.nju.teamwiki.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
@@ -70,7 +68,7 @@ public class UserServiceImpl implements UserService {
             }
             return new UserVO(user);
         } catch (NoSuchAlgorithmException e) {
-            throw new ServiceException(ResultCode.SYSTEM_INNER_ERROR);
+            throw new ServiceException(ResultCode.SYSTEM_INTERNAL_ERROR);
         }
     }
 
@@ -81,7 +79,7 @@ public class UserServiceImpl implements UserService {
             try {
                 user.setPassword(EncryptUtils.encryptSHA(password));
             } catch (NoSuchAlgorithmException e) {
-                throw new ServiceException(ResultCode.SYSTEM_INNER_ERROR);
+                throw new ServiceException(ResultCode.SYSTEM_INTERNAL_ERROR);
             }
             user.setEmail(email);
             user.setUsername(username);
@@ -105,6 +103,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserVO updateUserAvatar(String userId, MultipartFile avatarFile) {
+        try {
+            if (!UploadFileUtils.isImage(avatarFile)) {
+                throw new ServiceException(ResultCode.PARAM_NOT_IMAGE);
+            }
+        } catch (IOException e) {
+            LOG.error("检查上传头像文件是否是图片时失败", e);
+            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+        }
         User user = userDao.fetchOneByUserId(Integer.valueOf(userId));
 
         String fileName = avatarFile.getOriginalFilename();
@@ -113,7 +119,10 @@ public class UserServiceImpl implements UserService {
 
         Path path = Paths.get(twConfig.avatarDir, newFileName);
         LOG.info("Avatar will be stored as [" + path + "].");
-        if (!StorageUtils.storeMultipartFile(path, avatarFile)) {
+        try {
+            UploadFileUtils.transfer(avatarFile, path);
+        } catch (IOException e) {
+            LOG.error("上传图片保存为头像失败", e);
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 

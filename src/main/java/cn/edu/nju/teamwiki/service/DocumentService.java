@@ -1,5 +1,6 @@
 package cn.edu.nju.teamwiki.service;
 
+import cn.edu.nju.teamwiki.api.vo.DocumentActivityVO;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 
 import java.nio.file.Path;
@@ -25,5 +26,7 @@ public interface DocumentService {
     DocumentVO renameDocument(String documentId, String newName, String userId);
 
     DocumentVO deleteDocument(String documentId, String userId);
+
+    List<DocumentActivityVO> getDocumentActivities();
 
 }

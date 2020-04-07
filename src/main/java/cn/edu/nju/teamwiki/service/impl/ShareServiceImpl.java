@@ -13,6 +13,7 @@ import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.util.Constants;
 import cn.edu.nju.teamwiki.util.StorageUtils;
+import cn.edu.nju.teamwiki.util.UploadFileUtils;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -103,7 +105,10 @@ public class ShareServiceImpl implements ShareService {
             Path urlPath = Paths.get(twConfig.docDir).relativize(storagePath);
             LOG.info("Share [" + share.getShareId() + "]'s file will be stored as [" + storagePath + "]");
 
-            if (!StorageUtils.storeMultipartFile(storagePath, file)) {
+            try {
+                UploadFileUtils.transfer(file, storagePath);
+            } catch (IOException e) {
+                LOG.error("上传文件保存到Share时失败", e);
                 throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
             }
 

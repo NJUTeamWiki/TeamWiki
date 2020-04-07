@@ -6,6 +6,7 @@ package cn.edu.nju.teamwiki.jooq;
 
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
+import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
 import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
@@ -13,6 +14,7 @@ import cn.edu.nju.teamwiki.jooq.tables.Share;
 import cn.edu.nju.teamwiki.jooq.tables.Source;
 import cn.edu.nju.teamwiki.jooq.tables.User;
 import cn.edu.nju.teamwiki.jooq.tables.records.CategoryRecord;
+import cn.edu.nju.teamwiki.jooq.tables.records.DocumentActivitiesRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.DocumentRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.KnowledgeRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.PortalRecord;
@@ -63,6 +65,7 @@ public class Keys {
     public static final UniqueKey<CategoryRecord> KEY_CATEGORY_CATEGORY_ID = UniqueKeys0.KEY_CATEGORY_CATEGORY_ID;
     public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_PRIMARY = UniqueKeys0.KEY_DOCUMENT_PRIMARY;
     public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_D_ID = UniqueKeys0.KEY_DOCUMENT_D_ID;
+    public static final UniqueKey<DocumentActivitiesRecord> KEY_DOCUMENT_ACTIVITIES_PRIMARY = UniqueKeys0.KEY_DOCUMENT_ACTIVITIES_PRIMARY;
     public static final UniqueKey<KnowledgeRecord> KEY_KNOWLEDGE_PRIMARY = UniqueKeys0.KEY_KNOWLEDGE_PRIMARY;
     public static final UniqueKey<KnowledgeRecord> KEY_KNOWLEDGE_K_ID = UniqueKeys0.KEY_KNOWLEDGE_K_ID;
     public static final UniqueKey<PortalRecord> KEY_PORTAL_PRIMARY = UniqueKeys0.KEY_PORTAL_PRIMARY;
@@ -107,6 +110,7 @@ public class Keys {
         public static final UniqueKey<CategoryRecord> KEY_CATEGORY_CATEGORY_ID = Internal.createUniqueKey(Category.CATEGORY, "KEY_category_category_id", Category.CATEGORY.CATEGORY_ID);
         public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_PRIMARY = Internal.createUniqueKey(Document.DOCUMENT, "KEY_document_PRIMARY", Document.DOCUMENT.D_ID);
         public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_D_ID = Internal.createUniqueKey(Document.DOCUMENT, "KEY_document_d_id", Document.DOCUMENT.D_ID);
+        public static final UniqueKey<DocumentActivitiesRecord> KEY_DOCUMENT_ACTIVITIES_PRIMARY = Internal.createUniqueKey(DocumentActivities.DOCUMENT_ACTIVITIES, "KEY_document_activities_PRIMARY", DocumentActivities.DOCUMENT_ACTIVITIES.DOCUMENT_ID, DocumentActivities.DOCUMENT_ACTIVITIES.USER_ID, DocumentActivities.DOCUMENT_ACTIVITIES.ACTION, DocumentActivities.DOCUMENT_ACTIVITIES.TIME);
         public static final UniqueKey<KnowledgeRecord> KEY_KNOWLEDGE_PRIMARY = Internal.createUniqueKey(Knowledge.KNOWLEDGE, "KEY_knowledge_PRIMARY", Knowledge.KNOWLEDGE.K_ID);
         public static final UniqueKey<KnowledgeRecord> KEY_KNOWLEDGE_K_ID = Internal.createUniqueKey(Knowledge.KNOWLEDGE, "KEY_knowledge_k_id", Knowledge.KNOWLEDGE.K_ID);
         public static final UniqueKey<PortalRecord> KEY_PORTAL_PRIMARY = Internal.createUniqueKey(Portal.PORTAL, "KEY_portal_PRIMARY", Portal.PORTAL.PORTAL_ID);

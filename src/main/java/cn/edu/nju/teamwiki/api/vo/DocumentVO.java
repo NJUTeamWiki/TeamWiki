@@ -8,8 +8,17 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
  */
 public class DocumentVO extends Document {
 
+    private String uploaderName;
+
     public DocumentVO(Document document) {
         super(document);
     }
 
+    public String getUploaderName() {
+        return uploaderName;
+    }
+
+    public void setUploaderName(String uploaderName) {
+        this.uploaderName = uploaderName;
+    }
 }
