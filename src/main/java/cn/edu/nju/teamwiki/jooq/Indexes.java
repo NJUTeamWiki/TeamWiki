@@ -6,6 +6,7 @@ package cn.edu.nju.teamwiki.jooq;
 
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
+import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
 import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
@@ -42,6 +43,7 @@ public class Indexes {
     public static final Index DOCUMENT_DOCUMENT_SOURCE_FK = Indexes0.DOCUMENT_DOCUMENT_SOURCE_FK;
     public static final Index DOCUMENT_D_ID = Indexes0.DOCUMENT_D_ID;
     public static final Index DOCUMENT_PRIMARY = Indexes0.DOCUMENT_PRIMARY;
+    public static final Index DOCUMENT_ACTIVITIES_PRIMARY = Indexes0.DOCUMENT_ACTIVITIES_PRIMARY;
     public static final Index KNOWLEDGE_KNOWLEDGE_CATEGORY_FK = Indexes0.KNOWLEDGE_KNOWLEDGE_CATEGORY_FK;
     public static final Index KNOWLEDGE_KNOWLEDGE_CREATOR_FK = Indexes0.KNOWLEDGE_KNOWLEDGE_CREATOR_FK;
     public static final Index KNOWLEDGE_K_ID = Indexes0.KNOWLEDGE_K_ID;
@@ -71,6 +73,7 @@ public class Indexes {
         public static Index DOCUMENT_DOCUMENT_SOURCE_FK = Internal.createIndex("document_source_fk", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.SOURCE_TYPE }, false);
         public static Index DOCUMENT_D_ID = Internal.createIndex("d_id", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.D_ID }, true);
         public static Index DOCUMENT_PRIMARY = Internal.createIndex("PRIMARY", Document.DOCUMENT, new OrderField[] { Document.DOCUMENT.D_ID }, true);
+        public static Index DOCUMENT_ACTIVITIES_PRIMARY = Internal.createIndex("PRIMARY", DocumentActivities.DOCUMENT_ACTIVITIES, new OrderField[] { DocumentActivities.DOCUMENT_ACTIVITIES.DOCUMENT_ID, DocumentActivities.DOCUMENT_ACTIVITIES.USER_ID, DocumentActivities.DOCUMENT_ACTIVITIES.ACTION, DocumentActivities.DOCUMENT_ACTIVITIES.TIME }, true);
         public static Index KNOWLEDGE_KNOWLEDGE_CATEGORY_FK = Internal.createIndex("knowledge_category_fk", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.CATEGORY }, false);
         public static Index KNOWLEDGE_KNOWLEDGE_CREATOR_FK = Internal.createIndex("knowledge_creator_fk", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.CREATOR }, false);
         public static Index KNOWLEDGE_K_ID = Internal.createIndex("k_id", Knowledge.KNOWLEDGE, new OrderField[] { Knowledge.KNOWLEDGE.K_ID }, true);

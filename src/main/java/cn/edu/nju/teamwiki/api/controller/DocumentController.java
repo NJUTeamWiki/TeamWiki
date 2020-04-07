@@ -2,8 +2,8 @@ package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.param.RenameDocumentParams;
+import cn.edu.nju.teamwiki.api.vo.DocumentActivityVO;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
-import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.OfficeUtils;
@@ -12,10 +12,6 @@ import cn.edu.nju.teamwiki.util.StorageUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.jodconverter.DocumentConverter;
-import org.jodconverter.office.LocalOfficeManager;
-import org.jodconverter.office.OfficeException;
-import org.jodconverter.office.OfficeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,5 +119,17 @@ public class DocumentController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=" + previewFile.getName())
                 .body(new UrlResource(previewFile.toURI()));
+    }
+
+    @GetMapping("/activities")
+    @ApiOperation("获取文档相关活动")
+    public Result getActivities() throws Exception {
+        try {
+            List<DocumentActivityVO> result = documentService.getDocumentActivities();
+            return Result.success(result);
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
+
     }
 }

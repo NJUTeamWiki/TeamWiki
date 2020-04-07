@@ -6,6 +6,7 @@ package cn.edu.nju.teamwiki.jooq;
 
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
+import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
 import cn.edu.nju.teamwiki.jooq.tables.Knowledge;
 import cn.edu.nju.teamwiki.jooq.tables.Portal;
 import cn.edu.nju.teamwiki.jooq.tables.Role;
@@ -38,6 +39,11 @@ public class Tables {
      * The table <code>team_wiki.document</code>.
      */
     public static final Document DOCUMENT = Document.DOCUMENT;
+
+    /**
+     * The table <code>team_wiki.document_activities</code>.
+     */
+    public static final DocumentActivities DOCUMENT_ACTIVITIES = DocumentActivities.DOCUMENT_ACTIVITIES;
 
     /**
      * A table to contain all knowledge

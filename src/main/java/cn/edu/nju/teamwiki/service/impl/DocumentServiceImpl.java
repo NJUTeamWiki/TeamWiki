@@ -1,15 +1,20 @@
 package cn.edu.nju.teamwiki.service.impl;
 
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.DocumentActivityVO;
 import cn.edu.nju.teamwiki.api.vo.DocumentVO;
 import cn.edu.nju.teamwiki.config.TeamWikiConfig;
+import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentActivitiesDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.DocumentDao;
 import cn.edu.nju.teamwiki.jooq.tables.daos.UserDao;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.Document;
+import cn.edu.nju.teamwiki.jooq.tables.pojos.DocumentActivities;
 import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
+import cn.edu.nju.teamwiki.util.Constants;
 import cn.edu.nju.teamwiki.util.StorageUtils;
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static cn.edu.nju.teamwiki.jooq.Tables.DOCUMENT_ACTIVITIES;
+
 /**
  * @author: xuyangchen
  * @date: 2020/1/16
@@ -34,6 +41,12 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Autowired
     private DocumentDao documentDao;
+
+    @Autowired
+    private DocumentActivitiesDao activitiesDao;
+
+    @Autowired
+    private DSLContext dslContext;
 
     @Autowired
     private UserDao userDao;
@@ -83,6 +96,13 @@ public class DocumentServiceImpl implements DocumentService {
         document.setModifiedTime(document.getUploadedTime());
         documentDao.insert(document);
 
+        DocumentActivities activity = new DocumentActivities();
+        activity.setUserId(document.getUploader());
+        activity.setAction(Constants.ACTION_CREATE);
+        activity.setDocumentId(document.getDId());
+        activity.setTime(document.getUploadedTime());
+        activitiesDao.insert(activity);
+
         return new DocumentVO(document);
     }
 
@@ -106,6 +126,13 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
         }
 
+        DocumentActivities activity = new DocumentActivities();
+        activity.setUserId(document.getUploader());
+        activity.setAction(Constants.ACTION_UPDATE);
+        activity.setDocumentId(document.getDId());
+        activity.setTime(document.getModifiedTime());
+        activitiesDao.insert(activity);
+
         return new DocumentVO(documentDao.fetchOneByDId(document.getDId()));
     }
 
@@ -124,6 +151,34 @@ public class DocumentServiceImpl implements DocumentService {
 
         documentDao.delete(document);
 
+        DocumentActivities activity = new DocumentActivities();
+        activity.setUserId(document.getUploader());
+        activity.setAction(Constants.ACTION_DELETE);
+        activity.setDocumentId(document.getDId());
+        activity.setTime(LocalDateTime.now());
+        activitiesDao.insert(activity);
+
         return new DocumentVO(document);
+    }
+
+    @Override
+    public List<DocumentActivityVO> getDocumentActivities() {
+        List<DocumentActivities> documentActivities = dslContext.selectFrom(DOCUMENT_ACTIVITIES)
+                .orderBy(DOCUMENT_ACTIVITIES.TIME)
+                .limit(20)
+                .fetchInto(DocumentActivities.class);
+
+        List<DocumentActivityVO> vos = documentActivities.stream().map(documentActivity -> {
+            Document document = documentDao.fetchOneByDId(documentActivity.getDocumentId());
+            User user = userDao.fetchOneByUserId(documentActivity.getUserId());
+            DocumentActivityVO activityVO = new DocumentActivityVO(
+                    String.valueOf(user.getUserId()), user.getUsername(), user.getAvatar(),
+                    documentActivity.getAction(),
+                    document.getDId(), document.getDName(),
+                    documentActivity.getTime().toString());
+            return activityVO;
+        }).collect(Collectors.toList());
+
+        return vos;
     }
 }
