@@ -4,6 +4,7 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
+import cn.edu.nju.teamwiki.jooq.tables.Announcement;
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
 import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
@@ -29,6 +30,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>team_wiki.announcement</code>.
+     */
+    public static final Announcement ANNOUNCEMENT = Announcement.ANNOUNCEMENT;
 
     /**
      * The table <code>team_wiki.category</code>.

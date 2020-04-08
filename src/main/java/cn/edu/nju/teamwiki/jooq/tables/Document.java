@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Document extends TableImpl<DocumentRecord> {
 
-    private static final long serialVersionUID = 468277577;
+    private static final long serialVersionUID = -502644025;
 
     /**
      * The reference instance of <code>team_wiki.document</code>
@@ -137,7 +137,7 @@ public class Document extends TableImpl<DocumentRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOCUMENT_DOCUMENT_SOURCE_FK, Indexes.DOCUMENT_D_ID, Indexes.DOCUMENT_PRIMARY);
+        return Arrays.<Index>asList(Indexes.DOCUMENT_D_ID, Indexes.DOCUMENT_DOCUMENT_SOURCE_FK, Indexes.DOCUMENT_PRIMARY);
     }
 
     @Override

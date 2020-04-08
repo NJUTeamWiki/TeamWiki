@@ -4,6 +4,7 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
+import cn.edu.nju.teamwiki.jooq.tables.Announcement;
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
 import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
@@ -13,6 +14,7 @@ import cn.edu.nju.teamwiki.jooq.tables.Role;
 import cn.edu.nju.teamwiki.jooq.tables.Share;
 import cn.edu.nju.teamwiki.jooq.tables.Source;
 import cn.edu.nju.teamwiki.jooq.tables.User;
+import cn.edu.nju.teamwiki.jooq.tables.records.AnnouncementRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.CategoryRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.DocumentActivitiesRecord;
 import cn.edu.nju.teamwiki.jooq.tables.records.DocumentRecord;
@@ -49,6 +51,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<AnnouncementRecord, Integer> IDENTITY_ANNOUNCEMENT = Identities0.IDENTITY_ANNOUNCEMENT;
     public static final Identity<CategoryRecord, Integer> IDENTITY_CATEGORY = Identities0.IDENTITY_CATEGORY;
     public static final Identity<KnowledgeRecord, Integer> IDENTITY_KNOWLEDGE = Identities0.IDENTITY_KNOWLEDGE;
     public static final Identity<PortalRecord, Integer> IDENTITY_PORTAL = Identities0.IDENTITY_PORTAL;
@@ -61,6 +64,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AnnouncementRecord> KEY_ANNOUNCEMENT_PRIMARY = UniqueKeys0.KEY_ANNOUNCEMENT_PRIMARY;
+    public static final UniqueKey<AnnouncementRecord> KEY_ANNOUNCEMENT_ANNOUNCEMENT_ID = UniqueKeys0.KEY_ANNOUNCEMENT_ANNOUNCEMENT_ID;
     public static final UniqueKey<CategoryRecord> KEY_CATEGORY_PRIMARY = UniqueKeys0.KEY_CATEGORY_PRIMARY;
     public static final UniqueKey<CategoryRecord> KEY_CATEGORY_CATEGORY_ID = UniqueKeys0.KEY_CATEGORY_CATEGORY_ID;
     public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_PRIMARY = UniqueKeys0.KEY_DOCUMENT_PRIMARY;
@@ -96,6 +101,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<AnnouncementRecord, Integer> IDENTITY_ANNOUNCEMENT = Internal.createIdentity(Announcement.ANNOUNCEMENT, Announcement.ANNOUNCEMENT.ANNOUNCEMENT_ID);
         public static Identity<CategoryRecord, Integer> IDENTITY_CATEGORY = Internal.createIdentity(Category.CATEGORY, Category.CATEGORY.CATEGORY_ID);
         public static Identity<KnowledgeRecord, Integer> IDENTITY_KNOWLEDGE = Internal.createIdentity(Knowledge.KNOWLEDGE, Knowledge.KNOWLEDGE.K_ID);
         public static Identity<PortalRecord, Integer> IDENTITY_PORTAL = Internal.createIdentity(Portal.PORTAL, Portal.PORTAL.PORTAL_ID);
@@ -106,6 +112,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<AnnouncementRecord> KEY_ANNOUNCEMENT_PRIMARY = Internal.createUniqueKey(Announcement.ANNOUNCEMENT, "KEY_announcement_PRIMARY", Announcement.ANNOUNCEMENT.ANNOUNCEMENT_ID);
+        public static final UniqueKey<AnnouncementRecord> KEY_ANNOUNCEMENT_ANNOUNCEMENT_ID = Internal.createUniqueKey(Announcement.ANNOUNCEMENT, "KEY_announcement_announcement_id", Announcement.ANNOUNCEMENT.ANNOUNCEMENT_ID);
         public static final UniqueKey<CategoryRecord> KEY_CATEGORY_PRIMARY = Internal.createUniqueKey(Category.CATEGORY, "KEY_category_PRIMARY", Category.CATEGORY.CATEGORY_ID);
         public static final UniqueKey<CategoryRecord> KEY_CATEGORY_CATEGORY_ID = Internal.createUniqueKey(Category.CATEGORY, "KEY_category_category_id", Category.CATEGORY.CATEGORY_ID);
         public static final UniqueKey<DocumentRecord> KEY_DOCUMENT_PRIMARY = Internal.createUniqueKey(Document.DOCUMENT, "KEY_document_PRIMARY", Document.DOCUMENT.D_ID);

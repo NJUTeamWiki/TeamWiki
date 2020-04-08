@@ -35,7 +35,7 @@
 
     <changeSet id="03" author="XuYangchen">
         <comment>Inserting predefined knowledge</comment>
-        <sqlFile path="init_knowledge.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/init_knowledge.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
     <changeSet id="04" author="Xuyangchen">
@@ -50,7 +50,7 @@
 
     <changeSet id="05" author="xuyangchen">
         <comment>Insert some fake data</comment>
-        <sqlFile path="init_portal.sql" relativeToChangelogFile="true"/>
-        <sqlFile path="init_book.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/init_portal.sql" relativeToChangelogFile="true"/>
+        <sqlFile path="sql/init_book.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>
