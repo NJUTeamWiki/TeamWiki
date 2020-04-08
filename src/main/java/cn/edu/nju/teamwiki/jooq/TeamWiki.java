@@ -4,6 +4,7 @@
 package cn.edu.nju.teamwiki.jooq;
 
 
+import cn.edu.nju.teamwiki.jooq.tables.Announcement;
 import cn.edu.nju.teamwiki.jooq.tables.Category;
 import cn.edu.nju.teamwiki.jooq.tables.Document;
 import cn.edu.nju.teamwiki.jooq.tables.DocumentActivities;
@@ -38,12 +39,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TeamWiki extends SchemaImpl {
 
-    private static final long serialVersionUID = -1044772846;
+    private static final long serialVersionUID = -1763356439;
 
     /**
      * The reference instance of <code>team_wiki</code>
      */
     public static final TeamWiki TEAM_WIKI = new TeamWiki();
+
+    /**
+     * The table <code>team_wiki.announcement</code>.
+     */
+    public final Announcement ANNOUNCEMENT = cn.edu.nju.teamwiki.jooq.tables.Announcement.ANNOUNCEMENT;
 
     /**
      * The table <code>team_wiki.category</code>.
@@ -112,6 +118,7 @@ public class TeamWiki extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Announcement.ANNOUNCEMENT,
             Category.CATEGORY,
             Document.DOCUMENT,
             DocumentActivities.DOCUMENT_ACTIVITIES,

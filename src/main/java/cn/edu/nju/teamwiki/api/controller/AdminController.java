@@ -2,6 +2,7 @@ package cn.edu.nju.teamwiki.api.controller;
 
 import cn.edu.nju.teamwiki.api.Result;
 import cn.edu.nju.teamwiki.api.ResultCode;
+import cn.edu.nju.teamwiki.api.vo.AnnouncementVO;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
 import cn.edu.nju.teamwiki.service.AdminService;
 import cn.edu.nju.teamwiki.service.ServiceException;
@@ -61,6 +62,33 @@ public class AdminController {
             return Result.success();
         } catch (ServiceException e) {
             LOG.error("上传Logo失败", e);
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @GetMapping("/announcement")
+    @ApiOperation("获取网站公告")
+    public Result getAnnouncement() {
+        try {
+            AnnouncementVO announcement = adminService.getAnnouncement();
+            return Result.success(announcement);
+        } catch (ServiceException e) {
+            return Result.failure(e.getResultCode());
+        }
+    }
+
+    @PutMapping("/announcement")
+    @ApiOperation("修改网站公告")
+    public Result publishAnnouncement(@RequestParam("content") String content,
+                                      HttpServletRequest request) {
+        String currentUser = SessionUtils.getUser(request.getSession());
+        if (!adminService.isAdmin(currentUser)) {
+            return Result.failure(ResultCode.PERMISSION_NO_MODIFY);
+        }
+        try {
+            AnnouncementVO announcementVO = adminService.publishAnnouncement(content);
+            return Result.success(announcementVO);
+        } catch (ServiceException e) {
             return Result.failure(e.getResultCode());
         }
     }

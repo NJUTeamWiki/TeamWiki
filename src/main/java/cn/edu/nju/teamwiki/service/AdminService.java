@@ -1,5 +1,6 @@
 package cn.edu.nju.teamwiki.service;
 
+import cn.edu.nju.teamwiki.api.vo.AnnouncementVO;
 import cn.edu.nju.teamwiki.api.vo.UserVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,5 +15,9 @@ public interface AdminService {
     UserVO changeUserRole(String userId, int role);
 
     void uploadLogo(MultipartFile file);
+
+    AnnouncementVO getAnnouncement();
+
+    AnnouncementVO publishAnnouncement(String content);
 
 }
