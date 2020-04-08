@@ -19,7 +19,7 @@ public class UploadFileUtils {
     public static boolean isValid(MultipartFile file) {
         return !file.isEmpty()
                 && file.getOriginalFilename() != null
-                && file.getOriginalFilename().isEmpty();
+                && !file.getOriginalFilename().isEmpty();
     }
 
     public static boolean isImage(MultipartFile file) throws IOException {
