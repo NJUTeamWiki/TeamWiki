@@ -16,6 +16,12 @@ import java.nio.file.Path;
  */
 public class UploadFileUtils {
 
+    public static boolean isValid(MultipartFile file) {
+        return !file.isEmpty()
+                && file.getOriginalFilename() != null
+                && file.getOriginalFilename().isEmpty();
+    }
+
     public static boolean isImage(MultipartFile file) throws IOException {
         BufferedImage bi = ImageIO.read(file.getInputStream());
         return bi != null && bi.getWidth() > 0 && bi.getHeight() > 0;

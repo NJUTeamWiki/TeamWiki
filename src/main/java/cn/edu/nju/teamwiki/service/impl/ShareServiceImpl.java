@@ -27,6 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,12 +58,16 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public List<ShareVO> getAllShares() {
-
         return shareDao.findAll()
                 .stream()
                 .map(share -> {
                     List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
                     return new ShareVO(share, documents);
+                })
+                .sorted((o1, o2) -> {
+                    LocalDateTime t1 = o1.getShareTime();
+                    LocalDateTime t2 = o2.getShareTime();
+                    return t2.compareTo(t1);
                 })
                 .collect(Collectors.toList());
     }
@@ -74,6 +80,11 @@ public class ShareServiceImpl implements ShareService {
                     List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
                     return new ShareVO(share, documents);
                 })
+                .sorted((o1, o2) -> {
+                    LocalDateTime t1 = o1.getShareTime();
+                    LocalDateTime t2 = o2.getShareTime();
+                    return t2.compareTo(t1);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -84,6 +95,11 @@ public class ShareServiceImpl implements ShareService {
                 .map(share -> {
                     List<Document> documents = getShareDocuments(String.valueOf(share.getShareId()));
                     return new ShareVO(share, documents);
+                })
+                .sorted((o1, o2) -> {
+                    LocalDateTime t1 = o1.getShareTime();
+                    LocalDateTime t2 = o2.getShareTime();
+                    return t2.compareTo(t1);
                 })
                 .collect(Collectors.toList());
     }

@@ -6,6 +6,7 @@ import cn.edu.nju.teamwiki.api.vo.ShareVO;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.service.ShareService;
 import cn.edu.nju.teamwiki.util.SessionUtils;
+import cn.edu.nju.teamwiki.util.UploadFileUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -71,12 +72,13 @@ public class ShareController {
                               @RequestParam("content") String shareContent,
                               @RequestParam("files") MultipartFile[] files,
                               HttpServletRequest request) {
-        LOG.info("[CreateShare] received upload files: [{}]",
+        LOG.info("[CreateShare] received upload files: %s",
                 Arrays.stream(files).map(MultipartFile::getOriginalFilename).toArray());
-
-//        if (file.isEmpty()) {
-//            return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
-//        }
+        for (MultipartFile file: files) {
+            if (!UploadFileUtils.isValid(file)) {
+                return Result.failure(ResultCode.PARAM_INVALID_UPLOAD_FILE);
+            }
+        }
         try {
             String userId = SessionUtils.getUser(request.getSession());
             ShareVO shareVO = shareService.createShare(shareTitle, shareContent, userId, files);
