@@ -1,4 +1,8 @@
 version: '3'
+volumes:
+  teamwiki-mysql-data:
+  teamwiki-data:
+  teamwiki-log:
 services:
   teamwiki-mysql:
     image: mysql
@@ -34,7 +38,7 @@ services:
     image: teamwiki-web
     container_name: teamwiki-web
     ports:
-      - 8080:8080
+      - 80:80
     links:
       - teamwiki
     depends_on:
