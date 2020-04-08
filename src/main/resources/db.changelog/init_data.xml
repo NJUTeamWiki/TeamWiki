@@ -53,4 +53,8 @@
         <sqlFile path="sql/init_portal.sql" relativeToChangelogFile="true"/>
         <sqlFile path="sql/init_book.sql" relativeToChangelogFile="true"/>
     </changeSet>
+
+    <changeSet id="06" author="xuyangchen">
+        <sqlFile path="sql/init_announcement.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>

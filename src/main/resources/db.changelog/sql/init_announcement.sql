@@ -1,0 +1,1 @@
+INSERT INTO announcement(content, publish_time) VALUES ('This is the team announcement. This can be edited by the leader.', now())
