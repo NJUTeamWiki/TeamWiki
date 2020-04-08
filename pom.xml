@@ -199,7 +199,7 @@
 				<version>${liquibase.version}</version>
 				<configuration>
 					<changeLogFile>src/main/resources/db.changelog/db.changelog-master.xml</changeLogFile>
-					<driver>com.mysql.jdbc.Driver</driver>
+					<driver>com.mysql.cj.jdbc.Driver</driver>
 					<url>jdbc:mysql://172.19.241.57:3306/team_wiki</url>
 <!--					<url>jdbc:mysql://localhost:3306/team_wiki</url>-->
 					<username>root</username>
