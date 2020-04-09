@@ -14,6 +14,7 @@ import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
 import cn.edu.nju.teamwiki.util.StorageUtils;
+import cn.edu.nju.teamwiki.util.TimeUtils;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,7 +179,7 @@ public class DocumentServiceImpl implements DocumentService {
                     String.valueOf(user.getUserId()), user.getUsername(), user.getAvatar(),
                     documentActivity.getAction(),
                     document.getDId(), document.getDName(),
-                    documentActivity.getTime().toString());
+                    TimeUtils.getPrettyGapString(documentActivity.getTime()));
             return activityVO;
         }).collect(Collectors.toList());
 
