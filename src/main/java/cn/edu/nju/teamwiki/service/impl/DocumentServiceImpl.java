@@ -75,6 +75,7 @@ public class DocumentServiceImpl implements DocumentService {
         return documentDao.fetchBySourceId(Integer.valueOf(sourceId))
                 .stream()
                 .filter(document -> document.getSourceType().equals(sourceType))
+                .filter(document -> !document.getIsArchived())
                 .map(document -> {
                     User uploader = userDao.fetchOneByUserId(document.getUploader());
                     DocumentVO documentVO = new DocumentVO(document);
