@@ -122,6 +122,12 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         checkUser(knowledge, userId);
 
+        List<Document> documents = getKnowledgeDocuments(knowledge);
+        // 知识为空时才可删除
+        if (!documents.isEmpty()) {
+            throw new ServiceException(ResultCode.SPECIFIED_DELETE_NOT_EMPTY_KNOWLEDGE);
+        }
+
         // 删除文件
         Path knowledgePath = Paths.get(twConfig.knowledgeDir,
                 knowledge.getCategory().toString(),
@@ -135,11 +141,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
 
         // 删除数据库中的数据
         knowledgeDao.delete(knowledge);
-
-        List<Document> documents = getKnowledgeDocuments(knowledge);
-        for (Document document : documents) {
-            documentService.deleteDocument(document.getDId(), userId);
-        }
 
         return new KnowledgeVO(knowledge);
     }

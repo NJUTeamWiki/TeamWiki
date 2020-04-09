@@ -5,6 +5,7 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.Knowledge;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: xuyangchen
@@ -18,7 +19,10 @@ public class KnowledgeVO extends Knowledge {
 
     public KnowledgeVO(Knowledge knowledge, List<Document> documents) {
         super(knowledge);
-        this.documents.addAll(documents);
+        this.documents.addAll(
+                documents.stream()
+                        .filter(document -> !document.getIsArchived())
+                        .collect(Collectors.toList()));
     }
 
     private List<Document> documents = new LinkedList<>();
