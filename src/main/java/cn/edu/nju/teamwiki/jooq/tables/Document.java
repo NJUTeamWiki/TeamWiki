@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Document extends TableImpl<DocumentRecord> {
 
-    private static final long serialVersionUID = -502644025;
+    private static final long serialVersionUID = -154903757;
 
     /**
      * The reference instance of <code>team_wiki.document</code>
@@ -98,6 +98,11 @@ public class Document extends TableImpl<DocumentRecord> {
     public final TableField<DocumentRecord, String> URL = createField(DSL.name("url"), org.jooq.impl.SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
+     * The column <code>team_wiki.document.is_archived</code>.
+     */
+    public final TableField<DocumentRecord, Boolean> IS_ARCHIVED = createField(DSL.name("is_archived"), org.jooq.impl.SQLDataType.BIT.defaultValue(org.jooq.impl.DSL.inline("b'0'", org.jooq.impl.SQLDataType.BIT)), this, "");
+
+    /**
      * Create a <code>team_wiki.document</code> table reference
      */
     public Document() {
@@ -137,7 +142,7 @@ public class Document extends TableImpl<DocumentRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOCUMENT_D_ID, Indexes.DOCUMENT_DOCUMENT_SOURCE_FK, Indexes.DOCUMENT_PRIMARY);
+        return Arrays.<Index>asList(Indexes.DOCUMENT_DOCUMENT_SOURCE_FK, Indexes.DOCUMENT_D_ID, Indexes.DOCUMENT_PRIMARY);
     }
 
     @Override
@@ -186,11 +191,11 @@ public class Document extends TableImpl<DocumentRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<String, String, Integer, LocalDateTime, LocalDateTime, Integer, Integer, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<String, String, Integer, LocalDateTime, LocalDateTime, Integer, Integer, String, Boolean> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

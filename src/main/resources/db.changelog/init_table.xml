@@ -226,4 +226,10 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="11" author="xuyangchen">
+        <addColumn tableName="document">
+            <column name="is_archived" type="boolean" defaultValue="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -30,6 +30,7 @@ public enum ResultCode {
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),
     SPECIFIED_KNOWLEDGE_EXISTS(30002, "同名知识已存在"),
+    SPECIFIED_DELETE_NOT_EMPTY_KNOWLEDGE(30003, "知识不为空，请先删除知识内的文档"),
 
     /* 系统错误：40001-49999 */
     SYSTEM_INTERNAL_ERROR(40001, "系统繁忙，请稍后重试"),

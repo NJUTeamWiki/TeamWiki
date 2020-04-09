@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Announcement extends TableImpl<AnnouncementRecord> {
 
-    private static final long serialVersionUID = 588393936;
+    private static final long serialVersionUID = -666316411;
 
     /**
      * The reference instance of <code>team_wiki.announcement</code>
@@ -71,7 +71,7 @@ public class Announcement extends TableImpl<AnnouncementRecord> {
     /**
      * The column <code>team_wiki.announcement.publish_time</code>.
      */
-    public final TableField<AnnouncementRecord, LocalDateTime> PUBLISH_TIME = createField(DSL.name("publish_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<AnnouncementRecord, LocalDateTime> PUBLISH_TIME = createField(DSL.name("publish_time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * Create a <code>team_wiki.announcement</code> table reference

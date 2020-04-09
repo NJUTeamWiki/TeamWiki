@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DocumentActivities extends TableImpl<DocumentActivitiesRecord> {
 
-    private static final long serialVersionUID = -1677842834;
+    private static final long serialVersionUID = -550635613;
 
     /**
      * The reference instance of <code>team_wiki.document_activities</code>
@@ -75,7 +75,7 @@ public class DocumentActivities extends TableImpl<DocumentActivitiesRecord> {
     /**
      * The column <code>team_wiki.document_activities.time</code>.
      */
-    public final TableField<DocumentActivitiesRecord, LocalDateTime> TIME = createField(DSL.name("time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<DocumentActivitiesRecord, LocalDateTime> TIME = createField(DSL.name("time"), org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * Create a <code>team_wiki.document_activities</code> table reference

@@ -144,12 +144,15 @@ public class DocumentServiceImpl implements DocumentService {
             throw new ServiceException(ResultCode.PERMISSION_NO_MODIFY);
         }
 
-        Path documentPath = Paths.get(twConfig.docDir, document.getUrl());
-        if (!StorageUtils.deleteFile(documentPath)) {
-            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
-        }
-
-        documentDao.delete(document);
+//        Path documentPath = Paths.get(twConfig.docDir, document.getUrl());
+//        if (!StorageUtils.deleteFile(documentPath)) {
+//            throw new ServiceException(ResultCode.SYSTEM_FILE_ERROR);
+//        }
+//
+//        documentDao.delete(document);
+        // 不对文档进行删除，而是进行归档
+        document.setIsArchived(true);
+        documentDao.update(document);
 
         DocumentActivities activity = new DocumentActivities();
         activity.setUserId(document.getUploader());

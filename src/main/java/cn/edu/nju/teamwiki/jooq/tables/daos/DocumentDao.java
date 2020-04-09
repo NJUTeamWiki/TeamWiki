@@ -170,4 +170,18 @@ public class DocumentDao extends DAOImpl<DocumentRecord, cn.edu.nju.teamwiki.joo
     public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchByUrl(String... values) {
         return fetch(Document.DOCUMENT.URL, values);
     }
+
+    /**
+     * Fetch records that have <code>is_archived BETWEEN lowerInclusive AND upperInclusive</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchRangeOfIsArchived(Boolean lowerInclusive, Boolean upperInclusive) {
+        return fetchRange(Document.DOCUMENT.IS_ARCHIVED, lowerInclusive, upperInclusive);
+    }
+
+    /**
+     * Fetch records that have <code>is_archived IN (values)</code>
+     */
+    public List<cn.edu.nju.teamwiki.jooq.tables.pojos.Document> fetchByIsArchived(Boolean... values) {
+        return fetch(Document.DOCUMENT.IS_ARCHIVED, values);
+    }
 }
