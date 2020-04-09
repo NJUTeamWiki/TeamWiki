@@ -13,7 +13,6 @@ import cn.edu.nju.teamwiki.jooq.tables.pojos.User;
 import cn.edu.nju.teamwiki.service.DocumentService;
 import cn.edu.nju.teamwiki.service.ServiceException;
 import cn.edu.nju.teamwiki.util.Constants;
-import cn.edu.nju.teamwiki.util.StorageUtils;
 import cn.edu.nju.teamwiki.util.TimeUtils;
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -168,20 +168,22 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public List<DocumentActivityVO> getDocumentActivities() {
         List<DocumentActivities> documentActivities = dslContext.selectFrom(DOCUMENT_ACTIVITIES)
-                .orderBy(DOCUMENT_ACTIVITIES.TIME)
-                .limit(20)
+                .orderBy(DOCUMENT_ACTIVITIES.TIME.desc())
+                .limit(10)
                 .fetchInto(DocumentActivities.class);
 
-        List<DocumentActivityVO> vos = documentActivities.stream().map(documentActivity -> {
-            Document document = documentDao.fetchOneByDId(documentActivity.getDocumentId());
-            User user = userDao.fetchOneByUserId(documentActivity.getUserId());
-            DocumentActivityVO activityVO = new DocumentActivityVO(
-                    String.valueOf(user.getUserId()), user.getUsername(), user.getAvatar(),
-                    documentActivity.getAction(),
-                    document.getDId(), document.getDName(),
-                    TimeUtils.getPrettyGapString(documentActivity.getTime()));
-            return activityVO;
-        }).collect(Collectors.toList());
+        List<DocumentActivityVO> vos = documentActivities.stream()
+                .map(documentActivity -> {
+                    Document document = documentDao.fetchOneByDId(documentActivity.getDocumentId());
+                    User user = userDao.fetchOneByUserId(documentActivity.getUserId());
+                    DocumentActivityVO activityVO = new DocumentActivityVO(
+                            String.valueOf(user.getUserId()), user.getUsername(), user.getAvatar(),
+                            documentActivity.getAction(),
+                            document.getDId(), document.getDName(),
+                            TimeUtils.getPrettyGapString(documentActivity.getTime()));
+                    return activityVO;
+                })
+                .collect(Collectors.toList());
 
         return vos;
     }
