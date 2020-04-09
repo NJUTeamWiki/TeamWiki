@@ -24,7 +24,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -101,7 +100,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         DocumentActivities activity = new DocumentActivities();
         activity.setUserId(document.getUploader());
-        activity.setAction(Constants.ACTION_CREATE);
+        activity.setAction(Constants.ACTION_UPLOAD);
         activity.setDocumentId(document.getDId());
         activity.setTime(document.getUploadedTime());
         activitiesDao.insert(activity);
@@ -159,7 +158,7 @@ public class DocumentServiceImpl implements DocumentService {
 
         DocumentActivities activity = new DocumentActivities();
         activity.setUserId(document.getUploader());
-        activity.setAction(Constants.ACTION_DELETE);
+        activity.setAction(Constants.ACTION_REMOVE);
         activity.setDocumentId(document.getDId());
         activity.setTime(LocalDateTime.now());
         activitiesDao.insert(activity);
