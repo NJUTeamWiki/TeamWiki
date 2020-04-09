@@ -13,8 +13,8 @@ public class Constants {
     public static final int SOURCE_KNOWLEDGE = 1;
     public static final int SOURCE_SHARE = 2;
 
-    public static final String ACTION_CREATE = "create";
+    public static final String ACTION_UPLOAD = "upload";
     public static final String ACTION_UPDATE = "update";
-    public static final String ACTION_DELETE = "delete";
+    public static final String ACTION_REMOVE = "remove";
 
 }
