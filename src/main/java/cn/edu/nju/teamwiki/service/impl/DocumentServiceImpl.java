@@ -96,6 +96,7 @@ public class DocumentServiceImpl implements DocumentService {
         document.setUrl(url);
         document.setUploadedTime(LocalDateTime.now());
         document.setModifiedTime(document.getUploadedTime());
+        document.setIsArchived(false);
         documentDao.insert(document);
 
         DocumentActivities activity = new DocumentActivities();
@@ -180,7 +181,8 @@ public class DocumentServiceImpl implements DocumentService {
                     DocumentActivityVO activityVO = new DocumentActivityVO(
                             String.valueOf(user.getUserId()), user.getUsername(), user.getAvatar(),
                             documentActivity.getAction(),
-                            document.getDId(), document.getDName(),
+                            document.getDId(),
+                            document.getDName(),
                             TimeUtils.getPrettyGapString(documentActivity.getTime()));
                     return activityVO;
                 })
