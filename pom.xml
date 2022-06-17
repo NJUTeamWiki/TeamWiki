@@ -24,7 +24,7 @@
 		<druid.version>1.1.20</druid.version>
 		<swagger2.version>2.9.2</swagger2.version>
 		<sonar.version>3.7.0.1746</sonar.version>
-		<fastjson.version>1.2.62</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<jodconvertor.version>4.2.4</jodconvertor.version>
 
 <!--		<skipDbGen>false</skipDbGen>-->
